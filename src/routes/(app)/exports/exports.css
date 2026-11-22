@@ -1,0 +1,99 @@
+@layer components {
+	.p-exports {
+		display: grid;
+		gap: var(--space-lg);
+	}
+	.p-exports__tete {
+		display: grid;
+		gap: var(--space-xs);
+		max-inline-size: var(--measure);
+	}
+	.p-exports__titre {
+		font-size: var(--fs-display-lg);
+		font-stretch: var(--fst-display);
+		letter-spacing: var(--ls-display-lg);
+		line-height: var(--lh-display);
+	}
+	.p-exports__intro {
+		color: var(--color-body);
+	}
+	.p-exports__choix {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+		gap: var(--space-base) var(--space-lg);
+		align-items: start;
+	}
+	.p-exports__resume {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: var(--space-xxs) var(--space-base);
+		padding: var(--space-sm) var(--space-md);
+		font-size: var(--fs-body-sm);
+		color: var(--color-body);
+	}
+	.p-exports__resume strong {
+		color: var(--color-ink);
+		font-weight: var(--fw-semibold);
+	}
+	.p-exports__fichier {
+		overflow-wrap: anywhere;
+	}
+	.p-exports__defilement {
+		overflow-x: auto;
+		border-block-start: var(--hairline-w) solid var(--color-hairline);
+	}
+	.p-exports__defilement:focus-visible {
+		outline-offset: calc(var(--focus-w) * -1);
+	}
+	.p-exports__table {
+		inline-size: 100%;
+		font-size: var(--fs-table);
+		font-stretch: var(--fst-table);
+		line-height: var(--lh-table);
+	}
+	.p-exports__legende {
+		padding: var(--space-xs) var(--space-md);
+		text-align: start;
+		font-size: var(--fs-caption);
+		color: var(--color-muted);
+		background: var(--color-canvas-soft);
+	}
+	.p-exports__table th,
+	.p-exports__table td {
+		padding: var(--space-xs) var(--space-sm);
+		text-align: start;
+		vertical-align: top;
+		border-block-end: var(--hairline-w) solid var(--color-hairline);
+		white-space: nowrap;
+	}
+	.p-exports__table th:first-child,
+	.p-exports__table td:first-child {
+		padding-inline-start: var(--space-md);
+	}
+	.p-exports__table thead th {
+		background: var(--color-canvas-soft);
+		font-size: var(--fs-table-head);
+		font-weight: var(--fw-label);
+		letter-spacing: var(--ls-label);
+		color: var(--color-body);
+	}
+	.p-exports__table tbody tr:last-child td {
+		border-block-end: 0;
+	}
+	.p-exports__table .u-nombre {
+		text-align: end;
+	}
+	.p-exports__table td.p-exports__long {
+		min-inline-size: 18rem;
+		max-inline-size: 28rem;
+		white-space: normal;
+	}
+	.p-exports__vide {
+		padding: var(--space-md);
+		border-block-start: var(--hairline-w) solid var(--color-hairline);
+		color: var(--color-muted);
+		font-size: var(--fs-body-sm);
+	}
+}

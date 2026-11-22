@@ -1,0 +1,241 @@
+# INSTRUCTIONS — Plateforme de suivi du consortium APSUD (FH)
+
+> **À LIRE EN ENTIER AVANT TOUTE ACTION**, par un humain ou une IA.
+> Ce fichier est la source de vérité de **ce projet**. Il est mis à jour **à chaque étape terminée et validée** (voir §10, Journal).
+> Ne rien créer qui existe déjà : vérifier d'abord §9 (Carte des fichiers) et le Journal.
+> Documents liés : [docs/DESIGN.md](docs/DESIGN.md) · [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · [docs/PLAN.md](docs/PLAN.md) · [docs/RECHERCHE.md](docs/RECHERCHE.md) · [docs/MISE-EN-SERVICE.md](docs/MISE-EN-SERVICE.md)
+
+---
+
+## 0. Règles permanentes (pour chaque étape et chaque IA)
+
+1. **Langue : toujours le français.** Réponses, commentaires de code, documents, libellés de l'interface, messages au développeur. Jamais d'anglais dans ce qui est montré à l'utilisateur. Les noms techniques du code (variables, fonctions) restent en français quand c'est lisible (`valeurs_indicateur`, `soumettreRapport`) ; seuls les mots-clés des langages et des bibliothèques restent en anglais.
+2. **Projet séparé du site.** Ce dossier `plateforme-consortium/` est un projet **indépendant** du site web APSUD (Astro, à la racine du dossier `APSUD/`).
+   - **Interdit** : modifier, déplacer ou supprimer un fichier en dehors de `plateforme-consortium/`. Une autre session construit le site en parallèle dans `APSUD/src`, `APSUD/docs`, etc.
+   - **Autorisé en lecture seule** : `../docs/excel/` (les fichiers sources du client), `../src/styles/tokens.css` et `../assets/apsud/logo/` (identité visuelle APSUD), `../data/apsud/organisation.json` (identité de l'ONG).
+   - Le projet a son propre `package.json`, son propre `node_modules`, son propre dépôt de données (Supabase). Rien n'est partagé au niveau du code avec le site.
+3. **Ordre de travail : d'abord l'ordinateur (1440 px), ensuite le responsive.** Chaque écran est validé en version ordinateur, puis repris en responsive natif (`clamp()`, grilles `auto-fit`, requêtes de conteneur `@container`, `min()`/`max()`). Les `@media` ne servent qu'aux vrais changements de disposition. Largeurs à vérifier avec captures : 1920, 1440, 1280, 1024, 768, 430, 390, 360 px.
+4. **On ne supprime jamais une donnée métier.** Ni dans l'interface, ni dans le code, ni par un script. On **archive** (colonne `archive_le`). Seul le rôle `super_admin` peut supprimer définitivement, et chaque suppression est inscrite au journal d'audit. Toute nouvelle table respecte ce principe (voir ARCHITECTURE.md §5).
+5. **Rien de générique.** Ni textes creux, ni composants « tableau de bord » tout faits, ni icônes vues partout. Pas de Font Awesome, Material Icons, Lucide, Heroicons ni emojis : icônes SVG maison selon DESIGN.md, section « Icônes et pictogrammes ». On ne doit pas deviner qu'une IA l'a fait.
+6. **Tokens uniquement.** Aucune couleur, taille, rayon, ombre ou durée en dur dans les composants : uniquement les variables de `src/lib/styles/tokens.css`, elles-mêmes générées depuis les tokens déclarés en tête de DESIGN.md (`colors`, `typography`, `rounded`, `spacing`, `components`).
+7. **Fidélité aux fichiers du client.** La structure des 5 plans d'action Excel (§3) est la référence métier : mêmes niveaux, mêmes intitulés, mêmes colonnes. On améliore la saisie, on ne change pas le sens.
+8. **Connexions lentes (3G, coupures).** Chaque écran doit rester utilisable sur un téléphone moyen en 3G : HTML rendu côté serveur, JavaScript en enrichissement, saisie enregistrée localement si le réseau tombe (ARCHITECTURE.md §8).
+9. **Sécurité vérifiée par des tests, pas supposée.** Chaque règle d'accès (lecture, écriture, interdiction de suppression) a son test automatique (ARCHITECTURE.md §11). Aucune clé secrète (`service_role`) dans le navigateur ni dans le dépôt.
+10. **Données sensibles.** Protection de l'enfance et VBG : **aucune donnée nominative de bénéficiaire** dans la plateforme, uniquement des chiffres agrégés. Photos justificatives sans visage d'enfant identifiable.
+11. **Initiative et amélioration** : reproduire fidèlement la logique des fichiers, puis proposer des améliorations (contrôles de cohérence, alertes, exports). Les améliorations sont signalées comme telles dans le Journal.
+12. Avant de finir une étape : mettre à jour le Journal (§10) et la carte des fichiers (§9).
+
+## 1. Le projet en une phrase
+
+Une **plateforme web en ligne** où APSUD, chef de file du consortium financé par le **Fonds humanitaire RCA (FH)**, et ses quatre partenaires **saisissent, consultent et suivent** en temps réel l'avancement du projet : activités, tâches, calendrier, budget, indicateurs et justificatifs. Elle remplace la circulation des 5 fichiers Excel « Plan d'action ».
+
+**Ce que la plateforme n'est pas** : elle ne remplace pas **OneGMS**, le système officiel d'OCHA où APSUD déclare le projet au FH (voir RECHERCHE.md §1). Elle **prépare et alimente** OneGMS (exports prêts à recopier) et le **5W du cluster WASH**.
+
+## 2. Le projet financé
+
+| Élément | Valeur |
+|---|---|
+| Intitulé | Projet d'assistance d'urgence intégrée en WASH, Sécurité alimentaire, Santé, Nutrition et Protection (Enfance et VBG) à Nanga-Boguila, Paoua et Bossangoa |
+| Code | CBPF-CAR-26-R-NGO-NSFT-41469 |
+| Bailleur | Fonds humanitaire RCA (FH, fonds commun géré par OCHA) |
+| Durée | 10 mois, du 08/11/2026 au 30/08/2027 |
+| Zones | Sous-préfectures de Nanga-Boguila, Paoua (Lim-Pendé) et Bossangoa (Ouham) |
+| Objectif général | Contribuer à la réduction de la mortalité et de la morbidité, et améliorer les conditions de vie et la dignité des populations affectées par la crise dans les sous-préfectures de Nanga-Boguila, Paoua et Bossangoa |
+| Chef de file | **APSUD** (Action pour la Population et le Développement Durable) |
+
+**Les 5 volets** (un volet = un fichier Excel = une ONG sur un secteur) :
+
+| Volet | ONG | Secteur | Cluster CBPF | Outcomes | Outputs | Activités |
+|---|---|---|---|---|---|---|
+| NUT-ARS | ARS | Nutrition | NUT | 1 | 1 | 4 |
+| SAN-ARS | ARS | Santé | HEA | 1 | 2 | 4 |
+| PE-AFPE | AFPE | Protection de l'enfance (et VBG) | PRO | 1 | 2 | 5 |
+| SECAL-GADY | GADY | Sécurité alimentaire | FSA / FSC | 2 | 4 | 16 |
+| WASH-IDC | IDC | Eau, hygiène et assainissement | WSH | 1 | 3 | 8 |
+
+ARS porte deux volets. APSUD n'a pas de volet de mise en œuvre propre dans les fichiers : elle **coordonne, valide et consolide**. Le nombre d'activités varie d'une ONG à l'autre (3 à 16) : la plateforme permet à chaque ONG de **créer ses propres activités** dans son volet.
+
+## 3. Ce qu'on reprend des fichiers Excel (référence métier)
+
+Sources : `../docs/excel/` (lecture seule). Chaque plan d'action a **deux feuilles**.
+
+**Feuille 1, « Plan d'action <ONG> »** : le pilotage opérationnel.
+- Colonnes : Volet (Outcome) · Act. (Output) · OUTPUT · Num (Activity x.y.z) · Activités · Resp. · Action à prendre / Tâche · Début · Fin · Budget planifié · Budget exécuté · Taux d'exécution (programme) · Progrès (finance = exécuté / planifié) · **10 mois × 5 semaines (S1 à S5)** cochés « x » · Résultats obtenus · Observations.
+- Chaque activité contient une liste de **tâches** (exemple : prise de contact, rédaction des TDR, envoi des invitations, paiement des frais de transport).
+- Les totaux budgétaires remontent de l'activité vers l'output (formules `=J11+J17+…`).
+
+**Feuille 2, « Suivi indicateurs <ONG> »** : le **cadre logique** (« Partie APSUD »).
+- Objectif → Outcome → Output → Activité → **Indicateur SMART**.
+- Chaque indicateur porte : un libellé (souvent un indicateur standard CBPF avec son code, par exemple `(Global) (NUT/C-CA5/N.3a) Number of people admitted to SAM treatment programme`), des **cibles désagrégées** Femmes / Filles / Hommes / Garçons / Total, trois lignes **Planifié / Actuel / Cumul**, les **moyens de vérification** (jusqu'à 3), une case **Oui/Non** et des **commentaires**.
+
+**Modèle 5W** (`HRP_2025_5W_…xlsx`) : reporting mensuel au cluster WASH (qui, quoi, où, pour qui, quand). Il est vide mais fournit les **colonnes cibles de l'export 5W** et le **référentiel administratif de la RCA** (préfectures, sous-préfectures, communes ; feuilles `admin`, `Admin2 Mirror`, `Admin3 Mirror`).
+
+### 3.1 Anomalies relevées dans les fichiers (à faire confirmer par APSUD avant l'import)
+
+| # | Fichier | Anomalie |
+|---|---|---|
+| A1 | Tous | Dates de fin des tâches en **2024** (ex. 13/11/2024) alors que les débuts sont en 2026 : modèle recopié d'un ancien projet |
+| A2 | Tous | Budgets planifiés à **100** partout : valeurs de remplissage, montants réels et devise (USD ou XAF ?) à fournir |
+| A3 | Tous | Tâches d'exemple identiques partout (« Prise de contact du personnel de santé décentralisé à Begoua et Bimbio ») : modèle, pas des données réelles |
+| A4 | SANTE-ARS | `#REF!` dans les totaux budgétaires de l'Outcome 1 (une ligne d'activité a été supprimée) |
+| A5 | SANTE-ARS | La feuille 2 porte l'en-tête « PE - AFPE » au lieu de « SANTE - ARS » |
+| A6 | SECAL-GADY | `#REF!` dans les totaux de l'Outcome 2 |
+| A7 | NUT-ARS | Cibles saisies avec un point comme séparateur de milliers : `3.838`, `3.687`, `7.525` sont lus comme 3,8 / 3,7 / 7,5 au lieu de 3 838 / 3 687 / 7 525 |
+| A8 | SANTE-ARS | Même problème : `8.362` = 8 362 consultations |
+| A9 | PE-AFPE | Cible `3.17` pour 940 + 880 + 450 + 900 = 3 170 personnes |
+| A10 | NUT-ARS | Désagrégation de l'indicateur MAS : libellé « Garçons = 98, filles = 102 » mais cases Filles/Garçons vides ; la ligne « Global » porte 26 hommes / 24 garçons (incohérent pour des enfants de 6-59 mois) |
+| A11 | Plusieurs | Plusieurs indicateurs n'ont **aucune cible** (Planifié vide) |
+| A12 | Plusieurs | Le même indicateur générique est répété sous plusieurs activités (« Number of children receiving protection support ») : risque de double comptage |
+| A13 | PE-AFPE | Taux d'exécution programme saisis entre 0 et 1 (0,2 = 20 %) ; dans SECAL : 1,5 et 2,5 (incohérent) |
+
+## 4. Exigences fonctionnelles (demande du client)
+
+1. **Base de données en ligne unique** pour les 5 volets, accessible par les 5 organisations.
+2. **Chaque ONG ajoute et met à jour** ses données : activités, tâches, calendrier, budget exécuté, réalisations mensuelles des indicateurs, résultats, observations, justificatifs.
+3. **Consultation** : chaque organisation récupère les informations dont elle a besoin (lecture de tout le consortium, à confirmer, voir D3).
+4. **Pas de suppression**, sauf par le **super-administrateur**.
+5. **Temps réel** : dès qu'une donnée est ajoutée ou mise à jour, les autres utilisateurs connectés en sont **notifiés immédiatement** et voient la nouvelle valeur, l'auteur, la date, le type de donnée et le contenu.
+6. **Circuit de validation** : l'ONG soumet son rapport du mois, APSUD le valide ou le renvoie pour correction.
+7. **Simple d'utilisation**, belle interface, responsive, native APSUD (DESIGN.md).
+8. **Exports** : Excel au format des fichiers actuels, tableau de suivi des indicateurs, valeurs pour OneGMS, 5W WASH.
+
+## 5. Exigences de qualité (non négociables)
+
+1. Professionnel, aux normes des outils humanitaires (ActivityInfo, DHIS2, OneGMS) : voir RECHERCHE.md.
+2. Accessibilité **WCAG 2.2 AA** : contrastes, clavier complet, focus jamais masqué, statuts jamais signalés par la couleur seule, messages annoncés aux lecteurs d'écran.
+3. Performance 3G : budgets de DESIGN.md, section « Accessibilité et performance ».
+4. Toute modification est **tracée** (qui, quand, ancienne et nouvelle valeur) et consultable.
+5. Interface et nombres **au format français** (espace fine insécable pour les milliers : 7 525 ; virgule décimale : 40,5 %).
+
+## 6. Architecture du code (règles)
+
+Détail complet : [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+
+- **Budget : zéro abonnement** (consigne du développeur, 2026-11-21). Aucun service payant ; seulement des offres gratuites ou des outils libres (voir D2).
+- **Ordre : l'interface d'abord, le serveur ensuite** (consigne du 2026-11-21). La phase 1 est une **maquette complète et utilisable** qui tourne dans le navigateur. Depuis le 2026-11-22, le dépôt (`src/lib/donnees/depot.svelte.ts`) a **deux sources** derrière la même interface publique : la **démonstration** (simulée, toujours disponible, consigne du développeur) et le **serveur réel** Supabase. L'interrupteur « Mode démonstration » de la connexion choisit la source.
+- **Mode réel : la seule porte d'écriture est une fonction SQL par action** (`supabase/migrations/…_fonctions_ecriture.sql`). Aucun rôle de l'application n'a de droit INSERT, UPDATE ou DELETE direct sur les tables. Chaque fonction refait les contrôles de `regles.ts` et du dépôt : **toute nouvelle règle s'écrit aux deux endroits**, avec son test dans `supabase/tests/`.
+- **Pile** : **SvelteKit 3** (Svelte 5 « runes », TypeScript strict), sortie statique (`@sveltejs/adapter-static`, mode SPA) en phase maquette. Back-end : à décider (D2), par défaut **Supabase, offre gratuite** (PostgreSQL, sécurité par ligne, Realtime, Storage, Auth). Hébergement gratuit de l'application (Cloudflare Pages ou équivalent). Sous-domaine envisagé : `suivi.apsud.org` (D7).
+- **Imports** : alias `#lib/…` (sous-chemins Node déclarés dans `package.json`). Les fichiers TypeScript s'importent **avec leur extension** (`'#lib/format.ts'`, `'#lib/donnees/depot.svelte.ts'`). Modules SvelteKit 3 : `$app/env` (et non `$app/environment`), `$app/state`, `$app/navigation`.
+- **Un fichier par chose** : chaque route a son dossier, chaque composant son fichier `Nom.svelte` et sa feuille `Nom.css` importée dans le composant, chaque requête métier sa fonction dans `src/lib/server/` ou `src/lib/donnees/`.
+- Arborescence en couches : `src/routes/` (pages) → `src/lib/composants/{structure,ui,donnees,graphiques}/` → `src/lib/styles/` (tokens, base) → `src/lib/icones/` (SVG maison) → `src/lib/donnees/` (accès Supabase typé) → `supabase/migrations/` (schéma SQL versionné).
+- CSS natif à tokens, classes BEM préfixées : `c-` composant, `l-` mise en page, `u-` utilitaire, `is-` état. CSS rangé dans `@layer reset, base, layout, components, utilities`. **Pas de Tailwind, pas de bibliothèque de composants.**
+- Le schéma de la base n'évolue **que par migrations SQL** dans `supabase/migrations/`, jamais à la main dans la console.
+- Types TypeScript générés depuis la base (`supabase gen types`) quand le projet Supabase existera ; d'ici là, la correspondance lignes ↔ types est dans `src/lib/donnees/reel/correspondance.ts` et le contrat des appels est vérifié par `supabase/tests/contrat-appels.test.mjs`.
+- Configuration du serveur réel : `.env` (modèle `.env.example`), variables `VITE_SUPABASE_URL` et `VITE_SUPABASE_CLE_PUBLIQUE`. Sans elles, seul le mode démonstration fonctionne.
+- Commandes : `npm run dev` (http://localhost:5173 ; ou le serveur « suivi-consortium » de `../.claude/launch.json`) · `npm run check` (types) · `npm run build` (dossier `build/`) · `npm run donnees:demo` (régénère les données de démonstration depuis `../docs/excel/`) · `npm run donnees:sql` (cadre logique → migration 0009 ; refuse de réécrire une migration déjà poussée) · `npm run base:assembler` (migrations → `supabase/installation/`, à coller dans l'éditeur SQL de Supabase) · `npx supabase db push --db-url "<pooler>"` (applique les nouvelles migrations au projet en ligne, docs/MISE-EN-SERVICE.md) · **`npm run test:db`** (29 tests de sécurité et de circuit sur une vraie base PostgreSQL PGlite, sans Docker, puis contrôle du contrat interface ↔ fonctions SQL).
+- **Maquette, comment tester** : `/connexion` propose les comptes fictifs (coordination, ONG, super-admin, lecture). Chaque onglet garde son propre compte : ouvrez deux onglets avec deux comptes pour voir le temps réel. Le bouton « En ligne » de la barre du haut simule une coupure réseau. « Réinitialiser les données de démonstration » (connexion ou administration) remet tout à zéro.
+
+## 7. Méthode de travail
+
+1. On avance **phase par phase** (docs/PLAN.md). Chaque phase est **validée par le développeur** avant la suivante.
+2. Après chaque étape validée : mettre à jour §10 Journal et §9 Carte.
+3. Avant de créer un fichier : vérifier qu'il n'existe pas déjà (§9).
+4. Vérifier dans le navigateur (captures aux 8 largeurs) chaque écran terminé ; tester la saisie au clavier seul.
+5. Toute donnée réelle du client (montants, cibles corrigées, noms des points focaux) passe par une confirmation écrite d'APSUD (§8, D1).
+
+## 8. Décisions en attente
+
+| # | Sujet | Proposition par défaut | État |
+|---|---|---|---|
+| D1 | Corrections des anomalies A1 à A13 | Corriger A7-A9 (séparateur de milliers) à l'import, signaler les autres dans un écran « À compléter » | À valider par APSUD |
+| D2 | Back-end à **0 $ d'abonnement** — **Supabase gratuit retenu et mis en place le 2026-11-22** (schéma, sécurité, tests) ; projet à créer par APSUD (docs/MISE-EN-SERVICE.md) | **A (recommandé) : Supabase, offre gratuite** (PostgreSQL + sécurité par ligne + temps réel + fichiers + comptes). Parades aux limites de l'offre gratuite : tâche planifiée gratuite (GitHub Actions) qui sollicite la base chaque jour pour éviter la mise en pause après 7 jours d'inactivité, et sauvegarde `pg_dump` hebdomadaire automatique (même outil) ; photos compressées, et stockage Cloudflare R2 (10 Go gratuits) si le 1 Go inclus ne suffit pas. **B : tout Cloudflare gratuit** (Workers + base D1 + Durable Objects pour le temps réel + R2) : jamais de pause, mais comptes, droits et temps réel à coder nous-mêmes. **C : auto-hébergé** (PocketBase ou PostgreSQL sur une machine d'APSUD) : 0 $ mais machine, sauvegardes et sécurité à surveiller, ce qui contredit « sans supervision ». Supabase Pro (≈ 300 $/an) écarté pour raison de budget. Limites exactes de l'offre gratuite à reconfirmer à la création du projet | Proposé, à valider |
+| D3 | Visibilité entre ONG (rôles réduits à trois le 2026-11-22 : super-administrateur, coordination, saisie) | **Lecture de tout le consortium**, écriture limitée à sa propre organisation | À valider |
+| D4 | Fréquence de reporting | **Mensuelle** pour les indicateurs, échéance le **5 du mois suivant** ; calendrier des tâches mis à jour chaque semaine | À valider |
+| D5 | Validation | Rôle « coordination » chez APSUD : valide ou renvoie chaque rapport mensuel | À valider (noms des valideurs) |
+| D6 | Nombre d'utilisateurs (une 6e ONG ou plus s'ajoute depuis Administration) | 2 à 4 comptes nominatifs par ONG (≈ 15-20 au total) ; jamais de compte partagé | À valider |
+| D7 | Nom de l'outil et domaine | Nom provisoire : « Suivi consortium APSUD » ; domaine `suivi.apsud.org` (DNS chez LWS) | À valider |
+| D8 | Hors-ligne | Version 1 : saisie qui survit aux coupures (file d'attente locale). Hors-ligne complet (PowerSync) seulement si le terrain l'exige | À valider |
+| D9 | Devise du budget | USD (devise des projets FH) avec affichage XAF facultatif | À valider |
+| D10 | Langue | Français uniquement en version 1 | À valider |
+| D11 | Colonne « Oui/Non » de la feuille de suivi des indicateurs | Sens à confirmer par APSUD (justificatif disponible ? cible atteinte ?). Proposition : « Justificatif fourni : Oui/Non », calculé automatiquement à partir des pièces jointes du mois | Mis en place selon la proposition le 2026-11-22 ; sens à confirmer par APSUD |
+| D12 | 5W des clusters | Le modèle reçu ne concerne que le cluster WASH (EHA, 31 colonnes, 89 activités standard). Proposition : fiche 5W sur les activités WASH (activité standard, modalité, type de bénéficiaire, type de réponse), ventilation facultative par sous-préfecture, export exact des 31 colonnes. Demander à APSUD les modèles 5W des clusters Nutrition, Santé, Protection et Sécurité alimentaire | Mis en place pour le WASH le 2026-11-22 ; correspondance des 8 activités proposée, à confirmer par IDC ; modèles des autres clusters à demander |
+
+## 9. Carte des fichiers
+
+```
+plateforme-consortium/
+├── INSTRUCTIONS.md        ← ce fichier (source de vérité du projet)
+├── CLAUDE.md / AGENTS.md  ← renvoient ici (lecture automatique par les IA)
+└── docs/
+    ├── DESIGN.md          ← identité visuelle, tokens, composants, écrans, icônes
+    ├── ARCHITECTURE.md    ← pile, modèle de données, sécurité, temps réel, hors-ligne, exports
+    ├── PLAN.md            ← phases, livrables, critères d'acceptation
+    ├── RECHERCHE.md       ← lien OCHA GMS, solutions existantes, choix de la base, contre-vérification (avec sources)
+    └── reference/
+        ├── expo-DESIGN.md                  ← modèle de format et d'esprit du DESIGN.md (copie fidèle, VoltAgent/awesome-design-md)
+        └── LICENSE-awesome-design-md.txt   ← licence MIT du dépôt d'origine (à conserver avec la copie)
+    ├── MISE-EN-SERVICE.md ← guide pas à pas : projet Supabase gratuit, installation, premier super-admin, mise en ligne
+├── package.json · vite.config.ts · tsconfig.json · .npmrc · .gitignore · .env.example (modèle des 2 variables du serveur réel)
+├── supabase/
+│   ├── migrations/        0001 socle (référentiels, profils, invitations) · 0002 cadre logique et saisies · 0003 journal et audit
+│   │                      0004 fonctions d'écriture (seule porte des modifications) · 0005 sécurité (RLS, droits)
+│   │                      0006 temps réel et stockage · 0007 données de référence (organisations, secteurs, projet, mois, volets)
+│   │                      0008 trois rôles et nouvelles ONG · 0009 cadre logique provisoire (généré par npm run donnees:sql)
+│   ├── installation/      1-schema.sql (toutes les migrations, généré par npm run base:assembler ; la CLI reste la méthode normale)
+│   └── tests/             environnement-local.sql (Supabase minimal pour PGlite) · securite.test.mjs (29 tests) · contrat-appels.test.mjs
+├── scripts/supabase/      assembler.mjs
+├── static/                ← logo-apsud.jpg, logos/ (logos des 5 organisations fournis par APSUD), robots.txt (noindex)
+├── scripts/import-excel/  ← importer.mjs (plans d'action → demo/{structure,anomalies}.json) · referentiel-5w.mjs (modèle 5W → referentiels/5w-wash.json) · vers-sql.mjs (cadre logique → SQL)
+└── src/
+    ├── app.html · app.d.ts
+    ├── lib/
+    │   ├── styles/        tokens.css (reflet des tokens de DESIGN.md), base.css (couches, reset, utilitaires)
+    │   ├── icones/        icones.ts (icônes d'interface maison), Icone.svelte
+    │   ├── format.ts      nombres, montants, dates et mois au format français
+    │   ├── donnees/       types.ts · regles.ts (droits et circuit) · calculs.ts (cumuls, taux, budgets)
+    │   │                  depot.svelte.ts (dépôt à deux sources : démonstration simulée ou serveur réel ; file hors ligne, temps réel)
+    │   │                  reel/ (client.ts : client Supabase et messages d’erreur · correspondance.ts : lignes de la base ↔ types, chargement · comptes-memorises.ts : connexion rapide)
+    │   │                  contexte.svelte.ts (mois sélectionné, panneaux) · mode.svelte.ts (démonstration ou réel)
+    │   │                  demo/ (graine.ts + JSON importés) · referentiels/ (5w-wash.json + cinqw.ts : référentiel du cluster WASH)
+    │   └── composants/
+    │       ├── ui/        Bouton, Panneau, Tuile, JaugeJalon, MarqueurStatut, EtiquetteVolet, LogoOrganisation, Avatar,
+    │       │              Onglets, Dialogue, Champ, EtatVide, Alerte, Interrupteur (chacun .svelte + .css)
+    │       ├── structure/ CadreApplication, BarreLaterale, BarreContexte, TiroirNotifications, BandeauHorsLigne, LogoApsud
+    │       └── donnees/   LigneActivite (ligne du fil d'activité)
+    └── routes/
+        ├── connexion/                         comptes de démonstration, ou connexion réelle et inscription par code (ConnexionReelle)
+        └── (app)/                             garde de connexion + cadre de l'application
+            ├── +page.svelte                   tableau de bord du consortium
+            ├── volets/[code]/                 en-tête de volet + onglets ; synthèse
+            │   ├── cadre-logique/             arbre outcome → output → activité → indicateurs
+            │   ├── plan-action/               calendrier S1-S5, tâches, budget
+            │   └── rapports/[mois]/           saisie du mois : indicateurs, activités et dépenses, 5W (WASH), justificatifs, circuit
+            ├── validation/                    file des rapports à valider (coordination)
+            ├── activite/                      journal d'audit complet et filtrable
+            ├── archives/                      éléments archivés, restauration, suppression définitive (super-admin)
+            ├── administration/                comptes, invitations (mode réel), matrice des droits, périodes, anomalies d'import
+            └── exports/                       CSV : suivi des indicateurs, plan d'action, fiche OneGMS, 5W WASH
+```
+
+Outils partagés : deux entrées ajoutées à `../.claude/launch.json` :
+- « suivi-consortium » : serveur de développement, port 5173, accessible seulement depuis le PC ;
+- « suivi-consortium-wifi » : version construite (`npm run build` d'abord), port 4173, ouverte au réseau Wi-Fi local, pour tester sur téléphone à l'adresse `http://<IP du PC>:4173`.
+
+## 10. Journal (mettre à jour à chaque étape)
+
+| Date | Étape | État | Notes |
+|------|-------|------|-------|
+| 2026-11-21 | 0. Analyse des 5 plans d'action + modèle 5W | ✅ Fait | Structure des 2 feuilles relevée, 13 anomalies (§3.1) |
+| 2026-11-21 | 0. Recherche : lien OCHA, solutions existantes, base de données, interface | ✅ Fait | RECHERCHE.md ; lien OCHA = portail OneGMS (à alimenter, pas à copier) ; modèles : ActivityInfo, Akvo RSR, DHIS2, LogAlto, DevResults, PRP ; base : Supabase (PostgreSQL) |
+| 2026-11-21 | 0. Dossier du projet + INSTRUCTIONS, DESIGN, ARCHITECTURE, PLAN | ✅ Fait — à valider | Ce dossier |
+| 2026-11-21 | 0. DESIGN.md v2 sur le modèle Expo | ✅ Fait — à valider | Demande du développeur : format Expo (tokens YAML en tête + règles d'usage), esprit « outil sûr de lui » : toile blanche, encre Forêt, un seul bouton plein Forêt, Vert APSUD pour liens et avancement, rayons 8/12/16 px, filets fins, pas d'ombre au repos, voile Pousse derrière le bandeau du consortium seulement. Conservé d'APSUD : Mona Sans, jauge à jalon, statuts en goutte-feuille, pictogrammes de secteur. Référence copiée dans docs/reference/ |
+| 2026-11-21 | 0. Contre-vérification de la recherche | ✅ Fait | 24 affirmations vérifiées ; prix LogAlto, DevResults, TolaData et capacités d'ActivityInfo corrigés dans RECHERCHE.md §6 ; le choix Supabase reste inchangé |
+| 2026-11-21 | Changement de cap (développeur) | — | **Zéro abonnement** et **interface d'abord** : la phase 1 devient la maquette front-end complète ; le back-end passe après (PLAN.md réordonné, D2 revu) |
+| 2026-11-22 | Phase 2 mise en attente (développeur) | ⏸ | Étude de l'outillage commencée : PGlite (PostgreSQL 18 en WASM, sans Docker) installé en dépendance de développement et testé (rôles, sécurité par ligne) pour les futurs tests de la base. Rien d'autre n'est écrit |
+| 2026-11-22 | Connexion : mobile en mode réel et connexion rapide | ✅ Fait — à valider | **Mobile et tablette** : interrupteur « Mode démonstration » centré ; en mode réel, le bandeau « Suivi du consortium » est retiré (masquage visuel, le titre reste lu par les lecteurs d'écran) et la carte de connexion monte en haut avec le logo APSUD. **Connexion rapide** (téléphone et PC) : les 5 organisations en une ligne sous le formulaire ; toucher son organisation ouvre directement « Entrez votre mot de passe » si un compte de cette organisation s'est déjà connecté sur l'appareil, sinon le formulaire complet avec un message de première connexion. Choix de sécurité : la page ne peut pas afficher publiquement l'adresse e-mail d'une ONG ; l'appareil retient, avec accord (case cochée par défaut), l'adresse, le nom et l'organisation, jamais le mot de passe (`src/lib/donnees/reel/comptes-memorises.ts`), avec « Oublier sur cet appareil ». Champ identifiant caché pour les gestionnaires de mots de passe. Vérifié : 0 défaut axe-core (formulaire et écran mot de passe, 375 px), aucun débordement aux 8 largeurs dans les deux modes, 5 organisations sur une ligne à 360 px et visibles sans défiler à 375 × 812. Invitation du premier super-admin (coordo@apsud.org) vérifiée valide, non encore utilisée |
+| 2026-11-22 | Trois rôles, nouvelles ONG, cadre logique provisoire en ligne | ✅ Fait | Consigne du développeur : **trois rôles seulement** : super-administrateur (tout, y compris supprimer et ajouter une ONG), coordination APSUD (un seul niveau : pilote, contrôle, valide, suivi-évaluation ; ne supprime pas), saisie ONG. Le rôle « lecture » (Direction APSUD) et le compte séparé « Suivi-évaluation » sont retirés (démonstration : 7 comptes). **Nouvelles ONG** : organisations et volets ne sont plus une liste figée ; le super-administrateur ajoute une 6e ONG (ou un volet à une ONG membre) depuis Administration › Nouvelle ONG : volet « SECTEUR-SIGLE », 10 rapports, cadre logique vide à importer depuis son plan d'action ; en démonstration, l'ONG reçoit un compte de saisie sur la page de connexion ; sans logo fourni, son sigle s'affiche dans la pastille. **Base** : migration 0008 (rôles, sigles ouverts, fonction `ajouter_volet` réservée au super-admin, temps réel des organisations et du cadre) et 0009 (**cadre logique provisoire**, chargé sans validation d'APSUD pour rendre l'outil utilisable : budgets à 0, tâches non reprises, corrections futures par nouvelle migration). Poussées par `npx supabase db push` ; vérifié en ligne : 6 outcomes, 12 outputs, 37 activités, 51 indicateurs. Tests : 32 réussis (dont ajout d'ONG et refus du rôle lecture), 20 appels conformes ; parcours de démonstration vérifié (ajout de CARE en SECAL, ses 10 pages sans erreur ni débordement) |
+| 2026-11-22 | Projet Supabase en ligne relié, migrations sous la CLI | ✅ Fait | Projet `npcqqivoorfwkfaznsbc` (eu-west-1, gratuit) créé par le développeur, schéma collé dans l'éditeur SQL. Vérifié en lecture : base identique aux 7 migrations (22 tables, toutes sous RLS ; 45 fonctions ; 22 politiques ; 19 déclencheurs d'audit ; déclencheur d'inscription ; bucket privé et 3 politiques ; 14 tables en temps réel ; 5 organisations, 10 mois, 5 volets, 50 rapports). CLI Supabase (`supabase`, dépendance de développement) : historique aligné par `migration repair`, puis `db push` = « Remote database is up to date ». Accès par le pooler de session (IPv4). `.env` rempli (adresse et clé publique, aucune clé secrète dans le build). API vérifiée avec la clé publique : tables et fonctions refusées sans compte, `amorcer_super_admin` inaccessible, vérification d'un faux code d'invitation correcte depuis l'interface. **Reste** : charger le cadre logique (D1), amorcer le premier super-admin, régler « Confirm email », changer le mot de passe de la base (exposé dans la conversation), essai de connexion et de temps réel avec de vrais comptes |
+| 2026-11-22 | 2. Back-end gratuit (Supabase) et mode réel | ✅ Fait — à valider, puis à essayer sur le vrai projet | **Base** : 7 migrations (`supabase/migrations/`), 22 tables calquées sur les types de l'application, cohérence « même volet » par clés composées, valeurs et avancements versionnés, rapports pré-créés (5 volets × 10 mois). **Sécurité** : lecture du consortium pour les comptes actifs (D3), aucune écriture directe pour aucun rôle, 18 fonctions d'écriture qui refont les contrôles de `regles.ts`, suppression réservée au super-admin et journalisée, fil d'activité et journal d'audit technique (ancienne et nouvelle valeur, par déclencheur) inaltérables même pour le propriétaire de la base, notifications calculées par le serveur. **Comptes** : aucune inscription libre, invitation (code de 8 caractères, haché, lié à l'adresse, 14 jours, usage unique) créée par la coordination ; amorçage du premier super-admin par l'éditeur SQL seulement. **Stockage** : bucket privé, dépôt dans le dossier de son organisation, aucune suppression. **Rejeu** : chaque envoi porte l'identifiant de son événement, un envoi rejoué ne fait rien. **Interface** : le dépôt a deux sources (la démonstration reste intacte et toujours accessible) ; en mode réel, réponse immédiate à l'écran puis envoi à la fonction SQL, file d'attente sur l'appareil en cas de coupure, rechargement et bandeau « Modification non enregistrée » si le serveur refuse ; temps réel par Supabase Realtime ; connexion, inscription par code en deux étapes, invitations dans Administration, envoi réel des fichiers justificatifs. **Tests** : `npm run test:db` = 29 tests de sécurité réussis sur PostgreSQL (PGlite, sans Docker) + 19 appels conformes aux fonctions SQL ; `npm run check` 0 erreur ; démonstration revérifiée dans le navigateur ; mode réel vérifié sans serveur et avec un serveur injoignable. **Non vérifié** : connexion à un vrai projet Supabase (à créer par APSUD, docs/MISE-EN-SERVICE.md). **Écarts assumés avec ARCHITECTURE.md** : écriture par fonctions plutôt que par politiques INSERT/UPDATE ; temps réel par « Postgres Changes » (suffisant pour ≈ 20 comptes) ; application statique (pas de rendu serveur) ; tâches et budgets des Excel non importés (A2, A3) |
+| 2026-11-22 | Comptes sans noms, villes retirées, logos agrandis | ✅ Fait — à valider | Les 9 comptes de démonstration portent un intitulé de rôle au lieu d'un nom de personne (« Coordination APSUD », « Saisie IDC WASH », etc.). Les villes attribuées sans source à ARS, AFPE, GADY et IDC sont retirées (`ville` devient facultatif ; seule Bimbo reste pour APSUD). Logos : pastilles agrandies (28, 44 et 72 px) et zone de l'image calculée en dur, ce qui supprime la coupe du bas du logo APSUD (le pourcentage de hauteur se résolvait mal dans la grille). `VERSION_SCHEMA` passe à 7 pour régénérer les données. Contrôles : 0 erreur de types, build passé, version Wi-Fi relancée |
+| 2026-11-22 | Audit Excel, puis 5W, « Oui/Non » et logos des ONG | ✅ Fait — à valider | Audit : les 5 plans d'action sont couverts colonne par colonne, sauf la case « Oui/Non » ; le 5W HRP 2025 (cluster WASH : 31 colonnes, 89 activités standard, une ligne par activité et par sous-préfecture) n'était intégré qu'en partie. **5W** : référentiel extrait du modèle (`scripts/import-excel/referentiel-5w.mjs` → `src/lib/donnees/referentiels/5w-wash.json`, avec les lieux de RCA et les listes du cluster) ; fiche 5W par activité WASH (activité standard, modalité, type de bénéficiaire, réponse, partenaires) ; section « 5W du cluster » dans le rapport WASH, une ligne par sous-préfecture (commune, village, GPS, quantités, personnes ciblées et atteintes F/Fi/H/G, statut, dates, commentaire) ; export exact des 31 colonnes, avec les libellés et l'ordre du modèle (« EHA », mois en toutes lettres, dates JJ/MM/AAAA). **Oui/Non** : « Justificatif fourni : Oui/Non », calculé d'après les pièces jointes de l'indicateur pour le mois (saisie, cadre logique, export du suivi des indicateurs) ; un justificatif peut désormais être rattaché à un indicateur. **Logos** : les 4 logos fournis (ARS, AFPE, GADY, IDC) et celui d'APSUD (`static/logos/`, composant `LogoOrganisation`) remplacent partout les pictogrammes tracés, supprimés du code ; noms complets lus sur les logos (African Relief Service ; Association des Femmes pour la Promotion de l'Entrepreneuriat ; Initiative Développement Centrafrique ; le nom développé de GADY reste à obtenir). Contrôles : 0 erreur de types, aucun défaut axe-core ni débordement (1440 et 375 px) |
+| 2026-11-22 | Connexion : colonne de marque et carte réelle | ✅ Fait — à valider | Colonne de gauche élargie (11/24 de la largeur), centrée verticalement et horizontalement : logo agrandi (`c-logo--xl`), titre jusqu'à 56 px, ligne du projet, phrase « La plateforme commune d'APSUD et de ses partenaires. », puis la référence du projet (CBPF et Fonds humanitaire RCA) en fin de bloc, surlignée en vert Pousse. Mode réel : formulaire présenté en carte, avec le logo APSUD et « Espace des membres du consortium » au-dessus du choix Connexion / Inscription (logo de carte masqué sur tablette et téléphone, où le bandeau le porte déjà). Contrôles : aucun débordement ni défaut axe-core à 1440, 768 et 375 px dans les deux modes |
+| 2026-11-22 | Connexion : mode démonstration / mode réel | ✅ Fait — à valider | Interrupteur « Mode démonstration » en haut à droite (`src/lib/donnees/mode.svelte.ts`, composant `Interrupteur`), mémorisé sur l'appareil. Activé : choix des comptes fictifs. Désactivé : formulaire réel (`connexion/ConnexionReelle.svelte`) : e-mail et mot de passe (compatibles gestionnaires de mots de passe, mot de passe effacé après chaque essai), « Inscription » avec le code d'invitation reçu par e-mail. Le mode réel n'ouvre encore aucune session : un message l'explique, et la garde de l'application renvoie à la connexion tant que la démonstration est désactivée. Colonne de gauche remontée en haut et allégée (logo, titre, une ligne, code CBPF) ; bandeau compact sur tablette et téléphone. Contrôles : aucun débordement ni défaut axe-core, à 1440 et 375 px, dans les deux modes |
+| 2026-11-22 | 1. Maquette, revue d'accessibilité | ✅ Fait — à valider | Audit axe-core (dépendance de développement) sur 11 écrans × 3 largeurs (1440, 768, 375 px) : 0 défaut restant. Corrections : gris atténué foncé à `#626D66` (4,7:1 au minimum, sur tous les fonds), statut « Non commencé » et nouvelle bordure de champ `--color-border-control` `#859089` (3:1, WCAG 1.4.11) ; libellés de navigation lus par les lecteurs d'écran en mode replié ; zone principale sur la connexion ; zones défilantes atteignables au clavier seulement quand elles défilent (Panneau) ; noms uniques des zones ; libellés des cases de semaine alignés sur le texte visible. Clavier : focus jamais caché sous les barres collantes (`scroll-padding`), menu du compte fermé par Échap avec retour du focus, raccourci Ctrl+Entrée (historique d'un indicateur) ajouté comme prévu dans DESIGN.md, chaque case de saisie annonce son indicateur. Parcours au clavier seul vérifié : évitement, saisie, enregistrement, dialogue, Échap. `npm run check` : 0 erreur, 0 avertissement ; `npm run build` passe |
+| 2026-11-22 | 1. Maquette, passe responsive | ✅ Fait — à valider | Tablette (≤ 1024 px) : navigation en colonne d'icônes, identité réduite à l'avatar. Téléphone (< 640 px) : barre basse à 4 entrées (Accueil, Saisir ou Valider selon le rôle, Activité, Plus avec volets et outils), barre de contexte sur deux lignes, grille de saisie transformée en fiche (cases empilées deux par deux, champs de 44 px), barre d'actions compacte au-dessus de la barre basse, plan d'action en liste par mois. Titres fluides (`clamp`), marges 16 → 32 px. Correctif de fond : l'utilitaire `u-visuellement-masque` s'échappait des zones défilantes et élargissait la page. Contrôle automatique : 11 écrans × 8 largeurs (1920 à 360 px) = 88 mesures sans débordement horizontal ; captures vérifiées à 1920, 1440, 768 et 375 px |
+| 2026-11-22 | 1. Maquette, version ordinateur terminée | ✅ Fait — à valider | Les 4 groupes d'écrans écrits en parallèle (cadre logique, plan d'action, validation et activité, archives, administration et exports) sont repris et vérifiés dans le navigateur ; archivage puis restauration testés ; `npm run check` (0 erreur) et `npm run build` passent ; option `replaceState` dépréciée de SvelteKit 3 remplacée par `replace` |
+| 2026-11-21 | 1. Maquette interactive (front-end) | 🔶 Version ordinateur | SvelteKit 3 + dépôt simulé ; import réel des 5 Excel (5 volets, 37 activités, 51 indicateurs, 46 anomalies) ; design system (tokens, icônes et pictogrammes maison, 12 composants) ; écrans : connexion, tableau de bord, volet (synthèse, cadre logique, plan d'action, saisie du mois), validation, activité, archives, administration, exports ; règles testées dans le navigateur (saisie, versions, journal, soumission, renvoi avec motif obligatoire, temps réel entre deux onglets). Reste : passe responsive (8 largeurs), revue d'accessibilité, validation par le développeur |
+| — | 2. Back-end gratuit : automatisations | ⏸ À faire | GitHub Actions : sollicitation quotidienne (anti-pause) et sauvegarde hebdomadaire, test de restauration |
+| — | 3. Branchement des écrans au back-end | 🔶 Écrit, à essayer | Reste : essai sur le vrai projet (deux ONG, deux appareils), SMTP gratuit pour « mot de passe oublié », désactivation de compte et ouverture des justificatifs depuis l’écran |
+| — | 4. Justificatifs réels et export Excel natif | ⏸ À faire | |
+| — | 5. Hors-ligne réel, performance 3G | ⏸ À faire | |
+| — | 6. Recette avec les 5 ONG, formation, mise en ligne | ⏸ À faire | |

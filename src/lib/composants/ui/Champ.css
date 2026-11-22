@@ -1,0 +1,48 @@
+@layer components {
+	.c-champ {
+		display: grid;
+		gap: var(--space-xxs);
+	}
+	.c-champ__libelle {
+		font-size: var(--fs-body-sm);
+		font-weight: var(--fw-medium);
+		color: var(--color-ink);
+	}
+	.c-champ__facultatif {
+		font-weight: var(--fw-regular);
+		color: var(--color-muted);
+	}
+	.c-champ__saisie {
+		inline-size: 100%;
+		min-block-size: var(--input-h);
+		padding: var(--space-xs) var(--space-sm);
+		border: var(--hairline-w) solid var(--color-border-control);
+		border-radius: var(--rounded-md);
+		background: var(--color-surface-card);
+		font-size: var(--fs-body-md);
+		color: var(--color-ink);
+	}
+	.c-champ__saisie--zone {
+		min-block-size: 6rem;
+		resize: vertical;
+		line-height: var(--lh-body);
+	}
+	.c-champ__saisie:focus-visible {
+		outline: none;
+		border-color: var(--color-ink);
+		box-shadow: inset 0 0 0 1px var(--color-ink);
+	}
+	.c-champ__aide {
+		font-size: var(--fs-caption);
+		color: var(--color-muted);
+	}
+	.c-champ--erreur .c-champ__saisie {
+		border-color: var(--color-error);
+		box-shadow: inset 0 0 0 1px var(--color-error);
+	}
+	.c-champ__erreur {
+		font-size: var(--fs-caption);
+		color: var(--color-error);
+		font-weight: var(--fw-medium);
+	}
+}

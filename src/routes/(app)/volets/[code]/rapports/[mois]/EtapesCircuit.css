@@ -1,0 +1,54 @@
+@layer components {
+	.c-etapes {
+		display: flex;
+		inline-size: min(100%, 22rem);
+		list-style: none;
+		padding: 0;
+	}
+	.c-etapes__etape {
+		position: relative;
+		flex: 1 1 0;
+		display: grid;
+		justify-items: center;
+		gap: var(--space-xxs);
+		min-inline-size: 0;
+		text-align: center;
+		font-size: var(--fs-caption);
+		color: var(--color-muted);
+	}
+	.c-etapes__etape + .c-etapes__etape::before {
+		content: '';
+		position: absolute;
+		inset-block-start: 5px;
+		inset-inline-end: calc(50% + var(--space-sm));
+		inline-size: calc(100% - 2 * var(--space-sm));
+		block-size: var(--focus-w);
+		background: var(--color-hairline-strong);
+	}
+	.c-etapes__etape--faite + .c-etapes__etape::before,
+	.c-etapes__etape--en-cours::before {
+		background: var(--color-status-valide);
+	}
+	.c-etapes__point {
+		inline-size: var(--status-size);
+		block-size: var(--status-size);
+		border-radius: var(--rounded-goutte);
+		border: 1.5px solid var(--color-status-non-commence);
+		background: var(--color-surface-card);
+	}
+	.c-etapes__etape--faite .c-etapes__point {
+		border-color: var(--color-status-valide);
+		background: var(--color-status-valide);
+	}
+	.c-etapes__etape--en-cours .c-etapes__point {
+		border: 2px solid var(--color-ink);
+		background: var(--color-status-soumis);
+	}
+	.c-etapes__etape--faite,
+	.c-etapes__etape--en-cours {
+		color: var(--color-ink);
+	}
+	.c-etapes__etape--en-cours .c-etapes__libelle {
+		font-weight: var(--fw-semibold);
+	}
+}

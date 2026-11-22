@@ -1,0 +1,472 @@
+@layer components {
+	.p-plan-action {
+		--_intitule: calc(var(--space-xl) * 9); /* 288 px : colonne figée */
+		display: grid;
+		gap: var(--space-base);
+	}
+
+	/* ---------- Outils : sélecteur « Je coche » et colonnes de détail ---------- */
+	.p-plan-action__mode {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-xs);
+	}
+	.p-plan-action__mode-libelle {
+		font-size: var(--fs-body-sm);
+		color: var(--color-body);
+	}
+	.p-plan-action__segments {
+		display: inline-flex;
+		gap: var(--space-xxs);
+		padding: var(--space-xxs);
+		border: var(--hairline-w) solid var(--color-hairline-strong);
+		border-radius: var(--rounded-md);
+		background: var(--color-canvas-soft);
+	}
+	.p-plan-action__segment,
+	.p-plan-action__bascule {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-xs);
+		min-block-size: calc(var(--button-h) - var(--space-xs));
+		padding-inline: var(--space-sm);
+		border-radius: var(--rounded-sm);
+		font-size: var(--fs-button);
+		font-weight: var(--fw-medium);
+		color: var(--color-body);
+		transition:
+			background-color var(--dur-fast) linear,
+			color var(--dur-fast) linear;
+	}
+	.p-plan-action__segment:hover,
+	.p-plan-action__bascule:hover {
+		color: var(--color-ink);
+	}
+	.p-plan-action__segment[aria-pressed='true'] {
+		background: var(--color-surface-card);
+		color: var(--color-ink);
+		font-weight: var(--fw-semibold);
+		box-shadow: inset 0 0 0 var(--hairline-w) var(--color-ink);
+	}
+	.p-plan-action__bascule {
+		border: var(--hairline-w) solid var(--color-hairline-strong);
+		border-radius: var(--rounded-md);
+		background: var(--color-surface-card);
+	}
+	.p-plan-action__bascule-case {
+		display: grid;
+		place-items: center;
+		inline-size: var(--icon-sm);
+		block-size: var(--icon-sm);
+		border: var(--hairline-w) solid var(--color-border-control);
+		border-radius: var(--rounded-xs);
+		color: var(--color-on-primary);
+	}
+	.p-plan-action__bascule[aria-pressed='true'] .p-plan-action__bascule-case {
+		background: var(--color-primary);
+		border-color: var(--color-primary);
+	}
+	.p-plan-action__bascule-case .c-icone {
+		inline-size: var(--space-sm);
+		block-size: var(--space-sm);
+	}
+
+	/* Témoins (légende, sélecteur) */
+	.p-plan-action__temoin {
+		display: grid;
+		place-items: center;
+		inline-size: var(--space-base);
+		block-size: var(--space-base);
+		border: var(--hairline-w) solid var(--color-hairline-strong);
+		border-radius: var(--rounded-xs);
+		color: var(--color-on-primary);
+	}
+	.p-plan-action__temoin .c-icone {
+		inline-size: var(--space-sm);
+		block-size: var(--space-sm);
+	}
+	.p-plan-action__temoin--prevu {
+		background: var(--color-wash-pousse-mid);
+		border-color: var(--color-link);
+	}
+	.p-plan-action__temoin--realise {
+		background: var(--color-jauge-mois);
+		border-color: var(--color-jauge-mois);
+	}
+	.p-plan-action__temoin-jour,
+	.p-plan-action__temoin-direct {
+		inline-size: var(--week-cell);
+		block-size: var(--week-cell);
+		border-radius: var(--rounded-xs);
+	}
+	.p-plan-action__temoin-jour {
+		background: var(--color-surface-row-active);
+		box-shadow: inset 0 calc(var(--focus-w) * -1) 0 var(--color-ink);
+	}
+	.p-plan-action__temoin-direct {
+		background: var(--color-live);
+	}
+
+	/* ---------- Légende et consigne ---------- */
+	.p-plan-action__legende {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--space-xs) var(--space-lg);
+		padding: var(--space-sm) var(--space-md);
+		border-block-end: var(--hairline-w) solid var(--color-hairline);
+		font-size: var(--fs-caption);
+		line-height: var(--lh-caption);
+		color: var(--color-body);
+	}
+	.p-plan-action__legende li {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-xxs);
+	}
+	.p-plan-action__legende .p-plan-action__case {
+		inline-size: var(--week-cell);
+		block-size: var(--week-cell);
+	}
+	.p-plan-action__legende-aide {
+		color: var(--color-muted);
+	}
+	.p-plan-action__consigne {
+		padding: var(--space-xs) var(--space-md);
+		font-size: var(--fs-caption);
+		line-height: var(--lh-caption);
+		color: var(--color-muted);
+		border-block-end: var(--hairline-w) solid var(--color-hairline);
+	}
+	.p-plan-action__consigne strong {
+		color: var(--color-ink);
+		font-weight: var(--fw-semibold);
+	}
+	.p-plan-action__vide {
+		padding: var(--space-md);
+	}
+
+	/* ---------- Grand tableau ---------- */
+	.p-plan-action__defilement {
+		overflow: auto;
+		max-block-size: calc(100dvh - var(--context-bar-h) - var(--space-section));
+		overscroll-behavior-inline: contain;
+	}
+	.p-plan-action__table {
+		min-inline-size: 100%;
+		border-collapse: separate;
+		border-spacing: 0;
+		font-size: var(--fs-table);
+		font-stretch: var(--fst-table);
+		font-weight: var(--fw-table);
+		line-height: var(--lh-table);
+	}
+	.p-plan-action__table th,
+	.p-plan-action__table td {
+		padding: var(--space-xs) var(--space-sm);
+		text-align: start;
+		vertical-align: middle;
+		white-space: nowrap;
+		background: var(--color-surface-card);
+		border-block-end: var(--hairline-w) solid var(--color-hairline);
+		transition: background-color var(--dur-live) var(--ease-out);
+	}
+	.p-plan-action__table abbr {
+		text-decoration: none;
+	}
+
+	/* En-tête figé (deux lignes : mois puis S1…S5) */
+	.p-plan-action__table thead th {
+		position: sticky;
+		inset-block-start: 0;
+		z-index: var(--z-sticky);
+		block-size: var(--table-head-h);
+		padding-block: var(--space-xxs);
+		background: var(--color-canvas-soft);
+		font-size: var(--fs-table-head);
+		font-weight: var(--fw-label);
+		letter-spacing: var(--ls-label);
+		color: var(--color-body);
+		border-block-end-color: var(--color-hairline-strong);
+	}
+	.p-plan-action__table thead tr + tr th {
+		inset-block-start: var(--table-head-h);
+	}
+	.p-plan-action__table thead .u-nombre {
+		text-align: end;
+	}
+	.p-plan-action__mois {
+		text-align: center;
+		color: var(--color-ink);
+		border-inline-start: var(--hairline-w) solid var(--color-hairline-strong);
+	}
+	.p-plan-action__table thead .p-plan-action__mois {
+		text-align: center;
+		color: var(--color-ink);
+	}
+
+	/* Colonne de gauche figée */
+	.p-plan-action__table .p-plan-action__fixe {
+		position: sticky;
+		inset-inline-start: 0;
+		z-index: var(--z-sticky);
+		inline-size: var(--_intitule);
+		min-inline-size: var(--_intitule);
+		max-inline-size: var(--_intitule);
+		white-space: normal;
+		border-inline-end: var(--hairline-w) solid var(--color-hairline-strong);
+	}
+	.p-plan-action__table thead .p-plan-action__fixe {
+		z-index: calc(var(--z-sticky) + 1);
+	}
+
+	/* Colonnes de semaine */
+	.p-plan-action__table .p-plan-action__sem {
+		padding: 0 calc(var(--space-xxs) / 2);
+		text-align: center;
+		inline-size: var(--week-cell-hit);
+	}
+	.p-plan-action__table .is-debut-mois {
+		border-inline-start: var(--hairline-w) solid var(--color-hairline-strong);
+	}
+	.p-plan-action__table .p-plan-action__sem.is-aujourdhui {
+		background: var(--color-surface-row-active);
+	}
+	.p-plan-action__table thead .p-plan-action__sem.is-aujourdhui {
+		color: var(--color-ink);
+		font-weight: var(--fw-semibold);
+		box-shadow: inset 0 calc(var(--focus-w) * -1) 0 var(--color-ink);
+	}
+
+	/* Lignes */
+	.p-plan-action__ligne-output > * {
+		padding-block: var(--space-sm) var(--space-xs);
+	}
+	.p-plan-action__table .p-plan-action__ligne-output > * {
+		background: var(--color-canvas-soft);
+	}
+	.p-plan-action__ligne-output th {
+		font-size: var(--fs-caption);
+		font-weight: var(--fw-regular);
+		color: var(--color-body);
+	}
+	.p-plan-action__output-libelle {
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 2;
+		line-clamp: 2;
+		overflow: hidden;
+	}
+	.p-plan-action__numero {
+		font-weight: var(--fw-semibold);
+		font-variant-numeric: tabular-nums;
+		color: var(--color-ink);
+		margin-inline-end: var(--space-xxs);
+	}
+	.p-plan-action__ligne-activite > * {
+		block-size: var(--row-h);
+	}
+	.p-plan-action__ligne-activite th {
+		font-weight: var(--fw-semibold);
+		color: var(--color-ink);
+	}
+	.p-plan-action__ligne-tache > * {
+		block-size: var(--row-h-compact);
+		padding-block: 0;
+		color: var(--color-body);
+	}
+	.p-plan-action__ligne-tache th {
+		padding-inline-start: var(--space-lg);
+		font-weight: var(--fw-regular);
+		color: var(--color-ink);
+	}
+	.p-plan-action__table .p-plan-action__ligne-tache:hover > :not(.is-aujourdhui) {
+		background: var(--color-canvas-soft);
+	}
+	.p-plan-action__table .p-plan-action__ligne-tache.is-direct > * {
+		background: var(--color-live);
+	}
+	.p-plan-action__ligne-vide td,
+	.p-plan-action__ligne-ajout td {
+		border-block-end-color: var(--color-hairline-soft);
+	}
+	.p-plan-action__ligne-vide .p-plan-action__fixe {
+		padding-inline-start: var(--space-lg);
+		font-size: var(--fs-caption);
+		color: var(--color-muted);
+	}
+	.p-plan-action__ligne-ajout .p-plan-action__fixe {
+		padding-block: var(--space-xxs);
+		padding-inline-start: var(--space-base);
+	}
+
+	.p-plan-action__tache {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-xs);
+	}
+	.p-plan-action__tache-texte {
+		display: grid;
+		gap: 0;
+		min-inline-size: 0;
+	}
+	.p-plan-action__direct {
+		font-size: var(--fs-badge);
+		font-weight: var(--fw-label);
+		color: var(--color-warning);
+	}
+	.p-plan-action__actions-tache {
+		display: inline-flex;
+		flex: none;
+	}
+	.p-plan-action__icone-bouton {
+		display: inline-grid;
+		place-items: center;
+		flex: none;
+		inline-size: var(--week-cell-hit);
+		block-size: var(--week-cell-hit);
+		border-radius: var(--rounded-sm);
+		color: var(--color-muted);
+		transition:
+			background-color var(--dur-fast) linear,
+			color var(--dur-fast) linear;
+	}
+	.p-plan-action__icone-bouton:hover:not(:disabled) {
+		background: var(--color-surface-strong);
+		color: var(--color-ink);
+	}
+	.p-plan-action__icone-bouton--danger {
+		color: var(--color-error);
+	}
+	.p-plan-action__icone-bouton--danger:hover:not(:disabled) {
+		background: var(--color-error-soft);
+		color: var(--color-error);
+	}
+	.p-plan-action__icone-bouton:disabled {
+		cursor: not-allowed;
+		color: var(--color-muted-soft);
+	}
+
+	.p-plan-action__progres {
+		display: flex;
+		align-items: center;
+		gap: var(--space-xs);
+		min-inline-size: calc(var(--space-xl) * 4);
+	}
+	.p-plan-action__progres .c-jauge {
+		flex: 1;
+	}
+
+	/* ---------- Liste par mois (téléphone) ---------- */
+	.p-plan-action__liste {
+		display: none;
+	}
+	.p-plan-action__liste-tete {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-xs);
+		padding: var(--space-xs) var(--space-sm);
+		border-block-end: var(--hairline-w) solid var(--color-hairline);
+		background: var(--color-canvas-soft);
+	}
+	.p-plan-action__liste-tete .p-plan-action__icone-bouton {
+		inline-size: var(--tap-min);
+		block-size: var(--tap-min);
+		color: var(--color-ink);
+	}
+	.p-plan-action__liste-titre {
+		font-size: var(--fs-title-sm);
+		text-align: center;
+	}
+	.p-plan-action__fiche {
+		display: grid;
+		gap: var(--space-xs);
+		padding: var(--space-base) var(--space-md);
+		border-block-end: var(--hairline-w) solid var(--color-hairline);
+	}
+	.p-plan-action__fiche > .c-bouton {
+		justify-self: start;
+	}
+	.p-plan-action__fiche-titre {
+		font-size: var(--fs-title-sm);
+	}
+	.p-plan-action__fiche-meta {
+		font-size: var(--fs-caption);
+		line-height: var(--lh-caption);
+		color: var(--color-muted);
+	}
+	.p-plan-action__fiche-taches {
+		display: grid;
+		gap: var(--space-xs);
+	}
+	.p-plan-action__fiche-tache {
+		display: grid;
+		gap: var(--space-xs);
+		padding: var(--space-sm);
+		border: var(--hairline-w) solid var(--color-hairline-strong);
+		border-radius: var(--rounded-md);
+		background: var(--color-surface-card);
+		transition: background-color var(--dur-live) var(--ease-out);
+	}
+	.p-plan-action__fiche-tache.is-direct {
+		background: var(--color-live);
+	}
+	.p-plan-action__fiche-entete {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: var(--space-xs);
+	}
+	.p-plan-action__fiche-libelle {
+		font-size: var(--fs-body-sm);
+		font-weight: var(--fw-medium);
+		color: var(--color-ink);
+	}
+	.p-plan-action__fiche-semaines {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-xxs);
+	}
+	.p-plan-action__fiche-semaine {
+		border-radius: var(--rounded-sm);
+	}
+	.p-plan-action__fiche-semaine.is-aujourdhui {
+		background: var(--color-surface-row-active);
+		box-shadow: inset 0 calc(var(--focus-w) * -1) 0 var(--color-ink);
+	}
+	.p-plan-action__fiche-vide {
+		font-size: var(--fs-caption);
+		color: var(--color-muted);
+	}
+
+	/* ---------- Dialogue d'ajout ---------- */
+	.p-plan-action__formulaire {
+		display: grid;
+		gap: var(--space-base);
+	}
+	.p-plan-action__formulaire-dates {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(calc(var(--space-xl) * 5), 1fr));
+		gap: var(--space-base);
+	}
+	.p-plan-action__formulaire-aide {
+		font-size: var(--fs-caption);
+		color: var(--color-muted);
+	}
+
+	/* ---------- Téléphone : la liste du mois remplace le grand tableau ---------- */
+	@media (width < 48em) {
+		.p-plan-action__defilement,
+		.p-plan-action__bascule {
+			display: none;
+		}
+		.p-plan-action__liste {
+			display: grid;
+		}
+		.p-plan-action__legende {
+			gap: var(--space-xs) var(--space-base);
+		}
+	}
+}

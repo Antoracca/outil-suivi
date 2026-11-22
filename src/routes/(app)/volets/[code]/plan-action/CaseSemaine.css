@@ -1,0 +1,69 @@
+@layer components {
+	/* Zone cliquable de 32 px autour d'une case visible de 24 px. */
+	.p-plan-action__case {
+		display: inline-grid;
+		place-items: center;
+		inline-size: var(--week-cell-hit);
+		block-size: var(--week-cell-hit);
+		border-radius: var(--rounded-sm);
+		vertical-align: middle;
+	}
+	button.p-plan-action__case:disabled {
+		cursor: not-allowed;
+	}
+	button.p-plan-action__case:not(:disabled):hover .p-plan-action__pastille {
+		border-color: var(--color-ink);
+	}
+	button.p-plan-action__case:not(:disabled):hover .p-plan-action__pastille.is-realise {
+		background: var(--color-link-hover);
+	}
+
+	.p-plan-action__pastille {
+		display: grid;
+		place-items: center;
+		inline-size: var(--week-cell);
+		block-size: var(--week-cell);
+		border: var(--hairline-w) solid var(--color-border-control);
+		border-radius: var(--rounded-xs);
+		background: var(--color-surface-card);
+		color: var(--color-on-primary);
+		transition:
+			background-color var(--dur-fast) linear,
+			border-color var(--dur-fast) linear;
+	}
+	/* Prévu : fond Pousse ET contour Vert (la forme change, pas seulement la teinte). */
+	.p-plan-action__pastille.is-prevu {
+		background: var(--color-wash-pousse-mid);
+		border-color: var(--color-link);
+	}
+	/* Réalisé : fond plein et coche blanche. */
+	.p-plan-action__pastille.is-realise {
+		background: var(--color-jauge-mois);
+		border-color: var(--color-jauge-mois);
+	}
+
+	/* Case de résumé (ligne d'activité) : plus petite, non cliquable. */
+	.p-plan-action__case--lecture .p-plan-action__pastille {
+		inline-size: var(--icon-sm);
+		block-size: var(--icon-sm);
+	}
+	.p-plan-action__case--lecture .c-icone {
+		inline-size: var(--space-sm);
+		block-size: var(--space-sm);
+	}
+
+	/* Liste mobile : la case porte son libellé visible (S1…S5). */
+	.p-plan-action__case--etiquette {
+		grid-template-rows: auto auto;
+		gap: var(--space-xxs);
+		inline-size: var(--tap-min);
+		block-size: auto;
+		padding-block: var(--space-xxs);
+	}
+	.p-plan-action__case-etiquette {
+		font-size: var(--fs-caption);
+		font-weight: var(--fw-medium);
+		line-height: var(--lh-tight);
+		color: var(--color-body);
+	}
+}

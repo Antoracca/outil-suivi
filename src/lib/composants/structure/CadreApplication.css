@@ -1,0 +1,46 @@
+@layer layout {
+	.c-cadre {
+		display: flex;
+		min-block-size: 100dvh;
+	}
+	.c-cadre__principal {
+		flex: 1;
+		min-inline-size: 0;
+		display: flex;
+		flex-direction: column;
+	}
+	.c-cadre__travail {
+		flex: 1;
+		inline-size: 100%;
+		max-inline-size: calc(var(--workspace-max) + 2 * var(--space-xl));
+		margin-inline: auto;
+		/* 16 px sur téléphone → 32 px sur ordinateur. */
+		padding: clamp(var(--space-base), 3vw, var(--space-xl));
+	}
+	@media (max-width: 40em) {
+		.c-cadre__travail {
+			/* Place pour la barre basse. */
+			padding-block-end: calc(3.5rem + var(--space-xl));
+		}
+	}
+	.c-cadre__travail:focus {
+		outline: none;
+	}
+}
+
+@layer components {
+	.c-cadre__evitement {
+		position: absolute;
+		inset-inline-start: var(--space-base);
+		inset-block-start: calc(var(--space-xxl) * -2);
+		z-index: var(--z-dialog);
+		padding: var(--space-xs) var(--space-base);
+		border-radius: var(--rounded-md);
+		background: var(--color-primary);
+		color: var(--color-on-primary);
+	}
+	.c-cadre__evitement:focus {
+		inset-block-start: var(--space-base);
+		color: var(--color-on-primary);
+	}
+}

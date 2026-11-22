@@ -1,0 +1,62 @@
+@layer components {
+	.c-bouton {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: var(--space-xs);
+		min-block-size: var(--button-h);
+		padding: 0 calc(var(--space-base) + 2px);
+		border-radius: var(--rounded-md);
+		border: var(--hairline-w) solid transparent;
+		font-size: var(--fs-button);
+		font-weight: var(--fw-medium);
+		line-height: var(--lh-tight);
+		text-decoration: none;
+		white-space: nowrap;
+		transition: background-color var(--dur-fast) linear, box-shadow var(--dur-fast) linear, border-color var(--dur-fast) linear;
+	}
+	.c-bouton--sm {
+		min-block-size: calc(var(--button-h) - var(--space-xs));
+		padding: 0 var(--space-sm);
+	}
+	.c-bouton--primaire {
+		background: var(--color-primary);
+		color: var(--color-on-primary);
+	}
+	.c-bouton--primaire:hover {
+		background: var(--color-primary-active);
+		color: var(--color-on-primary);
+	}
+	.c-bouton--secondaire {
+		background: var(--color-surface-card);
+		color: var(--color-ink);
+		border-color: var(--color-hairline-strong);
+	}
+	.c-bouton--secondaire:hover {
+		border-color: var(--color-ink);
+		color: var(--color-ink);
+	}
+	.c-bouton--texte {
+		background: transparent;
+		color: var(--color-link);
+		padding-inline: var(--space-xs);
+	}
+	.c-bouton--texte:hover {
+		color: var(--color-link-hover);
+		background: var(--color-surface-strong);
+	}
+	.c-bouton--danger {
+		background: var(--color-surface-card);
+		color: var(--color-error);
+		border-color: var(--color-error);
+	}
+	.c-bouton--danger:hover {
+		background: var(--color-error-soft);
+	}
+	.c-bouton:disabled {
+		cursor: not-allowed;
+		background: var(--color-surface-strong);
+		color: var(--color-muted-soft);
+		border-color: transparent;
+	}
+}

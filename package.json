@@ -1,0 +1,41 @@
+{
+	"name": "suivi-consortium-apsud",
+	"version": "0.1.0",
+	"private": true,
+	"type": "module",
+	"imports": {
+		"#lib": "./src/lib/index.js",
+		"#lib/*": "./src/lib/*"
+	},
+	"scripts": {
+		"dev": "vite dev",
+		"build": "vite build",
+		"preview": "vite preview",
+		"prepare": "svelte-kit sync || echo ''",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"donnees:demo": "node scripts/import-excel/importer.mjs && node scripts/import-excel/referentiel-5w.mjs",
+		"donnees:sql": "node scripts/import-excel/vers-sql.mjs",
+		"test:db": "node supabase/tests/securite.test.mjs && node supabase/tests/contrat-appels.test.mjs",
+		"base:assembler": "node scripts/supabase/assembler.mjs"
+	},
+	"devDependencies": {
+		"@electric-sql/pglite": "^0.5.17",
+		"@sveltejs/adapter-static": "^4.0.1",
+		"@sveltejs/kit": "^3.2.0",
+		"@sveltejs/vite-plugin-svelte": "^7.3.1",
+		"axe-core": "^4.14.1",
+		"exceljs": "^4.4.0",
+		"pg": "^8.23.1",
+		"supabase": "^3.2.0",
+		"svelte": "^5.57.3",
+		"svelte-check": "^4.7.8",
+		"typescript": "^6.0.3",
+		"vite": "^8.3.8"
+	},
+	"description": "Plateforme de suivi du consortium APSUD (Fonds humanitaire RCA)",
+	"dependencies": {
+		"@fontsource-variable/mona-sans": "^5.3.0",
+		"@supabase/supabase-js": "^2.119.2"
+	}
+}

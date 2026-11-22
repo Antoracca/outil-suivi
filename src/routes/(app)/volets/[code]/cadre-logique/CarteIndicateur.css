@@ -1,0 +1,194 @@
+@layer components {
+	/* Carte d'un indicateur du cadre logique. La carte est son propre conteneur :
+	   deux colonnes (texte | mesure) quand elle est large, une seule sinon. */
+	.p-cadre-logique__ind {
+		container-type: inline-size;
+		padding: var(--space-base);
+		border: var(--hairline-w) solid var(--color-hairline-strong);
+		border-radius: var(--rounded-md);
+		background-color: var(--color-surface-card);
+		transition: background-color var(--dur-live) var(--ease-out);
+	}
+	/* Modifié à l'instant par un autre onglet : fond Soleil pâle qui s'estompe. */
+	.p-cadre-logique__ind.is-direct {
+		background-color: var(--color-live);
+	}
+	.p-cadre-logique__ind-grille {
+		display: grid;
+		gap: var(--space-base) var(--space-xl);
+	}
+	@container (min-width: 46rem) {
+		.p-cadre-logique__ind-grille {
+			grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+		}
+	}
+	.p-cadre-logique__ind-texte,
+	.p-cadre-logique__ind-mesure {
+		display: grid;
+		align-content: start;
+		gap: var(--space-sm);
+		min-inline-size: 0;
+	}
+	.p-cadre-logique__ind-titre {
+		display: grid;
+		gap: var(--space-xxs);
+		font-size: var(--fs-title-sm);
+		font-weight: var(--fw-semibold);
+		line-height: var(--lh-caption);
+		color: var(--color-ink);
+	}
+	/* Le libellé n'est jamais tronqué : il passe à la ligne, même les longs mots anglais. */
+	.p-cadre-logique__ind-libelle {
+		overflow-wrap: anywhere;
+		max-inline-size: var(--measure);
+	}
+	.p-cadre-logique__ind-code {
+		overflow-wrap: anywhere;
+	}
+	.p-cadre-logique__ind-badges {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-xxs) var(--space-xs);
+	}
+	.p-cadre-logique__badge {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-xxs);
+		padding: var(--space-xxs) var(--space-xs);
+		border-radius: var(--rounded-pill);
+		background: var(--color-surface-strong);
+		font-size: var(--fs-badge);
+		font-weight: var(--fw-label);
+		letter-spacing: var(--ls-label);
+		line-height: var(--lh-table);
+		color: var(--color-body-strong);
+	}
+	.p-cadre-logique__badge--direct {
+		background: var(--color-live);
+		box-shadow: inset 0 0 0 var(--hairline-w) var(--color-status-soumis);
+		color: var(--color-ink);
+	}
+	.p-cadre-logique__ind-bloc {
+		display: grid;
+		gap: var(--space-xxs);
+		font-size: var(--fs-body-sm);
+		line-height: var(--lh-body);
+	}
+	.p-cadre-logique__ind-etiquette {
+		font-size: var(--fs-caption);
+		font-weight: var(--fw-label);
+		color: var(--color-muted);
+	}
+	.p-cadre-logique__ind-moyens {
+		display: grid;
+		gap: var(--space-xxs);
+		margin: 0;
+		padding-inline-start: var(--space-md);
+		color: var(--color-body);
+	}
+	.p-cadre-logique__ind-commentaire {
+		max-inline-size: var(--measure);
+		color: var(--color-body);
+	}
+
+	/* Mesure : jauge, chiffres, cibles désagrégées */
+	.p-cadre-logique__ind-chiffres {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: var(--space-xs);
+		margin: 0;
+	}
+	.p-cadre-logique__ind-chiffres div {
+		display: grid;
+		gap: calc(var(--space-xxs) / 2);
+	}
+	.p-cadre-logique__ind-chiffres dt {
+		font-size: var(--fs-caption);
+		line-height: var(--lh-caption);
+		color: var(--color-muted);
+	}
+	.p-cadre-logique__ind-chiffres dd {
+		margin: 0;
+		font-size: var(--fs-table);
+		font-weight: var(--fw-semibold);
+		font-variant-numeric: tabular-nums lining-nums;
+		color: var(--color-ink);
+	}
+	.p-cadre-logique__ind-table {
+		inline-size: 100%;
+		border-collapse: collapse;
+		font-size: var(--fs-table);
+		font-stretch: var(--fst-table);
+		font-weight: var(--fw-table);
+		line-height: var(--lh-table);
+	}
+	.p-cadre-logique__ind-table th,
+	.p-cadre-logique__ind-table td {
+		padding: var(--space-xxs) var(--space-xs);
+		border-block-end: var(--hairline-w) solid var(--color-hairline);
+	}
+	.p-cadre-logique__ind-table thead th {
+		background: var(--color-canvas-soft);
+		font-size: var(--fs-table-head);
+		font-weight: var(--fw-label);
+		letter-spacing: var(--ls-label);
+		color: var(--color-body);
+	}
+	.p-cadre-logique__ind-table tbody th {
+		text-align: start;
+		font-weight: var(--fw-medium);
+		color: var(--color-body);
+		white-space: nowrap;
+	}
+	.p-cadre-logique__ind-table .is-total {
+		font-weight: var(--fw-semibold);
+		color: var(--color-ink);
+	}
+	.p-cadre-logique__ind-pied {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-xs);
+	}
+	.p-cadre-logique__ind-lien {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-xxs);
+		min-block-size: var(--week-cell);
+		font-size: var(--fs-body-sm);
+		font-weight: var(--fw-medium);
+		color: var(--color-link);
+		border-radius: var(--rounded-xs);
+	}
+	.p-cadre-logique__ind-lien:hover {
+		color: var(--color-link-hover);
+	}
+	.p-cadre-logique__ind-actions {
+		display: inline-flex;
+		flex-wrap: wrap;
+		gap: var(--space-xxs);
+	}
+}
+
+@layer components {
+	.p-cadre-logique__ouinon {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-xxs);
+		margin-block-start: var(--space-xs);
+		padding: 2px var(--space-sm) 2px var(--space-xs);
+		border-radius: var(--rounded-pill);
+		background: var(--color-surface-strong);
+		font-size: var(--fs-caption);
+		color: var(--color-body);
+	}
+	.p-cadre-logique__ouinon strong {
+		color: var(--color-ink);
+	}
+	.p-cadre-logique__ouinon.is-oui,
+	.p-cadre-logique__ouinon.is-oui strong {
+		background: var(--color-success-soft);
+		color: var(--color-success);
+	}
+}

@@ -1,0 +1,199 @@
+@layer components {
+	.p-tdb {
+		display: grid;
+		gap: var(--space-lg);
+	}
+	/* Bandeau du consortium : seul endroit où apparaît le voile Pousse. */
+	.p-tdb__bandeau {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-end;
+		justify-content: space-between;
+		gap: var(--space-base) var(--space-xl);
+		padding: clamp(var(--space-md), 3vw, var(--space-xl));
+		border-radius: var(--rounded-lg);
+		background:
+			radial-gradient(ellipse 70% 120% at 0% 0%, var(--color-wash-pousse-mid), transparent 65%),
+			radial-gradient(ellipse 50% 90% at 100% 100%, var(--color-wash-pousse-light), transparent 70%),
+			var(--color-canvas);
+		border: var(--hairline-w) solid var(--color-hairline-strong);
+	}
+	.p-tdb__bandeau-texte {
+		display: grid;
+		gap: var(--space-xs);
+		max-inline-size: 60rem;
+	}
+	.p-tdb__titre {
+		font-size: clamp(var(--fs-display-md), 3vw + 0.75rem, var(--fs-display-xl));
+		font-stretch: var(--fst-display);
+		letter-spacing: var(--ls-display-xl);
+		line-height: var(--lh-display);
+	}
+	.p-tdb__sous-titre {
+		color: var(--color-body);
+	}
+	.p-tdb__tuiles {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+		gap: var(--space-base);
+	}
+	.p-tdb__gouttes {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-xs) var(--space-sm);
+		list-style: none;
+		padding: 0;
+	}
+	.c-tuile--sombre .p-tdb__gouttes .c-statut {
+		color: var(--color-on-dark);
+	}
+	.c-tuile--sombre .p-tdb__gouttes .c-statut--retard,
+	.c-tuile--sombre .p-tdb__gouttes .c-statut--a_corriger {
+		color: var(--color-status-soumis);
+	}
+	.c-tuile--sombre .c-statut--brouillon .c-statut__forme,
+	.c-tuile--sombre .c-statut--non_commence .c-statut__forme {
+		border-color: var(--color-on-dark-soft);
+	}
+	.c-tuile--sombre .c-statut--soumis .c-statut__forme,
+	.c-tuile--sombre .c-statut--verrouille .c-statut__forme {
+		border-color: var(--color-on-dark);
+	}
+	.c-tuile--sombre .c-statut--valide .c-statut__forme {
+		background: var(--color-jauge-cumul);
+		border-color: var(--color-jauge-cumul);
+	}
+
+	/* Tableaux */
+	.p-tdb__table {
+		inline-size: 100%;
+		font-size: var(--fs-table);
+		font-stretch: var(--fst-table);
+	}
+	.p-tdb__table th,
+	.p-tdb__table td {
+		padding: var(--space-sm) var(--space-md);
+		text-align: start;
+		vertical-align: middle;
+		border-block-end: var(--hairline-w) solid var(--color-hairline);
+	}
+	.p-tdb__table thead th {
+		block-size: var(--table-head-h);
+		padding-block: var(--space-xs);
+		background: var(--color-canvas-soft);
+		font-size: var(--fs-table-head);
+		font-weight: var(--fw-label);
+		color: var(--color-body);
+		letter-spacing: var(--ls-label);
+	}
+	.p-tdb__table tbody th {
+		font-weight: var(--fw-regular);
+	}
+	.p-tdb__table tbody tr:hover {
+		background: var(--color-surface-row-active);
+	}
+	.p-tdb__table tfoot th,
+	.p-tdb__table tfoot td {
+		font-weight: var(--fw-semibold);
+		border-block-end: 0;
+		background: var(--color-canvas-soft);
+	}
+	.p-tdb__table .u-nombre {
+		text-align: end;
+	}
+	.p-tdb__col-jauge {
+		inline-size: 30%;
+		min-inline-size: 14rem;
+	}
+	.p-tdb__indicateur {
+		display: grid;
+		gap: 2px;
+		max-inline-size: 28rem;
+		color: var(--color-ink);
+	}
+	.p-tdb__lien-volet,
+	.p-tdb__lien-statut {
+		display: inline-flex;
+		text-decoration: none;
+		color: inherit;
+		border-radius: var(--rounded-sm);
+	}
+	.p-tdb__lien-volet:hover .c-volet-ligne__org {
+		text-decoration: underline;
+	}
+
+	.p-tdb__duo {
+		display: grid;
+		grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+		gap: var(--space-lg);
+		align-items: start;
+	}
+	@media (max-width: 72em) {
+		.p-tdb__duo {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	/* Matrice des rapports */
+	.p-tdb__defilement {
+		overflow-x: auto;
+	}
+	.p-tdb__matrice {
+		inline-size: 100%;
+		font-size: var(--fs-table);
+		font-stretch: var(--fst-table);
+	}
+	.p-tdb__matrice th,
+	.p-tdb__matrice td {
+		padding: var(--space-xxs);
+		text-align: center;
+		border-block-end: var(--hairline-w) solid var(--color-hairline);
+	}
+	.p-tdb__matrice thead th {
+		padding-block: var(--space-xs);
+		background: var(--color-canvas-soft);
+		font-size: var(--fs-table-head);
+		font-weight: var(--fw-label);
+		color: var(--color-body);
+	}
+	.p-tdb__matrice abbr {
+		text-decoration: none;
+	}
+	.p-tdb__matrice tbody th {
+		padding-inline: var(--space-md) var(--space-sm);
+		text-align: start;
+		font-weight: var(--fw-semibold);
+		white-space: nowrap;
+	}
+	.p-tdb__matrice tbody th .u-attenue {
+		display: block;
+		font-weight: var(--fw-regular);
+		font-size: var(--fs-caption);
+	}
+	.p-tdb__matrice .is-courant {
+		background: var(--color-surface-row-active);
+	}
+	.p-tdb__case {
+		display: grid;
+		place-items: center;
+		inline-size: var(--matrix-cell);
+		block-size: var(--matrix-cell);
+		margin-inline: auto;
+		border-radius: var(--rounded-sm);
+	}
+	.p-tdb__case:hover {
+		background: var(--color-surface-strong);
+		box-shadow: inset 0 0 0 var(--hairline-w) var(--color-hairline-strong);
+	}
+	.p-tdb__fil {
+		margin-block: calc(var(--space-sm) * -1);
+	}
+}
+
+@layer components {
+	.p-tdb__matrice-volet {
+		display: flex;
+		align-items: center;
+		gap: var(--space-xs);
+	}
+}

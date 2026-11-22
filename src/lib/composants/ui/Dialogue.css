@@ -1,0 +1,54 @@
+@layer components {
+	.c-dialogue {
+		inline-size: min(var(--dialog-max), calc(100vw - var(--space-xl)));
+		margin: auto;
+		padding: 0;
+		border: 0;
+		border-radius: var(--rounded-xl);
+		background: var(--color-surface-card);
+		color: var(--color-ink);
+		box-shadow: var(--shadow-floating);
+	}
+	.c-dialogue::backdrop {
+		background: var(--backdrop);
+	}
+	.c-dialogue__tete {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: var(--space-base);
+		padding: var(--space-lg) var(--space-lg) 0;
+	}
+	.c-dialogue__titre {
+		font-size: var(--fs-title-md);
+	}
+	.c-dialogue__fermer {
+		display: grid;
+		place-items: center;
+		inline-size: var(--button-h);
+		block-size: var(--button-h);
+		margin: calc(var(--space-xs) * -1);
+		border-radius: var(--rounded-md);
+		color: var(--color-body);
+	}
+	.c-dialogue__fermer:hover {
+		background: var(--color-surface-strong);
+		color: var(--color-ink);
+	}
+	.c-dialogue__corps {
+		display: grid;
+		gap: var(--space-base);
+		padding: var(--space-base) var(--space-lg) var(--space-lg);
+		font-size: var(--fs-body-sm);
+		color: var(--color-body);
+	}
+	.c-dialogue__pied {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: flex-end;
+		gap: var(--space-xs);
+		padding: var(--space-base) var(--space-lg);
+		border-block-start: var(--hairline-w) solid var(--color-hairline);
+		background: var(--color-canvas-soft);
+	}
+}

@@ -1,0 +1,205 @@
+@layer layout {
+	.c-nav {
+		position: sticky;
+		inset-block-start: 0;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-xxs);
+		inline-size: var(--side-nav-w);
+		block-size: 100dvh;
+		padding: var(--space-sm);
+		overflow-y: auto;
+		background: var(--color-canvas);
+		border-inline-end: var(--hairline-w) solid var(--color-hairline-strong);
+		z-index: var(--z-nav);
+		transition: inline-size var(--dur-panel) var(--ease-out);
+	}
+	.c-nav--repliee {
+		inline-size: var(--side-nav-w-collapsed);
+	}
+}
+
+@layer components {
+	.c-nav__tete {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-xs);
+		min-block-size: var(--context-bar-h);
+		margin-block: calc(var(--space-sm) * -1) var(--space-xs);
+		padding-inline: var(--space-xxs);
+		border-block-end: var(--hairline-w) solid var(--color-hairline);
+	}
+	.c-nav__marque {
+		display: flex;
+		align-items: center;
+		gap: var(--space-xs);
+		min-inline-size: 0;
+		color: var(--color-ink);
+		text-decoration: none;
+	}
+	.c-nav__marque:hover {
+		color: var(--color-ink);
+	}
+	.c-nav__marque-texte {
+		display: flex;
+		flex-direction: column;
+		line-height: var(--lh-table);
+	}
+	.c-nav__produit {
+		font-weight: var(--fw-semibold);
+		font-size: var(--fs-body-sm);
+		letter-spacing: var(--ls-display-sm);
+	}
+	.c-nav__replier {
+		display: grid;
+		place-items: center;
+		inline-size: 2rem;
+		block-size: 2rem;
+		border-radius: var(--rounded-sm);
+		color: var(--color-muted);
+	}
+	.c-nav__replier:hover {
+		background: var(--color-surface-strong);
+		color: var(--color-ink);
+	}
+	.c-nav__groupe {
+		margin: var(--space-base) var(--space-sm) var(--space-xxs);
+		font-size: var(--fs-caption);
+		font-weight: var(--fw-medium);
+		color: var(--color-muted);
+	}
+	.c-nav__liste {
+		display: grid;
+		gap: 2px;
+	}
+	.c-nav__liste--outils {
+		margin-block-start: var(--space-base);
+		padding-block-start: var(--space-sm);
+		border-block-start: var(--hairline-w) solid var(--color-hairline);
+	}
+	.c-nav__lien {
+		display: flex;
+		align-items: center;
+		gap: var(--space-sm);
+		min-block-size: 2.25rem;
+		padding: var(--space-xs) var(--space-sm);
+		border-radius: var(--rounded-sm);
+		font-size: var(--fs-nav-link);
+		font-weight: var(--fw-medium);
+		color: var(--color-body);
+		text-decoration: none;
+	}
+	.c-nav__lien:hover {
+		background: var(--color-canvas-soft);
+		color: var(--color-ink);
+	}
+	.c-nav__lien.is-actif {
+		background: var(--color-surface-strong);
+		color: var(--color-ink);
+		font-weight: var(--fw-semibold);
+	}
+	.c-nav__lien--volet {
+		min-block-size: 2.75rem;
+	}
+	.c-nav__libelle {
+		display: flex;
+		flex-direction: column;
+		min-inline-size: 0;
+		line-height: var(--lh-table);
+	}
+	.c-nav__volet-org {
+		color: var(--color-ink);
+		font-weight: var(--fw-semibold);
+	}
+	.c-nav__volet-secteur {
+		font-size: var(--fs-caption);
+		font-weight: var(--fw-regular);
+		color: var(--color-muted);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	.c-nav__mien {
+		margin-inline-start: auto;
+		font-size: 0.5rem;
+		color: var(--color-link);
+	}
+	.c-nav__compteur {
+		margin-inline-start: auto;
+		min-inline-size: 1.25rem;
+		padding: 0 6px;
+		border-radius: var(--rounded-pill);
+		background: var(--color-status-soumis);
+		color: var(--color-ink);
+		font-size: var(--fs-badge);
+		font-weight: var(--fw-semibold);
+		text-align: center;
+	}
+	.c-nav--repliee .c-nav__marque-texte,
+	.c-nav--repliee .c-nav__groupe,
+	.c-nav--repliee .c-nav__mien {
+		display: none;
+	}
+	/* Replié : le libellé disparaît à l'écran mais reste le nom accessible du lien. */
+	.c-nav--repliee .c-nav__libelle {
+		position: absolute;
+		inline-size: 1px;
+		block-size: 1px;
+		overflow: hidden;
+		clip-path: inset(50%);
+		white-space: nowrap;
+	}
+	.c-nav--repliee .c-nav__tete {
+		flex-direction: column;
+		padding-block: var(--space-xs);
+	}
+	.c-nav--repliee .c-nav__lien {
+		justify-content: center;
+		padding-inline: 0;
+	}
+	.c-nav--repliee .c-nav__compteur {
+		position: absolute;
+		margin: -1.25rem 0 0 1.25rem;
+	}
+}
+
+/* Tablette (≤ 1024 px) : navigation toujours repliée en colonne d'icônes. */
+@media (max-width: 64em) {
+	.c-nav {
+		inline-size: var(--side-nav-w-collapsed);
+	}
+	.c-nav .c-nav__libelle {
+		position: absolute;
+		inline-size: 1px;
+		block-size: 1px;
+		overflow: hidden;
+		clip-path: inset(50%);
+		white-space: nowrap;
+	}
+	.c-nav .c-nav__marque-texte,
+	.c-nav .c-nav__groupe,
+	.c-nav .c-nav__mien,
+	.c-nav .c-nav__replier {
+		display: none;
+	}
+	.c-nav .c-nav__tete {
+		justify-content: center;
+		padding-inline: 0;
+	}
+	.c-nav .c-nav__lien {
+		justify-content: center;
+		padding-inline: 0;
+	}
+	.c-nav .c-nav__compteur {
+		position: absolute;
+		margin: -1.25rem 0 0 1.25rem;
+	}
+}
+
+/* Téléphone (< 640 px) : la barre basse prend le relais. */
+@media (max-width: 40em) {
+	.c-nav {
+		display: none;
+	}
+}

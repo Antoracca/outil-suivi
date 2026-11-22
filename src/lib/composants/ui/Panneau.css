@@ -1,0 +1,48 @@
+@layer components {
+	.c-panneau {
+		background: var(--color-surface-card);
+		border: var(--hairline-w) solid var(--color-hairline-strong);
+		border-radius: var(--rounded-lg);
+		overflow: clip;
+		container-type: inline-size;
+	}
+	.c-panneau__tete {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-sm) var(--space-base);
+		min-block-size: var(--panel-head-h);
+		padding: var(--space-sm) var(--space-md);
+		border-block-end: var(--hairline-w) solid var(--color-hairline);
+	}
+	.c-panneau__titre {
+		font-size: var(--fs-title-md);
+		letter-spacing: var(--ls-display-sm);
+	}
+	.c-panneau__sous-titre {
+		font-size: var(--fs-caption);
+		color: var(--color-muted);
+		margin-block-start: 2px;
+	}
+	.c-panneau__actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-xs);
+		align-items: center;
+	}
+	.c-panneau__corps {
+		padding: var(--space-md);
+	}
+	.c-panneau__corps--plein {
+		padding: 0;
+		/* Un tableau trop large défile dans son panneau, jamais la page entière. */
+		overflow-x: auto;
+	}
+	@container (max-width: 40rem) {
+		.c-panneau__tete,
+		.c-panneau__corps {
+			padding-inline: var(--space-base);
+		}
+	}
+}

@@ -1,0 +1,2063 @@
+{
+	"genere_le": "2026-11-21T22:41:02.973Z",
+	"source": "docs/excel (5 plans d’action du consortium FH)",
+	"projet": {
+		"code_cbpf": "CBPF-CAR-26-R-NGO-NSFT-41469",
+		"intitule": "Projet d'assistance d'urgence intégrée en WASH, Sécurité alimentaire, Santé, Nutrition et Protection (Enfance et VBG) à Nanga-Boguila, Paoua et Bossangoa",
+		"bailleur": "Fonds humanitaire RCA (FH)",
+		"date_debut": "2026-11-08",
+		"date_fin": "2027-08-30",
+		"devise": "USD",
+		"zones": [
+			"Nanga-Boguila",
+			"Paoua",
+			"Bossangoa"
+		],
+		"objectif_general": "Contribuer à la réduction de la mortalité et de la morbidité, et améliorer les conditions de vie et la dignité des populations affectées par la crise dans les sous-préfectures de Nanga-Boguila, Paoua et Bossangoa.",
+		"mois": [
+			"2026-11",
+			"2026-12",
+			"2027-01",
+			"2027-02",
+			"2027-03",
+			"2027-04",
+			"2027-05",
+			"2027-06",
+			"2027-07",
+			"2027-08"
+		]
+	},
+	"volets": [
+		{
+			"code": "NUT-ARS",
+			"fichier": "Plan d'action_FH - US Consortium APSUD - NUT ARS.xlsx",
+			"organisation": "ARS",
+			"secteur": "NUT",
+			"outcomes": [
+				{
+					"numero": "1",
+					"libelle": "Renforcer le dépistage, le référencement et la prise en charge de la malnutrition aiguë sévère chez les enfants de 6-59 mois dans les 5 formations sanitaires ciblées ( Dispensaire de Boguila, l’UNT de l’hopital de district de Booguila, CS de Boanssen, PS de Boya et PS de Bomantana)",
+					"outputs": [
+						{
+							"numero": "1.1",
+							"libelle": "Le dépistage actif et passif de la malnutrition aiguë est renforcé dans les 5 formations sanitaires, et les enfants dépistés MAS sont référés et pris en charge en UNT/UNTA.",
+							"activites": [
+								{
+									"numero": "1.1.1",
+									"libelle": "Prise en charge en UNT (Unité Nutritionnelle Thérapeutique)",
+									"indicateurs": [
+										{
+											"ordre": 5,
+											"code_cbpf": null,
+											"libelle": "Nomvre d'enfants pris en charge en UNT",
+											"type_valeur": "nombre",
+											"mode_cumul": "somme",
+											"desagrege": false,
+											"cible": {
+												"femmes": null,
+												"filles": null,
+												"hommes": null,
+												"garcons": null,
+												"total": null
+											},
+											"moyens_verification": [],
+											"commentaire": null
+										}
+									],
+									"taches": [
+										{
+											"libelle": "Prise de contact du personnel de santé décentralisé à Begoua et Bimbio",
+											"date_debut": "2026-11-08",
+											"date_fin": "2026-11-13",
+											"semaines": [
+												{
+													"mois": "2026-11",
+													"semaine": 1
+												}
+											]
+										},
+										{
+											"libelle": "Elaboration de TDR de la formation",
+											"date_debut": "2026-11-11",
+											"date_fin": "2026-11-14",
+											"semaines": []
+										},
+										{
+											"libelle": "Partage des invitations aux participants y compris les autorités locales",
+											"date_debut": "2026-11-18",
+											"date_fin": "2026-11-19",
+											"semaines": [
+												{
+													"mois": "2026-11",
+													"semaine": 2
+												}
+											]
+										},
+										{
+											"libelle": "Paiement des frais de transport aux autorités/formateurs",
+											"date_debut": "2026-11-22",
+											"date_fin": "2026-11-22",
+											"semaines": []
+										}
+									],
+									"semaines": [
+										{
+											"mois": "2026-11",
+											"semaine": 3
+										}
+									],
+									"responsable": null,
+									"budget_planifie_fichier": 100,
+									"budget_execute_fichier": 0,
+									"taux_execution_fichier": 1,
+									"resultats": [],
+									"observations": [
+										"Jusqu'au 14"
+									]
+								},
+								{
+									"numero": "1.1.2",
+									"libelle": "Prise en charge en UNTA (Unité de Nutrition Thérapeutique Ambulatoire)",
+									"indicateurs": [
+										{
+											"ordre": 6,
+											"code_cbpf": null,
+											"libelle": "Nomvre d'enfants pris en charge en UNTA",
+											"type_valeur": "nombre",
+											"mode_cumul": "somme",
+											"desagrege": false,
+											"cible": {
+												"femmes": null,
+												"filles": null,
+												"hommes": null,
+												"garcons": null,
+												"total": null
+											},
+											"moyens_verification": [],
+											"commentaire": null
+										}
+									],
+									"taches": [],
+									"semaines": [
+										{
+											"mois": "2026-11",
+											"semaine": 2
+										},
+										{
+											"mois": "2026-11",
+											"semaine": 3
+										},
+										{
+											"mois": "2026-11",
+											"semaine": 4
+										},
+										{
+											"mois": "2026-11",
+											"semaine": 5
+										},
+										{
+											"mois": "2026-12",
+											"semaine": 1
+										},
+										{
+											"mois": "2026-12",
+											"semaine": 2
+										},
+										{
+											"mois": "2026-12",
+											"semaine": 3
+										},
+										{
+											"mois": "2026-12",
+											"semaine": 4
+										},
+										{
+											"mois": "2026-12",
+											"semaine": 5
+										}
+									],
+									"responsable": null,
+									"budget_planifie_fichier": 100,
+									"budget_execute_fichier": null,
+									"taux_execution_fichier": null,
+									"resultats": [],
+									"observations": [
+										"revoir les dates",
+										"Chef d'équipe"
+									]
+								},
+								{
+									"numero": "1.1.3",
+									"libelle": "Formation/recyclage des agents de santé sur La PEC selon le protocole national",
+									"indicateurs": [
+										{
+											"ordre": 7,
+											"code_cbpf": null,
+											"libelle": "Nombre des agents de santé formés sur la PEC selon le protocole national",
+											"type_valeur": "nombre",
+											"mode_cumul": "somme",
+											"desagrege": false,
+											"cible": {
+												"femmes": null,
+												"filles": null,
+												"hommes": null,
+												"garcons": null,
+												"total": null
+											},
+											"moyens_verification": [],
+											"commentaire": null
+										}
+									],
+									"taches": [],
+									"semaines": [],
+									"responsable": null,
+									"budget_planifie_fichier": 100,
+									"budget_execute_fichier": null,
+									"taux_execution_fichier": 0,
+									"resultats": [],
+									"observations": []
+								},
+								{
+									"numero": "1.1.4",
+									"libelle": "Formation/recyclage des agents de santé communautaires",
+									"indicateurs": [
+										{
+											"ordre": 8,
+											"code_cbpf": null,
+											"libelle": "Nombres des agents de ssantés communautaires formés",
+											"type_valeur": "nombre",
+											"mode_cumul": "somme",
+											"desagrege": false,
+											"cible": {
+												"femmes": null,
+												"filles": null,
+												"hommes": null,
+												"garcons": null,
+												"total": null
+											},
+											"moyens_verification": [],
+											"commentaire": null
+										},
+										{
+											"ordre": 9,
+											"code_cbpf": "NUT/C-CA5/N.3a",
+											"libelle": "Number of people admitted to SAM treatment programme (therapeutic feeding)",
+											"type_valeur": "nombre",
+											"mode_cumul": "somme",
+											"desagrege": true,
+											"cible": {
+												"femmes": 0,
+												"filles": 0,
+												"hommes": 26,
+												"garcons": 24,
+												"total": 50
+											},
+											"moyens_verification": [],
+											"commentaire": null
+										}
+									],
+									"taches": [],
+									"semaines": [],
+									"responsable": null,
+									"budget_planifie_fichier": 100,
+									"budget_execute_fichier": null,
+									"taux_execution_fichier": null,
+									"resultats": [],
+									"observations": []
+								}
+							],
+							"indicateurs": []
+						}
+					],
+					"indicateurs": [
+						{
+							"ordre": 1,
+							"code_cbpf": null,
+							"libelle": "Nombre total d'enfants dépistés",
+							"type_valeur": "nombre",
+							"mode_cumul": "somme",
+							"desagrege": true,
+							"cible": {
+								"femmes": 0,
+								"filles": 3838,
+								"hommes": 0,
+								"garcons": 3687,
+								"total": 7525
+							},
+							"moyens_verification": [
+								"Fiches de dépistage",
+								"rapports des relais",
+								"rapport d'activité"
+							],
+							"commentaire": null
+						},
+						{
+							"ordre": 2,
+							"code_cbpf": null,
+							"libelle": "Taux de guérison",
+							"type_valeur": "pourcentage",
+							"mode_cumul": "derniere_valeur",
+							"desagrege": false,
+							"cible": {
+								"femmes": 0,
+								"filles": 0,
+								"hommes": 0,
+								"garcons": 0,
+								"total": 75
+							},
+							"moyens_verification": [
+								"Registre UNT",
+								"UNTA",
+								"rapport"
+							],
+							"commentaire": null
+						},
+						{
+							"ordre": 3,
+							"code_cbpf": null,
+							"libelle": "Nombre des agents de santé formés sur la PCIMA",
+							"type_valeur": "nombre",
+							"mode_cumul": "somme",
+							"desagrege": false,
+							"cible": {
+								"femmes": 0,
+								"filles": 0,
+								"hommes": 0,
+								"garcons": 0,
+								"total": 25
+							},
+							"moyens_verification": [
+								"Rapport de formation",
+								"TDR, fiche de présence",
+								"images"
+							],
+							"commentaire": null
+						},
+						{
+							"ordre": 4,
+							"code_cbpf": null,
+							"libelle": "Nombre des enfants MAS prise en charge dans les UNTA= 200 (Garçon =98, filles=102)",
+							"type_valeur": "nombre",
+							"mode_cumul": "somme",
+							"desagrege": false,
+							"cible": {
+								"femmes": 0,
+								"filles": 0,
+								"hommes": 0,
+								"garcons": 0,
+								"total": 200
+							},
+							"moyens_verification": [
+								"Registre d’admission MAS,",
+								"rapport mensuel de prise en charge UNTA"
+							],
+							"commentaire": null
+						}
+					]
+				}
+			]
+		},
+		{
+			"code": "SAN-ARS",
+			"fichier": "Plan d'action_FH - US Consortium APSUD- SANTE ARS.xlsx",
+			"organisation": "ARS",
+			"secteur": "SAN",
+			"outcomes": [
+				{
+					"numero": "1",
+					"libelle": "Améliorer l'accès à des soins curatifs, à l'accouchement assisté et à la PEC des VBG dans les 5 FOSA",
+					"outputs": [
+						{
+							"numero": "1.1",
+							"libelle": "L'offre de consultations curatives de qualité est renforcée dans les 5 formations sanitaires",
+							"activites": [
+								{
+									"numero": "1.1.1",
+									"libelle": "Consultations curatives réalisées désagrégées par sexe/CONSULTATION CURATIVE",
+									"indicateurs": [
+										{
+											"ordre": 5,
+											"code_cbpf": null,
+											"libelle": "Number of primary healthcare consultations provided",
+											"type_valeur": "nombre",
+											"mode_cumul": "somme",
+											"desagrege": false,
+											"cible": {
+												"femmes": 0,
+												"filles": 0,
+												"hommes": 0,
+												"garcons": 0,
+												"total": 8362
+											},
+											"moyens_verification": [
+												"Registres de consultation",
+												"registres de maternité",
+												"rapports GBV désagrégés et sécurisés"
+											],
+											"commentaire": null
+										}
+									],
+									"taches": [
+										{
+											"libelle": "Prise de contact du personnel de santé décentralisé à Begoua et Bimbio",
+											"date_debut": "2026-11-08",
+											"date_fin": "2026-11-13",
+											"semaines": [
+												{
+													"mois": "2026-11",
+													"semaine": 2
+												}
+											]
+										},
+										{
+											"libelle": "Elaboration de TDR de la formation",
+											"date_debut": "2026-11-09",
+											"date_fin": "2026-11-14",
+											"semaines": []
+										},
+										{
+											"libelle": "Partage des invitations aux participants y compris les autorités locales",
+											"date_debut": "2026-11-10",
+											"date_fin": "2026-11-19",
+											"semaines": []
+										},
+										{
+											"libelle": "Paiement des frais de transport aux autorités/formateurs",
+											"date_debut": "2026-11-11",
+											"date_fin": "2026-11-22",
+											"semaines": []
+										}
+									],
+									"semaines": [
+										{
+											"mois": "2026-11",
+											"semaine": 2
+										},
+										{
+											"mois": "2026-11",
+											"semaine": 3
+										},
+										{
+											"mois": "2026-11",
+											"semaine": 4
+										},
+										{
+											"mois": "2026-11",
+											"semaine": 5
+										}
+									],
+									"responsable": null,
+									"budget_planifie_fichier": 100,
+									"budget_execute_fichier": 0,
+									"taux_execution_fichier": 0.2,
+									"resultats": [],
+									"observations": [
+										"Jusqu'au 14"
+									]
+								},
+								{
+									"numero": "1.1.2",
+									"libelle": "Accouchements assistés par un personnel qualifié dans les zones affectées par un choc humanitaire/ACCOUCHEMENT ASSISTE",
+									"indicateurs": [
+										{
+											"ordre": 6,
+											"code_cbpf": null,
+											"libelle": "Number of functional health facilities supported",
+											"type_valeur": "nombre",
+											"mode_cumul": "somme",
+											"desagrege": false,
+											"cible": {
+												"femmes": 0,
+												"filles": 0,
+												"hommes": 0,
+												"garcons": 0,
+												"total": 5
+											},
+											"moyens_verification": [
+												"Rapport mensuel de FOSA",
+												"Rapports hebdomadaires",
+												"images"
+											],
+											"commentaire": null
+										}
+									],
+									"taches": [],
+									"semaines": [],
+									"responsable": null,
+									"budget_planifie_fichier": 100,
+									"budget_execute_fichier": 0,
+									"taux_execution_fichier": 0.5,
+									"resultats": [],
+									"observations": [
+										"Chef d'équipe"
+									]
+								},
+								{
+									"numero": "1.1.3",
+									"libelle": "Pris en charge des cas de viol dans les 72 heures désagrégés par sexe et par tranche d'âge/ PRISE EN CHARGE MEDICALE DES VBG (VIOL)",
+									"indicateurs": [
+										{
+											"ordre": 7,
+											"code_cbpf": null,
+											"libelle": "Number of frontline or community health workers trained/oriented on emergency surveillance or reporting",
+											"type_valeur": "nombre",
+											"mode_cumul": "somme",
+											"desagrege": true,
+											"cible": {
+												"femmes": 14,
+												"filles": 11,
+												"hommes": 0,
+												"garcons": 0,
+												"total": 25
+											},
+											"moyens_verification": [
+												"TDR, rapport de formation",
+												"fiche de présence",
+												"images"
+											],
+											"commentaire": null
+										},
+										{
+											"ordre": 8,
+											"code_cbpf": null,
+											"libelle": "Number of violence survivors receiving medical assistance, including clinical management of rape",
+											"type_valeur": "nombre",
+											"mode_cumul": "somme",
+											"desagrege": true,
+											"cible": {
+												"femmes": 0,
+												"filles": 20,
+												"hommes": 0,
+												"garcons": 40,
+												"total": 60
+											},
+											"moyens_verification": [
+												"Registres de consultation",
+												"rapports GBV désagrégés et sécurisés"
+											],
+											"commentaire": null
+										}
+									],
+									"taches": [],
+									"semaines": [],
+									"responsable": null,
+									"budget_planifie_fichier": 100,
+									"budget_execute_fichier": 0,
+									"taux_execution_fichier": 0,
+									"resultats": [],
+									"observations": []
+								}
+							],
+							"indicateurs": []
+						},
+						{
+							"numero": "1.2",
+							"libelle": "L'accès à un accouchement assisté par du personnel qualifié est amélioré",
+							"activites": [
+								{
+									"numero": "1.2.1",
+									"libelle": "Accouchements assistés par un personnel qualifié dans les zones affectées par un choc humanitaire/ACCOUCHEMENT ASSISTE",
+									"indicateurs": [
+										{
+											"ordre": 9,
+											"code_cbpf": null,
+											"libelle": "Number of births attended by skilled health personnel",
+											"type_valeur": "nombre",
+											"mode_cumul": "somme",
+											"desagrege": false,
+											"cible": {
+												"femmes": 0,
+												"filles": 0,
+												"hommes": 0,
+												"garcons": 0,
+												"total": 614
+											},
+											"moyens_verification": [
+												"registres de maternité",
+												"Fiches de stock"
+											],
+											"commentaire": null
+										}
+									],
+									"taches": [],
+									"semaines": [],
+									"responsable": null,
+									"budget_planifie_fichier": 100,
+									"budget_execute_fichier": 0,
+									"taux_execution_fichier": 0.8,
+									"resultats": [],
+									"observations": []
+								}
+							],
+							"indicateurs": []
+						}
+					],
+					"indicateurs": [
+						{
+							"ordre": 1,
+							"code_cbpf": null,
+							"libelle": "Nombre de consultations curatives réalisées : 8362",
+							"type_valeur": "nombre",
+							"mode_cumul": "somme",
+							"desagrege": false,
+							"cible": {
+								"femmes": 0,
+								"filles": 0,
+								"hommes": 0,
+								"garcons": 0,
+								"total": 8362
+							},
+							"moyens_verification": [
+								"Registres de consultation",
+								"rapports GBV désagrégés et sécurisés",
+								"registres de maternité"
+							],
+							"commentaire": null
+						},
+						{
+							"ordre": 2,
+							"code_cbpf": null,
+							"libelle": "Taux d'accouchements assistés : 40%",
+							"type_valeur": "pourcentage",
+							"mode_cumul": "derniere_valeur",
+							"desagrege": false,
+							"cible": {
+								"femmes": 0,
+								"filles": 0,
+								"hommes": 0,
+								"garcons": 0,
+								"total": 40
+							},
+							"moyens_verification": [
+								"Registres de consultation",
+								"rapports GBV désagrégés et sécurisés",
+								"registres de maternité"
+							],
+							"commentaire": null
+						},
+						{
+							"ordre": 3,
+							"code_cbpf": null,
+							"libelle": "Taux de rupture de stock des médicaments traceurs inferieur à (< 10 %)",
+							"type_valeur": "pourcentage",
+							"mode_cumul": "derniere_valeur",
+							"desagrege": false,
+							"cible": {
+								"femmes": 0,
+								"filles": 0,
+								"hommes": 0,
+								"garcons": 0,
+								"total": 10
+							},
+							"moyens_verification": [
+								"Fiches de stock",
+								"rapports d'approvisionnement"
+							],
+							"commentaire": null
+						},
+						{
+							"ordre": 4,
+							"code_cbpf": null,
+							"libelle": "Nombre d'agents appuyés",
+							"type_valeur": "nombre",
+							"mode_cumul": "somme",
+							"desagrege": true,
+							"cible": {
+								"femmes": 11,
+								"filles": 0,
+								"hommes": 14,
+								"garcons": 0,
+								"total": 25
+							},
+							"moyens_verification": [
+								"Registres de consultation",
+								"fiches de paie/primes"
+							],
+							"commentaire": null
+						}
+					]
+				}
+			]
+		},
+		{
+			"code": "PE-AFPE",
+			"fichier": "Plan d'action_FH - US Consortium APSUD- PE AFPE.xlsx",
+			"organisation": "AFPE",
+			"secteur": "PE",
+			"outcomes": [
+				{
+					"numero": "1",
+					"libelle": "Assurer un environnement protecteur pour les enfants affectés par les conflits et répondre à leurs besoins de protection",
+					"outputs": [
+						{
+							"numero": "1.1",
+							"libelle": "Les enfants séparés, non accompagnés ou vulnérables bénéficient d’une prise en charge holistique",
+							"activites": [
+								{
+									"numero": "1.1.1",
+									"libelle": "Prise en charge psychosociale communautaire des enfants et adolescent(e)s affectés par les chocs",
+									"indicateurs": [
+										{
+											"ordre": 3,
+											"code_cbpf": null,
+											"libelle": "Number of children receiving protection support (e.g. family tracing, reunification, reintegration, case management services, etc)",
+											"type_valeur": "nombre",
+											"mode_cumul": "somme",
+											"desagrege": true,
+											"cible": {
+												"femmes": 0,
+												"filles": 0,
+												"hommes": 10,
+												"garcons": 20,
+												"total": 30
+											},
+											"moyens_verification": [
+												"Rapport d'activité"
+											],
+											"commentaire": null
+										}
+									],
+									"taches": [
+										{
+											"libelle": "Prise de contact du personnel de santé décentralisé à Begoua et Bimbio",
+											"date_debut": "2026-11-08",
+											"date_fin": "2026-11-13",
+											"semaines": [
+												{
+													"mois": "2026-11",
+													"semaine": 2
+												}
+											]
+										},
+										{
+											"libelle": "Elaboration de TDR de la formation",
+											"date_debut": "2026-11-09",
+											"date_fin": "2026-11-14",
+											"semaines": []
+										},
+										{
+											"libelle": "Partage des invitations aux participants y compris les autorités locales",
+											"date_debut": "2026-11-10",
+											"date_fin": "2026-11-19",
+											"semaines": []
+										},
+										{
+											"libelle": "Paiement des frais de transport aux autorités/formateurs",
+											"date_debut": "2026-11-11",
+											"date_fin": "2026-11-22",
+											"semaines": []
+										}
+									],
+									"semaines": [
+										{
+											"mois": "2026-11",
+											"semaine": 2
+										},
+										{
+											"mois": "2026-11",
+											"semaine": 3
+										},
+										{
+											"mois": "2026-11",
+											"semaine": 4
+										},
+										{
+											"mois": "2026-11",
+											"semaine": 5
+										}
+									],
+									"responsable": null,
+									"budget_planifie_fichier": 100,
+									"budget_execute_fichier": 0,
+									"taux_execution_fichier": 0.2,
+									"resultats": [],
+									"observations": [
+										"Jusqu'au 14"
+									]
+								},
+								{
+									"numero": "1.1.2",
+									"libelle": "Protection et réintégration des filles et garçons associés aux forces et groupes armés (EAFGA)",
+									"indicateurs": [
+										{
+											"ordre": 4,
+											"code_cbpf": "PRO/C-CA5/AS.10",
+											"libelle": "Number of people receiving recurrent services",
+											"type_valeur": "nombre",
+											"mode_cumul": "somme",
+											"desagrege": true,
+											"cible": {
+												"femmes": 0,
+												"filles": 0,
+												"hommes": 150,
+												"garcons": 250,
+												"total": 400
+											},
+											"moyens_verification": [
+												"Rapport d'activité"
+											],
+											"commentaire": null
+										}
+									],
+									"taches": [],
+									"semaines": [],
+									"responsable": null,
+									"budget_planifie_fichier": 100,
+									"budget_execute_fichier": 0,
+									"taux_execution_fichier": 0.5,
+									"resultats": [],
+									"observations": [
+										"Chef d'équipe"
+									]
+								},
+								{
+									"numero": "1.1.3",
+									"libelle": "Prise en charge et/ou référencement des survivant(e)s de violences physiques ou sexuelles",
+									"indicateurs": [],
+									"taches": [],
+									"semaines": [],
+									"responsable": null,
+									"budget_planifie_fichier": 100,
+									"budget_execute_fichier": 0,
+									"taux_execution_fichier": 0,
+									"resultats": [],
+									"observations": []
+								}
+							],
+							"indicateurs": []
+						},
+						{
+							"numero": "1.2",
+							"libelle": "Le bien-être psychosocial des enfants est amélioré",
+							"activites": [
+								{
+									"numero": "1.2.1",
+									"libelle": "Sensibilisation de proximité pour réduire l'exposition des enfants aux risques de protection",
+									"indicateurs": [
+										{
+											"ordre": 5,
+											"code_cbpf": null,
+											"libelle": "Number of children receiving protection support (e.g. family tracing, reunification, reintegration, case management services, etc)",
+											"type_valeur": "nombre",
+											"mode_cumul": "somme",
+											"desagrege": true,
+											"cible": {
+												"femmes": 0,
+												"filles": 0,
+												"hommes": 20,
+												"garcons": 10,
+												"total": 30
+											},
+											"moyens_verification": [
+												"Rapport d'activité"
+											],
+											"commentaire": null
+										}
+									],
+									"taches": [],
+									"semaines": [],
+									"responsable": null,
+									"budget_planifie_fichier": 100,
+									"budget_execute_fichier": 0,
+									"taux_execution_fichier": 0.6,
+									"resultats": [],
+									"observations": []
+								},
+								{
+									"numero": "1.2.2",
+									"libelle": "Renforcement des capacités des groupes communautaires en PE",
+									"indicateurs": [
+										{
+											"ordre": 6,
+											"code_cbpf": null,
+											"libelle": "Number of children receiving protection support (e.g. family tracing, reunification, reintegration, case management services, etc)",
+											"type_valeur": "nombre",
+											"mode_cumul": "somme",
+											"desagrege": true,
+											"cible": {
+												"femmes": 0,
+												"filles": 0,
+												"hommes": 150,
+												"garcons": 250,
+												"total": 400
+											},
+											"moyens_verification": [
+												"Rapport d'activité"
+											],
+											"commentaire": null
+										}
+									],
+									"taches": [],
+									"semaines": [],
+									"responsable": null,
+									"budget_planifie_fichier": 100,
+									"budget_execute_fichier": 0,
+									"taux_execution_fichier": 0.8,
+									"resultats": [],
+									"observations": []
+								}
+							],
+							"indicateurs": []
+						}
+					],
+					"indicateurs": [
+						{
+							"ordre": 1,
+							"code_cbpf": null,
+							"libelle": "Nombre d'enfants pris en charge dans les deux sous préfecture (Bossangoa et Nanga-Boguila): 400",
+							"type_valeur": "nombre",
+							"mode_cumul": "somme",
+							"desagrege": false,
+							"cible": {
+								"femmes": 0,
+								"filles": 0,
+								"hommes": 0,
+								"garcons": 0,
+								"total": 400
+							},
+							"moyens_verification": [
+								"Fiche d'enregistrement,",
+								"rapport d'activités"
+							],
+							"commentaire": null
+						},
+						{
+							"ordre": 2,
+							"code_cbpf": null,
+							"libelle": "Nombre de personnes touchées par la sensibilisation sur les droits des enfants",
+							"type_valeur": "nombre",
+							"mode_cumul": "somme",
+							"desagrege": true,
+							"cible": {
+								"femmes": 940,
+								"filles": 880,
+								"hommes": 450,
+								"garcons": 900,
+								"total": 3170
+							},
+							"moyens_verification": [
+								"Images, rapports,",
+								"comptes rendu causerie éducative"
+							],
+							"commentaire": null
+						}
+					]
+				}
+			]
+		},
+		{
+			"code": "SECAL-GADY",
+			"fichier": "Plan d'action_FH - US Consortium APSUD- SECAL- GADY.xlsx",
+			"organisation": "GADY",
+			"secteur": "SECAL",
+			"outcomes": [
+				{
+					"numero": "1",
+					"libelle": "Améliorer l’accès immédiat à la nourriture aux  personnes vulnérables",
+					"outputs": [
+						{
+							"numero": "1.1",
+							"libelle": "L'accès immédiat à la nourriture est garanti pour les ménages en insécurité alimentaire sévère (IPC 3) en demi ration pendant trois mois",
+							"activites": [
+								{
+									"numero": "1.1.1",
+									"libelle": "Assistance alimentaire — 3 mois, demi-ration /Général",
+									"indicateurs": [
+										{
+											"ordre": 6,
+											"code_cbpf": null,
+											"libelle": "Number of people receiving recurrent services",
+											"type_valeur": "nombre",
+											"mode_cumul": "somme",
+											"desagrege": true,
+											"cible": {
+												"femmes": 1000,
+												"filles": 0,
+												"hommes": 1000,
+												"garcons": 0,
+												"total": 2000
+											},
+											"moyens_verification": [
+												"Listes d'émargement des bénéficiaires",
+												"Rapports de distribution et images"
+											],
+											"commentaire": null
+										}
+									],
+									"taches": [
+										{
+											"libelle": "Prise de contact du personnel de santé décentralisé à Begoua et Bimbio",
+											"date_debut": "2026-11-08",
+											"date_fin": "2026-11-13",
+											"semaines": [
+												{
+													"mois": "2026-11",
+													"semaine": 2
+												}
+											]
+										},
+										{
+											"libelle": "Elaboration de TDR de la formation",
+											"date_debut": "2026-11-09",
+											"date_fin": "2026-11-14",
+											"semaines": []
+										},
+										{
+											"libelle": "Partage des invitations aux participants y compris les autorités locales",
+											"date_debut": "2026-11-10",
+											"date_fin": "2026-11-19",
+											"semaines": []
+										},
+										{
+											"libelle": "Paiement des frais de transport aux autorités/formateurs",
+											"date_debut": "2026-11-11",
+											"date_fin": "2026-11-22",
+											"semaines": []
+										}
+									],
+									"semaines": [
+										{
+											"mois": "2026-11",
+											"semaine": 2
+										},
+										{
+											"mois": "2026-11",
+											"semaine": 3
+										},
+										{
+											"mois": "2026-11",
+											"semaine": 4
+										},
+										{
+											"mois": "2026-11",
+											"semaine": 5
+										}
+									],
+									"responsable": null,
+									"budget_planifie_fichier": 100,
+									"budget_execute_fichier": 0,
+									"taux_execution_fichier": 0.2,
+									"resultats": [],
+									"observations": [
+										"Jusqu'au 14"
+									]
+								},
+								{
+									"numero": "1.1.2",
+									"libelle": "CIBLAGES DES BENEFICIAIRES /OS1-1 : Assistance alimentaire — 3 mois, demi-ration",
+									"indicateurs": [
+										{
+											"ordre": 7,
+											"code_cbpf": null,
+											"libelle": "Quantity of food assistance distributed in MT",
+											"type_valeur": "nombre",
+											"mode_cumul": "somme",
+											"desagrege": false,
+											"cible": {
+												"femmes": 0,
+												"filles": 0,
+												"hommes": 0,
+												"garcons": 0,
+												"total": 124
+											},
+											"moyens_verification": [],
+											"commentaire": null
+										}
+									],
+									"taches": [],
+									"semaines": [],
+									"responsable": null,
+									"budget_planifie_fichier": 100,
+									"budget_execute_fichier": 0,
+									"taux_execution_fichier": 0.5,
+									"resultats": [],
+									"observations": [
+										"Chef d'équipe"
+									]
+								},
+								{
+									"numero": "1.1.3",
+									"libelle": "ORGANISATION DE LA DISTRIBUTION / OS1-1 : Assistance alimentaire — 3 mois, demi-ration",
+									"indicateurs": [],
+									"taches": [],
+									"semaines": [],
+									"responsable": null,
+									"budget_planifie_fichier": null,
+									"budget_execute_fichier": null,
+									"taux_execution_fichier": null,
+									"resultats": [],
+									"observations": []
+								},
+								{
+									"numero": "1.1.4",
+									"libelle": "DISTRIBUTION ALIMENTAIRE /OS1-1 : Assistance alimentaire — 3 mois, demi-ration",
+									"indicateurs": [],
+									"taches": [],
+									"semaines": [],
+									"responsable": null,
+									"budget_planifie_fichier": null,
+									"budget_execute_fichier": null,
+									"taux_execution_fichier": null,
+									"resultats": [],
+									"observations": []
+								},
+								{
+									"numero": "1.1.5",
+									"libelle": "EDUCATION NUTRITIONNELLE / OS1-1 : Assistance alimentaire — 3 mois, demi-ration",
+									"indicateurs": [],
+									"taches": [],
+									"semaines": [],
+									"responsable": null,
+									"budget_planifie_fichier": null,
+									"budget_execute_fichier": null,
+									"taux_execution_fichier": null,
+									"resultats": [],
+									"observations": []
+								},
+								{
+									"numero": "1.1.6",
+									"libelle": "PHASE DE SUIVI ET CLOTURE (Après la distribution)/ OS1-1 : Assistance alimentaire — 3 mois, demi-ration",
+									"indicateurs": [],
+									"taches": [],
+									"semaines": [],
+									"responsable": null,
+									"budget_planifie_fichier": 100,
+									"budget_execute_fichier": 0,
+									"taux_execution_fichier": 0,
+									"resultats": [],
+									"observations": []
+								}
+							],
+							"indicateurs": []
+						},
+						{
+							"numero": "1.2",
+							"libelle": "L'accès immédiat à la nourriture est garanti pour les ménages en insécurité alimentaire sévère (IPC 4) avec 80% de ration couverte pendant pendant 6 mois",
+							"activites": [
+								{
+									"numero": "1.2.1",
+									"libelle": "Phase Pré-distribution (Planification et Ciblage)/ OS1-2 : Assistance alimentaire — 6 mois, 80% ration complète",
+									"indicateurs": [
+										{
+											"ordre": 8,
+											"code_cbpf": null,
+											"libelle": "Quantity of food assistance distributed in MT",
+											"type_valeur": "nombre",
+											"mode_cumul": "somme",
+											"desagrege": false,
+											"cible": {
+												"femmes": 0,
+												"filles": 0,
+												"hommes": 0,
+												"garcons": 0,
+												"total": 51
+											},
+											"moyens_verification": [
+												"Fiche de distribution",
+												"rapport de distribution",
+												"images"
+											],
+											"commentaire": null
+										}
+									],
+									"taches": [],
+									"semaines": [],
+									"responsable": null,
+									"budget_planifie_fichier": 100,
+									"budget_execute_fichier": 0,
+									"taux_execution_fichier": 0.6,
+									"resultats": [],
+									"observations": []
+								},
+								{
+									"numero": "1.2.2",
+									"libelle": "Phase de Distribution (Opérations sur le site)/ OS1-2 : Assistance alimentaire — 6 mois, 80% ration complète",
+									"indicateurs": [
+										{
+											"ordre": 9,
+											"code_cbpf": "FSA/C-CA5/AS.10",
+											"libelle": "Number of people receiving recurrent services",
+											"type_valeur": "nombre",
+											"mode_cumul": "somme",
+											"desagrege": true,
+											"cible": {
+												"femmes": 150,
+												"filles": 0,
+												"hommes": 150,
+												"garcons": 0,
+												"total": 300
+											},
+											"moyens_verification": [
+												"décharges signée par les bénéficiaires, de vivres",
+												"rapports de distribution",
+												"rapport PDM"
+											],
+											"commentaire": null
+										}
+									],
+									"taches": [],
+									"semaines": [],
+									"responsable": null,
+									"budget_planifie_fichier": 100,
+									"budget_execute_fichier": null,
+									"taux_execution_fichier": 0.8,
+									"resultats": [],
+									"observations": []
+								},
+								{
+									"numero": "1.2.3",
+									"libelle": "Phase Post-distribution (Suivi et Redevabilité)/ OS1-2 : Assistance alimentaire — 6 mois, 80% ration complète",
+									"indicateurs": [],
+									"taches": [],
+									"semaines": [],
+									"responsable": null,
+									"budget_planifie_fichier": 100,
+									"budget_execute_fichier": 0,
+									"taux_execution_fichier": 0.8,
+									"resultats": [],
+									"observations": []
+								}
+							],
+							"indicateurs": []
+						}
+					],
+					"indicateurs": [
+						{
+							"ordre": 1,
+							"code_cbpf": null,
+							"libelle": "Nombre de personnes touchées par l'assistance alimentaire pendant 3 mois (demi-ration)",
+							"type_valeur": "nombre",
+							"mode_cumul": "somme",
+							"desagrege": true,
+							"cible": {
+								"femmes": 1000,
+								"filles": 0,
+								"hommes": 1000,
+								"garcons": 0,
+								"total": 2000
+							},
+							"moyens_verification": [
+								"Listes d'émargement des bénéficiaires",
+								"Rapports de distribution",
+								"images"
+							],
+							"commentaire": null
+						},
+						{
+							"ordre": 2,
+							"code_cbpf": null,
+							"libelle": "Pourcentage de bénéficiaires ciblés ayant effectivement reçu la demi-ration standard prévue (50% des besoins caloriques)",
+							"type_valeur": "pourcentage",
+							"mode_cumul": "derniere_valeur",
+							"desagrege": false,
+							"cible": {
+								"femmes": 0,
+								"filles": 0,
+								"hommes": 0,
+								"garcons": 0,
+								"total": 100
+							},
+							"moyens_verification": [
+								"Décharge",
+								"images",
+								"rapport d'activité"
+							],
+							"commentaire": null
+						},
+						{
+							"ordre": 3,
+							"code_cbpf": null,
+							"libelle": "Pourcentage de ménages ciblés ayant un score de consommation alimentaire « acceptable » à la fin des 3 mois, comparé à la situation de référence (baseline).",
+							"type_valeur": "pourcentage",
+							"mode_cumul": "derniere_valeur",
+							"desagrege": false,
+							"cible": {
+								"femmes": 0,
+								"filles": 0,
+								"hommes": 0,
+								"garcons": 0,
+								"total": 80
+							},
+							"moyens_verification": [
+								"Rapport PDM réalisé après la distribution"
+							],
+							"commentaire": null
+						},
+						{
+							"ordre": 4,
+							"code_cbpf": null,
+							"libelle": "Pourcentage de bénéficiaires satisfaits des modalités de distribution, de la qualité des produits et du comportement du personnel",
+							"type_valeur": "pourcentage",
+							"mode_cumul": "derniere_valeur",
+							"desagrege": false,
+							"cible": {
+								"femmes": 0,
+								"filles": 0,
+								"hommes": 0,
+								"garcons": 0,
+								"total": 70
+							},
+							"moyens_verification": [
+								"Rapport d'enquête",
+								"Rapport PDM"
+							],
+							"commentaire": null
+						},
+						{
+							"ordre": 5,
+							"code_cbpf": null,
+							"libelle": "Taux de réception de ration conforme",
+							"type_valeur": "pourcentage",
+							"mode_cumul": "derniere_valeur",
+							"desagrege": false,
+							"cible": {
+								"femmes": 0,
+								"filles": 0,
+								"hommes": 0,
+								"garcons": 0,
+								"total": 90
+							},
+							"moyens_verification": [
+								"Rapport PDM"
+							],
+							"commentaire": null
+						}
+					]
+				},
+				{
+					"numero": "2",
+					"libelle": "Améliorer la sécurité alimentaire et nutritionnelle des ménages vulnérables à travers l'appui à leur production agricoles et l'optimisation de leur capital d'élevage d'urgence.",
+					"outputs": [
+						{
+							"numero": "2.1",
+							"libelle": "Les capacités de production agricole des ménages vulnérables sont renforcées",
+							"activites": [
+								{
+									"numero": "2.1.1",
+									"libelle": "Distribution de kits d'intrants maraîchers d'urgence",
+									"indicateurs": [
+										{
+											"ordre": 13,
+											"code_cbpf": "FSA/C-CA4/Ag.1",
+											"libelle": "Number of people receiving agricultural inputs (items/packages/kits)",
+											"type_valeur": "nombre",
+											"mode_cumul": "somme",
+											"desagrege": true,
+											"cible": {
+												"femmes": 1125,
+												"filles": 625,
+												"hommes": 250,
+												"garcons": 500,
+												"total": 2500
+											},
+											"moyens_verification": [
+												"Listes d'émargement des bénéficiaires",
+												"Rapports de distribution et images"
+											],
+											"commentaire": null
+										}
+									],
+									"taches": [
+										{
+											"libelle": "Prise de contact du personnel de santé décentralisé à Begoua et Bimbio",
+											"date_debut": "2026-11-08",
+											"date_fin": "2026-11-13",
+											"semaines": [
+												{
+													"mois": "2026-11",
+													"semaine": 2
+												}
+											]
+										},
+										{
+											"libelle": "Elaboration de TDR de la formation",
+											"date_debut": "2026-11-09",
+											"date_fin": "2026-11-14",
+											"semaines": []
+										},
+										{
+											"libelle": "Partage des invitations aux participants y compris les autorités locales",
+											"date_debut": "2026-11-10",
+											"date_fin": "2026-11-19",
+											"semaines": []
+										},
+										{
+											"libelle": "Paiement des frais de transport aux autorités/formateurs",
+											"date_debut": "2026-11-11",
+											"date_fin": "2026-11-22",
+											"semaines": []
+										}
+									],
+									"semaines": [
+										{
+											"mois": "2026-11",
+											"semaine": 2
+										},
+										{
+											"mois": "2026-11",
+											"semaine": 3
+										},
+										{
+											"mois": "2026-11",
+											"semaine": 4
+										},
+										{
+											"mois": "2026-11",
+											"semaine": 5
+										}
+									],
+									"responsable": null,
+									"budget_planifie_fichier": 100,
+									"budget_execute_fichier": 0,
+									"taux_execution_fichier": 0.2,
+									"resultats": [],
+									"observations": [
+										"Jusqu'au 14"
+									]
+								},
+								{
+									"numero": "2.1.2",
+									"libelle": "Dotation en matériel et petits équipements de production (Outils aratoires de base)",
+									"indicateurs": [],
+									"taches": [],
+									"semaines": [],
+									"responsable": null,
+									"budget_planifie_fichier": 100,
+									"budget_execute_fichier": 0,
+									"taux_execution_fichier": 0.5,
+									"resultats": [],
+									"observations": [
+										"Chef d'équipe"
+									]
+								},
+								{
+									"numero": "2.1.3",
+									"libelle": "Renforcement des capacités express et éducation nutritionnelle",
+									"indicateurs": [],
+									"taches": [],
+									"semaines": [],
+									"responsable": null,
+									"budget_planifie_fichier": 100,
+									"budget_execute_fichier": 0,
+									"taux_execution_fichier": 1.5,
+									"resultats": [],
+									"observations": []
+								},
+								{
+									"numero": "2.1.4",
+									"libelle": "SUIVI DE PROXIMITE",
+									"indicateurs": [
+										{
+											"ordre": 14,
+											"code_cbpf": "FSA/C-CA3/AS.8",
+											"libelle": "Percentage of issues identified in feedback processes for which solutions are in process or closed",
+											"type_valeur": "pourcentage",
+											"mode_cumul": "derniere_valeur",
+											"desagrege": false,
+											"cible": {
+												"femmes": 0,
+												"filles": 0,
+												"hommes": 0,
+												"garcons": 0,
+												"total": 70
+											},
+											"moyens_verification": [],
+											"commentaire": null
+										}
+									],
+									"taches": [],
+									"semaines": [],
+									"responsable": null,
+									"budget_planifie_fichier": 100,
+									"budget_execute_fichier": 0,
+									"taux_execution_fichier": 2.5,
+									"resultats": [],
+									"observations": []
+								}
+							],
+							"indicateurs": []
+						},
+						{
+							"numero": "2.2",
+							"libelle": "Les capacités de production animale des ménages vulnérables sont renforcées",
+							"activites": [
+								{
+									"numero": "2.2.1",
+									"libelle": "APPUI AUX PETITS RUMINANTS/ANIMAUX D'ELEVAGE",
+									"indicateurs": [
+										{
+											"ordre": 15,
+											"code_cbpf": "FSA/C-CA8/Ag.4",
+											"libelle": "Number of animals distributed",
+											"type_valeur": "nombre",
+											"mode_cumul": "somme",
+											"desagrege": false,
+											"cible": {
+												"femmes": null,
+												"filles": null,
+												"hommes": null,
+												"garcons": null,
+												"total": 500
+											},
+											"moyens_verification": [
+												"Fiche de distribution",
+												"rapport de distribution",
+												"images"
+											],
+											"commentaire": null
+										}
+									],
+									"taches": [],
+									"semaines": [],
+									"responsable": null,
+									"budget_planifie_fichier": 100,
+									"budget_execute_fichier": 0,
+									"taux_execution_fichier": 0.6,
+									"resultats": [],
+									"observations": []
+								},
+								{
+									"numero": "2.2.2",
+									"libelle": "DISTRIBUTION D'ALIMENT ET COMPLEMENTS POUR BETAIL",
+									"indicateurs": [],
+									"taches": [],
+									"semaines": [],
+									"responsable": null,
+									"budget_planifie_fichier": 100,
+									"budget_execute_fichier": null,
+									"taux_execution_fichier": 0.8,
+									"resultats": [],
+									"observations": []
+								},
+								{
+									"numero": "2.2.3",
+									"libelle": "FORMATION SUR LES BONNES PRATIQUES D'ELEVAGE",
+									"indicateurs": [
+										{
+											"ordre": 16,
+											"code_cbpf": "FSA/C-CA6/AS.11",
+											"libelle": "Number of people receiving recurrent in-kind assistance",
+											"type_valeur": "nombre",
+											"mode_cumul": "somme",
+											"desagrege": true,
+											"cible": {
+												"femmes": 1125,
+												"filles": 625,
+												"hommes": 250,
+												"garcons": 500,
+												"total": 2500
+											},
+											"moyens_verification": [],
+											"commentaire": null
+										}
+									],
+									"taches": [],
+									"semaines": [],
+									"responsable": null,
+									"budget_planifie_fichier": 100,
+									"budget_execute_fichier": 0,
+									"taux_execution_fichier": 0.8,
+									"resultats": [],
+									"observations": []
+								}
+							],
+							"indicateurs": []
+						}
+					],
+					"indicateurs": [
+						{
+							"ordre": 10,
+							"code_cbpf": null,
+							"libelle": "(FSA/AP.2b) Percentage of affected people who state that they are aware of feedback and complaints mechanisms established for their use",
+							"type_valeur": "pourcentage",
+							"mode_cumul": "derniere_valeur",
+							"desagrege": false,
+							"cible": {
+								"femmes": 0,
+								"filles": 0,
+								"hommes": 0,
+								"garcons": 0,
+								"total": 70
+							},
+							"moyens_verification": [
+								"Rapport MEAL"
+							],
+							"commentaire": null
+						},
+						{
+							"ordre": 11,
+							"code_cbpf": null,
+							"libelle": "Nombre de bénéficiaires assistés en production animale",
+							"type_valeur": "nombre",
+							"mode_cumul": "somme",
+							"desagrege": true,
+							"cible": {
+								"femmes": 250,
+								"filles": 0,
+								"hommes": 250,
+								"garcons": 0,
+								"total": 500
+							},
+							"moyens_verification": [
+								"Listes d'émargement des chefs de ménages bénéficiaire",
+								"images",
+								"Rapports de distribution des petits ruminants et autres kits"
+							],
+							"commentaire": null
+						},
+						{
+							"ordre": 12,
+							"code_cbpf": null,
+							"libelle": "% de ménage satisfait de l'appui",
+							"type_valeur": "pourcentage",
+							"mode_cumul": "derniere_valeur",
+							"desagrege": false,
+							"cible": {
+								"femmes": 0,
+								"filles": 0,
+								"hommes": 0,
+								"garcons": 0,
+								"total": 80
+							},
+							"moyens_verification": [
+								"rapport Evaluation finale",
+								"Rapport PDM"
+							],
+							"commentaire": null
+						}
+					]
+				}
+			]
+		},
+		{
+			"code": "WASH-IDC",
+			"fichier": "Plan d'action_FH - US Consortium APSUD- WASH - IDC.xlsx",
+			"organisation": "IDC",
+			"secteur": "WASH",
+			"outcomes": [
+				{
+					"numero": "1",
+					"libelle": "Améliorer l’accès inclusif, adapté et équitable aux infrastructures d’eau potable, aux infrastructures d’assainissement et aux programmes de changement de comportement en faveur de bonnes pratiques d'hygiène aux communautés de Paoua, Bossangoa et Nanga Boguila",
+					"outputs": [
+						{
+							"numero": "1.1",
+							"libelle": "3000 personnes (femmes, hommes, filles et garçons) ciblées ont un accès sécurisé à l’eau en qualité et quantité suffisante dans les sous-préfectures de Paoua et Bossangoa",
+							"activites": [
+								{
+									"numero": "1.1.1",
+									"libelle": "Réhabilitation de forages avec remplacement de pompe India mark II:",
+									"indicateurs": [
+										{
+											"ordre": 4,
+											"code_cbpf": null,
+											"libelle": "Number of people accessing sufficient and safe water for drinking, cooking and/or personal hygiene use as per agreed sector standard",
+											"type_valeur": "nombre",
+											"mode_cumul": "somme",
+											"desagrege": true,
+											"cible": {
+												"femmes": 300,
+												"filles": 1350,
+												"hommes": 600,
+												"garcons": 750,
+												"total": 3000
+											},
+											"moyens_verification": [
+												"images des forages réhabilités et opérationnel",
+												"rapport d'activités et d'enquêtes CAP",
+												"Certificat de remise de forages réhabilités"
+											],
+											"commentaire": null
+										}
+									],
+									"taches": [
+										{
+											"libelle": "Prise de contact du personnel de santé décentralisé à Begoua et Bimbio",
+											"date_debut": "2026-11-08",
+											"date_fin": "2026-11-13",
+											"semaines": [
+												{
+													"mois": "2026-11",
+													"semaine": 2
+												}
+											]
+										},
+										{
+											"libelle": "Elaboration de TDR de la formation",
+											"date_debut": "2026-11-09",
+											"date_fin": "2026-11-14",
+											"semaines": []
+										},
+										{
+											"libelle": "Partage des invitations aux participants y compris les autorités locales",
+											"date_debut": "2026-11-10",
+											"date_fin": "2026-11-19",
+											"semaines": []
+										},
+										{
+											"libelle": "Paiement des frais de transport aux autorités/formateurs",
+											"date_debut": "2026-11-11",
+											"date_fin": "2026-11-22",
+											"semaines": []
+										}
+									],
+									"semaines": [
+										{
+											"mois": "2026-11",
+											"semaine": 2
+										},
+										{
+											"mois": "2026-11",
+											"semaine": 3
+										},
+										{
+											"mois": "2026-11",
+											"semaine": 4
+										},
+										{
+											"mois": "2026-11",
+											"semaine": 5
+										}
+									],
+									"responsable": null,
+									"budget_planifie_fichier": 100,
+									"budget_execute_fichier": 0,
+									"taux_execution_fichier": 0.2,
+									"resultats": [],
+									"observations": [
+										"Jusqu'au 14"
+									]
+								},
+								{
+									"numero": "1.1.2",
+									"libelle": "Formation du personnel de terrain dont 50% des femmes avant la sensibilisation",
+									"indicateurs": [
+										{
+											"ordre": 5,
+											"code_cbpf": null,
+											"libelle": "Number of implementing partner staff receiving training to support programme implementation",
+											"type_valeur": "nombre",
+											"mode_cumul": "somme",
+											"desagrege": true,
+											"cible": {
+												"femmes": 15,
+												"filles": 15,
+												"hommes": 0,
+												"garcons": 0,
+												"total": 30
+											},
+											"moyens_verification": [
+												"Compte rendu de l'atelier de formation",
+												"images",
+												"Rapport d'activités"
+											],
+											"commentaire": null
+										}
+									],
+									"taches": [],
+									"semaines": [],
+									"responsable": null,
+									"budget_planifie_fichier": 100,
+									"budget_execute_fichier": 0,
+									"taux_execution_fichier": 0.5,
+									"resultats": [],
+									"observations": [
+										"Chef d'équipe"
+									]
+								},
+								{
+									"numero": "1.1.3",
+									"libelle": "Réunion de Suivi Evaluation, Redevabilité et Apprentissage",
+									"indicateurs": [
+										{
+											"ordre": 6,
+											"code_cbpf": null,
+											"libelle": "Percentage of issues identified in feedback processes for which solutions are in process or closed",
+											"type_valeur": "pourcentage",
+											"mode_cumul": "derniere_valeur",
+											"desagrege": false,
+											"cible": {
+												"femmes": 0,
+												"filles": 0,
+												"hommes": 0,
+												"garcons": 0,
+												"total": 70
+											},
+											"moyens_verification": [
+												"Compte rendu des réunions AAP",
+												"les feedbacks remontés et traités",
+												"images"
+											],
+											"commentaire": null
+										}
+									],
+									"taches": [],
+									"semaines": [],
+									"responsable": null,
+									"budget_planifie_fichier": null,
+									"budget_execute_fichier": null,
+									"taux_execution_fichier": null,
+									"resultats": [],
+									"observations": []
+								},
+								{
+									"numero": "1.1.4",
+									"libelle": "Mise en place et formation des Comités de Gestion de Points d'Eau",
+									"indicateurs": [
+										{
+											"ordre": 7,
+											"code_cbpf": null,
+											"libelle": "Nombre de comités de gestion de points d'eau mis en place/redynamisés/formés et dotés en kits d'entretien des forages, de pièces de rechanges de pompes à motricité humaine et en fourniture de bureau",
+											"type_valeur": "nombre",
+											"mode_cumul": "somme",
+											"desagrege": false,
+											"cible": {
+												"femmes": 0,
+												"filles": 0,
+												"hommes": 0,
+												"garcons": 0,
+												"total": 6
+											},
+											"moyens_verification": [
+												"fiche de présence",
+												"TDR de la formation",
+												"images de formation et photo de famille"
+											],
+											"commentaire": null
+										}
+									],
+									"taches": [],
+									"semaines": [],
+									"responsable": null,
+									"budget_planifie_fichier": 100,
+									"budget_execute_fichier": 0,
+									"taux_execution_fichier": 0,
+									"resultats": [],
+									"observations": []
+								}
+							],
+							"indicateurs": []
+						},
+						{
+							"numero": "1.2",
+							"libelle": "13400 personnes à Paoua et Nangaa Boguila (femmes, hommes, filles et garçons) bénéficiaires comprennent et mettent en pratique les connaissances acquises en pratiques d’hygiène et sont sensibilisées à la construction de latrines",
+							"activites": [
+								{
+									"numero": "1.2.1",
+									"libelle": "Distribution de kits d'hygiène Intimes",
+									"indicateurs": [
+										{
+											"ordre": 8,
+											"code_cbpf": null,
+											"libelle": "Nombre de kits d'hygiène distribués aux ménages vulnérables",
+											"type_valeur": "nombre",
+											"mode_cumul": "somme",
+											"desagrege": true,
+											"cible": {
+												"femmes": 1000,
+												"filles": 1000,
+												"hommes": 0,
+												"garcons": 0,
+												"total": 2000
+											},
+											"moyens_verification": [
+												"images",
+												"fiche de décharge de kits intimes",
+												"rapport PDM"
+											],
+											"commentaire": null
+										}
+									],
+									"taches": [],
+									"semaines": [],
+									"responsable": null,
+									"budget_planifie_fichier": 100,
+									"budget_execute_fichier": 0,
+									"taux_execution_fichier": 0.6,
+									"resultats": [],
+									"observations": []
+								},
+								{
+									"numero": "1.2.2",
+									"libelle": "Sensibilisation à l'hygiène",
+									"indicateurs": [
+										{
+											"ordre": 9,
+											"code_cbpf": null,
+											"libelle": "Nombre de personnes sensibilisées",
+											"type_valeur": "nombre",
+											"mode_cumul": "somme",
+											"desagrege": true,
+											"cible": {
+												"femmes": 3000,
+												"filles": 2500,
+												"hommes": 1000,
+												"garcons": 1500,
+												"total": 8000
+											},
+											"moyens_verification": [
+												"Rapport d'activité",
+												"images"
+											],
+											"commentaire": null
+										}
+									],
+									"taches": [],
+									"semaines": [],
+									"responsable": null,
+									"budget_planifie_fichier": 100,
+									"budget_execute_fichier": null,
+									"taux_execution_fichier": 0.8,
+									"resultats": [],
+									"observations": []
+								},
+								{
+									"numero": "1.2.3",
+									"libelle": "Distribution de kits d'hygiène aux ménages vulnérables",
+									"indicateurs": [
+										{
+											"ordre": 10,
+											"code_cbpf": null,
+											"libelle": "Nombre de kits d'hygiène distribués aux ménages vulnérables",
+											"type_valeur": "nombre",
+											"mode_cumul": "somme",
+											"desagrege": true,
+											"cible": {
+												"femmes": 1100,
+												"filles": 0,
+												"hommes": 1100,
+												"garcons": 0,
+												"total": 2200
+											},
+											"moyens_verification": [
+												"images",
+												"fiche de décharge de kits d'hygiènes",
+												"rapport PDM"
+											],
+											"commentaire": null
+										}
+									],
+									"taches": [],
+									"semaines": [],
+									"responsable": null,
+									"budget_planifie_fichier": 100,
+									"budget_execute_fichier": 0,
+									"taux_execution_fichier": 0.8,
+									"resultats": [],
+									"observations": []
+								}
+							],
+							"indicateurs": []
+						},
+						{
+							"numero": "1.3",
+							"libelle": "13400 personnes (femmes, hommes, filles et garçons) ont un accès amélioré à l’assainissement dans Bossangoa, Nanga PAOUA  et Paoua couvrant aussi les besoins des retournés",
+							"activites": [
+								{
+									"numero": "1.3.1",
+									"libelle": "Appui à la construction des latrines familiales – PHAST",
+									"indicateurs": [
+										{
+											"ordre": 11,
+											"code_cbpf": null,
+											"libelle": "Number of communal sanitation facilities (e.g. latrines) and/or communal bathing facilities constructed or rehabilitated",
+											"type_valeur": "nombre",
+											"mode_cumul": "somme",
+											"desagrege": false,
+											"cible": {
+												"femmes": 0,
+												"filles": 0,
+												"hommes": 0,
+												"garcons": 0,
+												"total": 300
+											},
+											"moyens_verification": [
+												"images",
+												"rapportd'activités",
+												"Fiche de décharges de kits de creusage de latrines familiales"
+											],
+											"commentaire": null
+										}
+									],
+									"taches": [],
+									"semaines": [],
+									"responsable": null,
+									"budget_planifie_fichier": 100,
+									"budget_execute_fichier": null,
+									"taux_execution_fichier": 0.9,
+									"resultats": [],
+									"observations": []
+								}
+							],
+							"indicateurs": []
+						}
+					],
+					"indicateurs": [
+						{
+							"ordre": 1,
+							"code_cbpf": null,
+							"libelle": "Nombre de forages réhabilités suivant les principes et normes nationales et opérationnels",
+							"type_valeur": "nombre",
+							"mode_cumul": "somme",
+							"desagrege": false,
+							"cible": {
+								"femmes": 0,
+								"filles": 0,
+								"hommes": 0,
+								"garcons": 0,
+								"total": 6
+							},
+							"moyens_verification": [
+								"images",
+								"rapport d'activité",
+								"attestation de remises des forages réhabilités"
+							],
+							"commentaire": null
+						},
+						{
+							"ordre": 2,
+							"code_cbpf": null,
+							"libelle": "# de personnes ayant subi un choc qui collectent de l'eau depuis les points d’eau améliorés pour leurs besoins essentiels dans les zones ciblées",
+							"type_valeur": "nombre",
+							"mode_cumul": "somme",
+							"desagrege": false,
+							"cible": {
+								"femmes": 0,
+								"filles": 0,
+								"hommes": 0,
+								"garcons": 0,
+								"total": 3000
+							},
+							"moyens_verification": [
+								"Rapport d'activités",
+								"images de points d'eau réhabilités",
+								"attestation de remiseComments"
+							],
+							"commentaire": null
+						},
+						{
+							"ordre": 3,
+							"code_cbpf": null,
+							"libelle": "Nombre de comités de gestion de points d'eau mis en place/redynamisés/formés et dotés en kits d'entretien des forages, de pièces de rechanges de pompes à motricité humaine et en fourniture de bureau",
+							"type_valeur": "nombre",
+							"mode_cumul": "somme",
+							"desagrege": false,
+							"cible": {
+								"femmes": 0,
+								"filles": 0,
+								"hommes": 0,
+								"garcons": 0,
+								"total": 6
+							},
+							"moyens_verification": [
+								"Images",
+								"Compte rendu atelier de formation",
+								"fiches de présence"
+							],
+							"commentaire": null
+						}
+					]
+				}
+			]
+		}
+	]
+}

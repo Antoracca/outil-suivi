@@ -1,0 +1,54 @@
+@layer components {
+	.c-volet-ligne {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-xs);
+		min-inline-size: 0;
+	}
+	.c-volet-ligne__texte {
+		display: flex;
+		flex-direction: column;
+		line-height: var(--lh-table);
+		min-inline-size: 0;
+	}
+	.c-volet-ligne__org {
+		font-weight: var(--fw-semibold);
+		font-size: var(--fs-body-sm);
+		color: var(--color-ink);
+	}
+	.c-volet-ligne__secteur {
+		font-size: var(--fs-caption);
+		color: var(--color-muted);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	.c-volet-puce {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-xs);
+		padding: 3px var(--space-xs);
+		border: var(--hairline-w) solid var(--color-hairline-strong);
+		border-radius: var(--rounded-sm);
+		font-size: var(--fs-badge);
+		font-weight: var(--fw-label);
+		color: var(--color-ink);
+		background: var(--color-surface-card);
+		white-space: nowrap;
+	}
+	.c-volet-puce--wash {
+		--_s: var(--secteur-wash);
+	}
+	.c-volet-puce--nut {
+		--_s: var(--secteur-nut);
+	}
+	.c-volet-puce--san {
+		--_s: var(--secteur-san);
+	}
+	.c-volet-puce--pe {
+		--_s: var(--secteur-pe);
+	}
+	.c-volet-puce--secal {
+		--_s: var(--secteur-secal);
+	}
+}

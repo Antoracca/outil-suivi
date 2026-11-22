@@ -1,0 +1,171 @@
+@layer components {
+	.p-5w {
+		display: grid;
+	}
+	.p-5w__note {
+		display: flex;
+		align-items: center;
+		gap: var(--space-xs);
+		padding: var(--space-sm) var(--space-md);
+		background: var(--color-warning-soft);
+		color: var(--color-warning);
+		font-size: var(--fs-body-sm);
+	}
+	.p-5w > .c-alerte {
+		margin: var(--space-sm) var(--space-md) 0;
+	}
+	.p-5w__activite {
+		display: grid;
+		gap: var(--space-sm);
+		padding: var(--space-md);
+		border-block-end: var(--hairline-w) solid var(--color-hairline);
+	}
+	.p-5w__tete {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: var(--space-xs) var(--space-base);
+	}
+	.p-5w__titre {
+		font-size: var(--fs-title-sm);
+		line-height: var(--lh-caption);
+	}
+	.p-5w__titre span {
+		margin-inline-end: var(--space-xxs);
+		color: var(--color-muted);
+		font-weight: var(--fw-medium);
+	}
+	.p-5w__fiche {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: var(--space-xxs) var(--space-xs);
+		margin-block-start: var(--space-xxs);
+		font-size: var(--fs-caption);
+		color: var(--color-ink);
+	}
+	.p-5w__fiche--vide {
+		color: var(--color-warning);
+	}
+	.p-5w__etiquette {
+		padding: 1px var(--space-xs);
+		border-radius: var(--rounded-sm);
+		background: var(--color-wash-pousse-mid);
+		font-weight: var(--fw-semibold);
+	}
+	.p-5w__defile {
+		overflow-x: auto;
+	}
+	.p-5w__table {
+		inline-size: 100%;
+		font-size: var(--fs-table);
+		font-stretch: var(--fst-table);
+	}
+	.p-5w__table th,
+	.p-5w__table td {
+		padding: var(--space-xs) var(--space-sm);
+		text-align: start;
+		border-block-end: var(--hairline-w) solid var(--color-hairline);
+		white-space: nowrap;
+	}
+	.p-5w__table thead th {
+		background: var(--color-canvas-soft);
+		font-size: var(--fs-table-head);
+		font-weight: var(--fw-label);
+		color: var(--color-body);
+	}
+	.p-5w__table .u-nombre {
+		text-align: end;
+	}
+	.p-5w__table tbody th {
+		font-weight: var(--fw-semibold);
+	}
+	.p-5w__table tbody th .u-attenue {
+		font-weight: var(--fw-regular);
+	}
+	.p-5w__table tr.is-direct {
+		background: var(--color-live);
+	}
+	.p-5w__desagrege {
+		color: var(--color-body);
+		font-variant-numeric: tabular-nums;
+	}
+	.p-5w__actions {
+		display: flex;
+		gap: var(--space-xxs);
+	}
+	.p-5w__icone {
+		display: grid;
+		place-items: center;
+		inline-size: 2rem;
+		block-size: 2rem;
+		border-radius: var(--rounded-sm);
+		color: var(--color-body);
+	}
+	.p-5w__icone:hover {
+		background: var(--color-surface-strong);
+		color: var(--color-ink);
+	}
+	.p-5w__vide {
+		font-size: var(--fs-caption);
+		color: var(--color-muted);
+	}
+	.p-5w__ajouter {
+		justify-self: start;
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-xxs);
+		min-block-size: 2.25rem;
+		padding: 0 var(--space-sm);
+		border: var(--hairline-w) dashed var(--color-border-control);
+		border-radius: var(--rounded-md);
+		font-size: var(--fs-button);
+		font-weight: var(--fw-medium);
+		color: var(--color-link);
+	}
+	.p-5w__ajouter:hover {
+		border-style: solid;
+		background: var(--color-surface-row-active);
+	}
+	/* Dialogue de saisie d'une ligne */
+	.p-5w__zones {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-xs);
+	}
+	.p-5w__zones button {
+		min-block-size: 2.25rem;
+		padding: 0 var(--space-sm);
+		border: var(--hairline-w) solid var(--color-border-control);
+		border-radius: var(--rounded-pill);
+		font-size: var(--fs-body-sm);
+		font-weight: var(--fw-medium);
+		color: var(--color-ink);
+	}
+	.p-5w__zones button.is-actif {
+		background: var(--color-primary);
+		border-color: var(--color-primary);
+		color: var(--color-on-primary);
+	}
+	.p-5w__grille {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+		gap: var(--space-sm);
+	}
+	.p-5w__grille--4 {
+		grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
+	}
+	.p-5w__personnes {
+		margin: 0;
+		padding: var(--space-sm);
+		border: var(--hairline-w) solid var(--color-hairline-strong);
+		border-radius: var(--rounded-md);
+	}
+	.p-5w__personnes legend {
+		padding-inline: var(--space-xxs);
+		font-size: var(--fs-body-sm);
+		font-weight: var(--fw-semibold);
+		color: var(--color-ink);
+	}
+}

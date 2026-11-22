@@ -1,0 +1,17 @@
+@layer components {
+	.c-logo {
+		flex: none;
+		align-self: flex-start;
+		block-size: 2.25rem;
+		inline-size: auto;
+		object-fit: contain;
+		/* Le fichier a un fond blanc : on le fond dans les surfaces claires. */
+		mix-blend-mode: multiply;
+	}
+	.c-logo--lg {
+		block-size: 4.5rem;
+	}
+	.c-logo--xl {
+		block-size: clamp(4.5rem, 6vw, 7rem);
+	}
+}

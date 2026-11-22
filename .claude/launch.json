@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "suivi-consortium",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["vite", "dev", "--port", "5173", "--host", "127.0.0.1", "--strictPort"],
+      "port": 5173
+    }
+  ]
+}

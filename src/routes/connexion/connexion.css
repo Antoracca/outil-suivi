@@ -1,0 +1,242 @@
+@layer components {
+	.p-connexion {
+		display: grid;
+		grid-template-columns: minmax(0, 11fr) minmax(0, 13fr);
+		min-block-size: 100dvh;
+	}
+
+	/* Colonne de gauche : identité centrée, imposante, et une phrase qui dit ce qu'est l'outil. */
+	.p-connexion__marque {
+		position: sticky;
+		inset-block-start: 0;
+		align-self: start;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-block-size: 100dvh;
+		padding: var(--space-xxl) clamp(var(--space-lg), 4vw, var(--space-xxl));
+		background:
+			radial-gradient(ellipse 80% 55% at 15% 10%, var(--color-wash-pousse-mid), transparent 70%),
+			radial-gradient(ellipse 60% 45% at 85% 95%, var(--color-wash-pousse-light), transparent 70%),
+			var(--color-canvas);
+		border-inline-end: var(--hairline-w) solid var(--color-hairline-strong);
+	}
+	.p-connexion__identite {
+		display: grid;
+		justify-items: center;
+		gap: var(--space-xl);
+		max-inline-size: 32rem;
+		text-align: center;
+	}
+	.p-connexion__identite .c-logo {
+		align-self: center;
+	}
+	.p-connexion__textes {
+		display: grid;
+		justify-items: center;
+		gap: var(--space-sm);
+	}
+	.p-connexion__titre {
+		font-size: clamp(var(--fs-display-lg), 2.6vw + 0.75rem, calc(var(--fs-display-xl) * 1.4));
+		font-stretch: var(--fst-display);
+		letter-spacing: var(--ls-figure);
+		line-height: var(--lh-display);
+	}
+	.p-connexion__projet {
+		max-inline-size: 30ch;
+		font-size: var(--fs-title-md);
+		line-height: var(--lh-caption);
+		color: var(--color-body);
+	}
+	/* Référence du projet en fin de bloc, surlignée en vert Pousse (vert citron). */
+	.p-connexion__code {
+		padding: var(--space-xxs) var(--space-sm);
+		border-radius: var(--rounded-sm);
+		background: var(--color-jauge-cumul);
+		font-size: var(--fs-caption);
+		font-weight: var(--fw-semibold);
+		font-stretch: var(--fst-code);
+		letter-spacing: var(--ls-code);
+		color: var(--color-ink);
+	}
+	.p-connexion__description {
+		padding-block-start: var(--space-lg);
+		border-block-start: var(--hairline-w) solid var(--color-hairline-strong);
+		font-size: var(--fs-title-md);
+		font-weight: var(--fw-medium);
+		line-height: var(--lh-caption);
+		color: var(--color-ink);
+	}
+
+	/* Colonne de droite : interrupteur en haut à droite, puis le contenu du mode. */
+	.p-connexion__acces {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-xl);
+		padding: var(--space-lg) clamp(var(--space-lg), 4vw, var(--space-xxl)) var(--space-xxl);
+	}
+	.p-connexion__bascule {
+		display: flex;
+		justify-content: flex-end;
+	}
+	.p-connexion__choix {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-lg);
+		inline-size: 100%;
+		max-inline-size: 44rem;
+	}
+	.p-connexion__reel {
+		display: flex;
+		justify-content: center;
+		padding-block-start: var(--space-xl);
+	}
+	.p-connexion__avertissement {
+		display: flex;
+		gap: var(--space-sm);
+		padding: var(--space-sm) var(--space-base);
+		border-radius: var(--rounded-md);
+		background: var(--color-surface-card);
+		border: var(--hairline-w) solid var(--color-hairline-strong);
+		font-size: var(--fs-body-sm);
+		color: var(--color-body);
+	}
+	.p-connexion__avertissement strong {
+		color: var(--color-ink);
+	}
+	.p-connexion__sous-titre {
+		font-size: var(--fs-display-sm);
+		letter-spacing: var(--ls-display-sm);
+	}
+	.p-connexion__groupe {
+		display: grid;
+		gap: var(--space-xs);
+	}
+	.p-connexion__role {
+		font-size: var(--fs-title-sm);
+	}
+	.p-connexion__role-desc {
+		font-size: var(--fs-caption);
+		color: var(--color-muted);
+	}
+	.p-connexion__comptes {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+		gap: var(--space-xs);
+	}
+	.p-connexion__compte {
+		display: flex;
+		align-items: center;
+		gap: var(--space-sm);
+		inline-size: 100%;
+		min-block-size: 3.5rem;
+		padding: var(--space-xs) var(--space-sm);
+		border: var(--hairline-w) solid var(--color-hairline-strong);
+		border-radius: var(--rounded-md);
+		background: var(--color-surface-card);
+		text-align: start;
+		transition: border-color var(--dur-fast) linear, box-shadow var(--dur-fast) linear;
+	}
+	.p-connexion__compte:hover {
+		border-color: var(--color-ink);
+		box-shadow: var(--shadow-hover);
+	}
+	.p-connexion__compte > .c-icone {
+		margin-inline-start: auto;
+		color: var(--color-muted);
+	}
+	.p-connexion__compte-texte {
+		display: flex;
+		flex-direction: column;
+		min-inline-size: 0;
+		line-height: var(--lh-table);
+	}
+	.p-connexion__nom {
+		font-weight: var(--fw-semibold);
+		font-size: var(--fs-body-sm);
+	}
+	.p-connexion__fonction {
+		font-size: var(--fs-caption);
+		color: var(--color-muted);
+	}
+	.p-connexion__pied {
+		border-block-start: var(--hairline-w) solid var(--color-hairline);
+		padding-block-start: var(--space-base);
+	}
+	.p-connexion__reinit {
+		color: var(--color-link);
+		text-decoration: underline;
+		font-size: var(--fs-caption);
+	}
+
+	/* Tablette et téléphone : bandeau d'identité compact en haut, contenu dessous. */
+	@media (max-width: 64em) {
+		.p-connexion {
+			grid-template-columns: 1fr;
+			min-block-size: 0;
+		}
+		.p-connexion__marque {
+			position: static;
+			min-block-size: 0;
+			padding: var(--space-xl) var(--space-base) var(--space-lg);
+			border-inline-end: 0;
+			border-block-end: var(--hairline-w) solid var(--color-hairline-strong);
+		}
+		.p-connexion__identite {
+			gap: var(--space-base);
+		}
+		.p-connexion__titre {
+			font-size: clamp(var(--fs-display-md), 6vw, var(--fs-display-lg));
+		}
+		.p-connexion__projet {
+			font-size: var(--fs-body-md);
+		}
+		.p-connexion__description {
+			padding-block-start: var(--space-base);
+			font-size: var(--fs-body-sm);
+		}
+	}
+	/* Téléphone : bandeau court pour que le formulaire reste visible sans défiler. */
+	@media (max-width: 40em) {
+		.p-connexion__description {
+			padding-block-start: var(--space-sm);
+		}
+		.p-connexion__identite {
+			gap: var(--space-sm);
+		}
+		.p-connexion__acces {
+			padding: var(--space-base) var(--space-base) var(--space-xxl);
+			gap: var(--space-lg);
+		}
+		.p-connexion__reel {
+			padding-block-start: 0;
+		}
+	}
+}
+
+@layer components {
+	/* Tablette et téléphone : interrupteur au centre, au-dessus du contenu centré. */
+	@media (max-width: 64em) {
+		.p-connexion__bascule {
+			justify-content: center;
+		}
+		/* Mode réel : pas de bandeau de marque ; la carte de connexion, avec le logo, monte
+		   tout en haut et laisse la place à la connexion rapide. Le titre reste lu par les
+		   lecteurs d'écran (masquage visuel, pas display: none). */
+		.p-connexion--reel .p-connexion__marque {
+			position: absolute;
+			inline-size: 1px;
+			block-size: 1px;
+			min-block-size: 0;
+			padding: 0;
+			overflow: hidden;
+			clip-path: inset(50%);
+			white-space: nowrap;
+			border: 0;
+		}
+		.p-connexion--reel .p-connexion__acces {
+			padding-block-start: var(--space-base);
+			gap: var(--space-base);
+		}
+	}
+}

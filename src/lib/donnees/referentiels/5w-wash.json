@@ -1,0 +1,1927 @@
+{
+	"source": "docs/excel/HRP_2025_5W_Juillet_september_2025 (3).xlsx (modèle 5W du cluster WASH, PRH 2025)",
+	"colonnes": [
+		"Nom Organisation",
+		"Partenaires de mise en œuvre du paquet wash pour le même projet",
+		"Cluster",
+		"Sous-Cluster",
+		"Activité de réponse",
+		"Type de modalité",
+		"Unité",
+		"Quantité prévue",
+		"Quantité réalisée",
+		"Préfecture",
+		"Sous-préfecture",
+		"Commune",
+		"Village/Localisation",
+		"Latitude",
+		"Longitude",
+		"Indicateur",
+		"Type de bénéficiaire",
+		"Nombre de personnes ciblées",
+		"Nombre de personnes atteintes",
+		"Nombre de filles atteintes",
+		"Nombre de garçons atteints",
+		"Nombre de femmes atteintes",
+		"Nombre d'hommes atteints",
+		"Date de début jj/mm/aaaa",
+		"Date de fin jj/mm/aaaa",
+		"Statut",
+		"Commentaire",
+		"Code ou denomination du projet",
+		"Source de financement",
+		"Réponse",
+		"Mois de rappaortage"
+	],
+	"activites": [
+		{
+			"code": "Eau|01. Distribution d'eau par camion",
+			"sous_cluster": "Eau",
+			"libelle": "01. Distribution d'eau par camion",
+			"unite": "m3",
+			"indicateur": "# de personnes qui ont reçu de l'eau par camion par mois"
+		},
+		{
+			"code": "Eau|02. Mise en place d'un système d'approvisionnement en eau potable (AEP)",
+			"sous_cluster": "Eau",
+			"libelle": "02. Mise en place d'un système d'approvisionnement en eau potable (AEP)",
+			"unite": "# de système",
+			"indicateur": "# de personnes qui ont accès au nouveau système d'AEP"
+		},
+		{
+			"code": "Eau|03. Réhabilitation d'un système d'approvisionnement en l'eau potable (AEP)",
+			"sous_cluster": "Eau",
+			"libelle": "03. Réhabilitation d'un système d'approvisionnement en l'eau potable (AEP)",
+			"unite": "# de système",
+			"indicateur": "# de personnes qui ont accès au système d'AEP"
+		},
+		{
+			"code": "Eau|04. Construction de nouveau réservoir d'eau",
+			"sous_cluster": "Eau",
+			"libelle": "04. Construction de nouveau réservoir d'eau",
+			"unite": "# de réservoir",
+			"indicateur": "# de personnes qui ont accès au nouveau réservoir d'eau construit"
+		},
+		{
+			"code": "Eau|05. Réhabilitation de réservoir d'eau",
+			"sous_cluster": "Eau",
+			"libelle": "05. Réhabilitation de réservoir d'eau",
+			"unite": "# de réservoir",
+			"indicateur": "# de personnes qui ont accès au nouveau réservoir d'eau rehabilité"
+		},
+		{
+			"code": "Eau|06. Construction de nouveau forage",
+			"sous_cluster": "Eau",
+			"libelle": "06. Construction de nouveau forage",
+			"unite": "# de forage",
+			"indicateur": "# de personnes qui ont accès au nouveau forage"
+		},
+		{
+			"code": "Eau|07. Rehabilitation d'un forage existant",
+			"sous_cluster": "Eau",
+			"libelle": "07. Rehabilitation d'un forage existant",
+			"unite": "# de forage",
+			"indicateur": "# de personnes qui ont accès au forage réhabilité"
+		},
+		{
+			"code": "Eau|08. Construction de nouveau puits (pompe manuelle ou artisanalle)",
+			"sous_cluster": "Eau",
+			"libelle": "08. Construction de nouveau puits (pompe manuelle ou artisanalle)",
+			"unite": "# de puits",
+			"indicateur": "# de personnes qui ont accès au nouveau puits"
+		},
+		{
+			"code": "Eau|09. Réhabilitation de puits",
+			"sous_cluster": "Eau",
+			"libelle": "09. Réhabilitation de puits",
+			"unite": "# de puits",
+			"indicateur": "# de personnes qui ont accès au puits réhabilité"
+		},
+		{
+			"code": "Eau|10. Construction de nouveau point de distribution de l'eau (BF)",
+			"sous_cluster": "Eau",
+			"libelle": "10. Construction de nouveau point de distribution de l'eau (BF)",
+			"unite": "# de point d'eau",
+			"indicateur": "# de personnes qui ont accès à la nouvelle BF"
+		},
+		{
+			"code": "Eau|11. Réhabilitation de point de distribution d'eau (BF)",
+			"sous_cluster": "Eau",
+			"libelle": "11. Réhabilitation de point de distribution d'eau (BF)",
+			"unite": "# de point d'eau",
+			"indicateur": "# de personnes qui ont accès à la BF réhabilitée"
+		},
+		{
+			"code": "Eau|12. Construction de nouveau système de traitement de l'eau",
+			"sous_cluster": "Eau",
+			"libelle": "12. Construction de nouveau système de traitement de l'eau",
+			"unite": "# d'unité de traitement",
+			"indicateur": "# de personnes qui ont accès au système de traitement de l'eau construit"
+		},
+		{
+			"code": "Eau|13. Réhabilitation de système de traitement de l'eau",
+			"sous_cluster": "Eau",
+			"libelle": "13. Réhabilitation de système de traitement de l'eau",
+			"unite": "# d'unité de traitement",
+			"indicateur": "# de personnes qui ont accès au système de traitement de l'eau réhabilité"
+		},
+		{
+			"code": "Eau|14. Installation de station de pompage et traitement de l'eau",
+			"sous_cluster": "Eau",
+			"libelle": "14. Installation de station de pompage et traitement de l'eau",
+			"unite": "# de station",
+			"indicateur": "# de personnes qui ont accès à l'installation de pompage et traitement de l'eau"
+		},
+		{
+			"code": "Eau|15. Réhabilitation de station de pompage et traitement de l'eau",
+			"sous_cluster": "Eau",
+			"libelle": "15. Réhabilitation de station de pompage et traitement de l'eau",
+			"unite": "# de station",
+			"indicateur": "# de personnes qui ont accès à l'installation de pompage et traitement de l'eau"
+		},
+		{
+			"code": "Eau|16. Traitement de l'eau de boisson",
+			"sous_cluster": "Eau",
+			"libelle": "16. Traitement de l'eau de boisson",
+			"unite": "m3",
+			"indicateur": "# de personnes qui ont accès à de l'eau traitée"
+		},
+		{
+			"code": "Eau|17. Test ou suivi de la qualité de l'eau au niveau des sources d'approvisionnement (Physico-chimique et bacteriologique)",
+			"sous_cluster": "Eau",
+			"libelle": "17. Test ou suivi de la qualité de l'eau au niveau des sources d'approvisionnement (Physico-chimique et bacteriologique)",
+			"unite": "# de test",
+			"indicateur": "# de tests de qualité exécutés"
+		},
+		{
+			"code": "Eau|18. Test ou suivi de la qualité de l'eau au sein des ménages",
+			"sous_cluster": "Eau",
+			"libelle": "18. Test ou suivi de la qualité de l'eau au sein des ménages",
+			"unite": "# de test",
+			"indicateur": "# de ménages dont la qualité de l'eau de boisson a été testée."
+		},
+		{
+			"code": "Eau|19. Installation de systèmes de collecte d'eau de pluie",
+			"sous_cluster": "Eau",
+			"libelle": "19. Installation de systèmes de collecte d'eau de pluie",
+			"unite": "# de kit",
+			"indicateur": "# de personnes qui ont accès à l'eau de pluie"
+		},
+		{
+			"code": "Eau|20. Installation d'un système motorisé (photovoltaique, Electrique, etc) pour la distribution d'eau",
+			"sous_cluster": "Eau",
+			"libelle": "20. Installation d'un système motorisé (photovoltaique, Electrique, etc) pour la distribution d'eau",
+			"unite": "# de système",
+			"indicateur": "# de personnes qui ont accès à l'eau distribuée par un système motorisé"
+		},
+		{
+			"code": "Eau|21. Aménagement d'une source d'eau",
+			"sous_cluster": "Eau",
+			"libelle": "21. Aménagement d'une source d'eau",
+			"unite": "# de sources",
+			"indicateur": "# de personnes qui ont accès à une source amenagée"
+		},
+		{
+			"code": "Eau|22. Réhabilitation d'une source d'eau",
+			"sous_cluster": "Eau",
+			"libelle": "22. Réhabilitation d'une source d'eau",
+			"unite": "# de sources",
+			"indicateur": "# de personnes qui ont accès à une source amenagée"
+		},
+		{
+			"code": "Eau|23. Remise de kit de maintenance aux comités de point d'eau",
+			"sous_cluster": "Eau",
+			"libelle": "23. Remise de kit de maintenance aux comités de point d'eau",
+			"unite": "# de kit",
+			"indicateur": "# de kits"
+		},
+		{
+			"code": "Eau|24. Remise de kit pièces de rechange aux comités de point d'eau",
+			"sous_cluster": "Eau",
+			"libelle": "24. Remise de kit pièces de rechange aux comités de point d'eau",
+			"unite": "# de kit",
+			"indicateur": "# de kits"
+		},
+		{
+			"code": "Eau|25. Distribution de kits de stockage de l'eau",
+			"sous_cluster": "Eau",
+			"libelle": "25. Distribution de kits de stockage de l'eau",
+			"unite": "# de personnes",
+			"indicateur": "# de personnes bénéficiaires du kit"
+		},
+		{
+			"code": "Eau|26. Formation des artisans réparateurs à l'opérationalisation et à la maintenance des pompes",
+			"sous_cluster": "Eau",
+			"libelle": "26. Formation des artisans réparateurs à l'opérationalisation et à la maintenance des pompes",
+			"unite": "# de personnes",
+			"indicateur": "# de personnes formées sur l'opérationalisation et maintenance des pompes"
+		},
+		{
+			"code": "Eau|27. Formation des techniciens de l'eau sur la qualité de l'eau (chloration et test)",
+			"sous_cluster": "Eau",
+			"libelle": "27. Formation des techniciens de l'eau sur la qualité de l'eau (chloration et test)",
+			"unite": "# de personnes",
+			"indicateur": "# de personnes formées sur la qualité de l'eau (chloration et test)"
+		},
+		{
+			"code": "Eau|28. Formation de personnes sur la gestion de réseaux",
+			"sous_cluster": "Eau",
+			"libelle": "28. Formation de personnes sur la gestion de réseaux",
+			"unite": "# de personnes",
+			"indicateur": "# de personnes formées sur la gestion des systèmes d'eau / points d'eau"
+		},
+		{
+			"code": "Eau|29. Formation des comités de gestion des points d'eau",
+			"sous_cluster": "Eau",
+			"libelle": "29. Formation des comités de gestion des points d'eau",
+			"unite": "# de comités",
+			"indicateur": "# de personnes dans des comités de gestion appuyés et fonctionnels"
+		},
+		{
+			"code": "Eau|30. Evaluation des points d'eau",
+			"sous_cluster": "Eau",
+			"libelle": "30. Evaluation des points d'eau",
+			"unite": "# de points d'eau",
+			"indicateur": "# de points d'eau évalués"
+		},
+		{
+			"code": "Eau|31. Entretien des pompes à motricité humaine",
+			"sous_cluster": "Eau",
+			"libelle": "31. Entretien des pompes à motricité humaine",
+			"unite": "# de points d'eau",
+			"indicateur": "# de personnes bénéficiant du point d'eau"
+		},
+		{
+			"code": "Eau|32. Entretien des AEP",
+			"sous_cluster": "Eau",
+			"libelle": "32. Entretien des AEP",
+			"unite": "# de points d'eau",
+			"indicateur": "# de personnes bénéficiant du point d'eau"
+		},
+		{
+			"code": "Assainissement|01. Mise en place d'aires de défécation",
+			"sous_cluster": "Assainissement",
+			"libelle": "01. Mise en place d'aires de défécation",
+			"unite": "# d'aire de défécation",
+			"indicateur": "# de personnes ayant accès aux aires de défécation"
+		},
+		{
+			"code": "Assainissement|02. Réhabilitation d'aires de défécation",
+			"sous_cluster": "Assainissement",
+			"libelle": "02. Réhabilitation d'aires de défécation",
+			"unite": "# d'aire de défécation",
+			"indicateur": "# de personnes ayant accès aux aires de défécation"
+		},
+		{
+			"code": "Assainissement|03. Construction de latrine publique d'urgence",
+			"sous_cluster": "Assainissement",
+			"libelle": "03. Construction de latrine publique d'urgence",
+			"unite": "# de latrines",
+			"indicateur": "# de personnes ayant accès aux latrines d'urgence"
+		},
+		{
+			"code": "Assainissement|04. Réhabilitation de latrine publique d'urgence",
+			"sous_cluster": "Assainissement",
+			"libelle": "04. Réhabilitation de latrine publique d'urgence",
+			"unite": "# de latrines",
+			"indicateur": "# de personnes ayant accès aux latrines d'urgence"
+		},
+		{
+			"code": "Assainissement|05. Construction de latrine publique durable",
+			"sous_cluster": "Assainissement",
+			"libelle": "05. Construction de latrine publique durable",
+			"unite": "# de latrines",
+			"indicateur": "# de personnes ayant accès aux latrines durables"
+		},
+		{
+			"code": "Assainissement|06. Réhabilitation de latrine publique durable",
+			"sous_cluster": "Assainissement",
+			"libelle": "06. Réhabilitation de latrine publique durable",
+			"unite": "# de latrines",
+			"indicateur": "# de personnes ayant accès aux latrines durables"
+		},
+		{
+			"code": "Assainissement|07. Construction de nouvelle latrine familiale (moins de 20 personnes par latrine)",
+			"sous_cluster": "Assainissement",
+			"libelle": "07. Construction de nouvelle latrine familiale (moins de 20 personnes par latrine)",
+			"unite": "# de latrines",
+			"indicateur": "# de personnes ayant accès aux latrines familiales"
+		},
+		{
+			"code": "Assainissement|08. Réhabilitation de nouvelle latrine familiale (moins de 20 personnes par latrine)",
+			"sous_cluster": "Assainissement",
+			"libelle": "08. Réhabilitation de nouvelle latrine familiale (moins de 20 personnes par latrine)",
+			"unite": "# de latrines",
+			"indicateur": "# de personnes ayant accès aux latrines durables"
+		},
+		{
+			"code": "Assainissement|09. Promotion sur la construction/amélioration de latrines familiales hygiéniques",
+			"sous_cluster": "Assainissement",
+			"libelle": "09. Promotion sur la construction/amélioration de latrines familiales hygiéniques",
+			"unite": "# de latrines",
+			"indicateur": "# de personnes sensibilisées sur la contruction ou amelioration de latrine"
+		},
+		{
+			"code": "Assainissement|10. Vidange des fosses de latrines",
+			"sous_cluster": "Assainissement",
+			"libelle": "10. Vidange des fosses de latrines",
+			"unite": "# de latrines",
+			"indicateur": "# de personnes ayant accès aux latrines vidangées"
+		},
+		{
+			"code": "Assainissement|11. Construction de douches publiques d'urgence",
+			"sous_cluster": "Assainissement",
+			"libelle": "11. Construction de douches publiques d'urgence",
+			"unite": "# de douches",
+			"indicateur": "# de personnes ayant accès aux douches d'urgence"
+		},
+		{
+			"code": "Assainissement|12. Réhabilitation de douches publiques d'urgence",
+			"sous_cluster": "Assainissement",
+			"libelle": "12. Réhabilitation de douches publiques d'urgence",
+			"unite": "# de douches",
+			"indicateur": "# de personnes ayant accès aux docuhes d'urgence"
+		},
+		{
+			"code": "Assainissement|13. Construction de douches publiques durable",
+			"sous_cluster": "Assainissement",
+			"libelle": "13. Construction de douches publiques durable",
+			"unite": "# de douches",
+			"indicateur": "# de personnes ayant accès aux docuhes durables"
+		},
+		{
+			"code": "Assainissement|14. Réhabilitation de douches publiques durable",
+			"sous_cluster": "Assainissement",
+			"libelle": "14. Réhabilitation de douches publiques durable",
+			"unite": "# de douches",
+			"indicateur": "# de personnes ayant accès aux docuhes durables"
+		},
+		{
+			"code": "Assainissement|15. Construction de nouvelles zones à déchets",
+			"sous_cluster": "Assainissement",
+			"libelle": "15. Construction de nouvelles zones à déchets",
+			"unite": "# de zones",
+			"indicateur": "# de personnes ayant accès aux nouvelles zones à déchets"
+		},
+		{
+			"code": "Assainissement|16. Réhabilitation de zones à déchets",
+			"sous_cluster": "Assainissement",
+			"libelle": "16. Réhabilitation de zones à déchets",
+			"unite": "# de zones",
+			"indicateur": "# de personnes ayant accès aux zones à déchets rehabilitées"
+		},
+		{
+			"code": "Assainissement|17. Creusage de fosses à déchet ou trous à ordure (lieux publics)",
+			"sous_cluster": "Assainissement",
+			"libelle": "17. Creusage de fosses à déchet ou trous à ordure (lieux publics)",
+			"unite": "# de fosses",
+			"indicateur": "# de personnes ayant accès aux fosses creusées"
+		},
+		{
+			"code": "Assainissement|18. Vidange de fosses à déchets existantes",
+			"sous_cluster": "Assainissement",
+			"libelle": "18. Vidange de fosses à déchets existantes",
+			"unite": "# de fosses",
+			"indicateur": "# de personnes ayant accès aux fosses à déchets vidangées"
+		},
+		{
+			"code": "Assainissement|19. Promotion sur la gestion des déchets",
+			"sous_cluster": "Assainissement",
+			"libelle": "19. Promotion sur la gestion des déchets",
+			"unite": "# de personnes",
+			"indicateur": "# de personnes formées/sensibilisées"
+		},
+		{
+			"code": "Assainissement|20. Distribution de bac à ordures",
+			"sous_cluster": "Assainissement",
+			"libelle": "20. Distribution de bac à ordures",
+			"unite": "# de poubelles",
+			"indicateur": "# de personnes ayant reçu des bacs à ordure distribués"
+		},
+		{
+			"code": "Assainissement|21. Etablissement de système d'évacuation des déchets",
+			"sous_cluster": "Assainissement",
+			"libelle": "21. Etablissement de système d'évacuation des déchets",
+			"unite": "# de système",
+			"indicateur": "# de personnes ayant accès au système d'évacuation de déchets"
+		},
+		{
+			"code": "Assainissement|22. Construction d'incinérateur",
+			"sous_cluster": "Assainissement",
+			"libelle": "22. Construction d'incinérateur",
+			"unite": "# d'incinérateur",
+			"indicateur": "# d'incinérateurs construits"
+		},
+		{
+			"code": "Assainissement|23. Réhabilitation d'incinérateur",
+			"sous_cluster": "Assainissement",
+			"libelle": "23. Réhabilitation d'incinérateur",
+			"unite": "# d'incinérateur",
+			"indicateur": "# d'incinérateurs réhabilités"
+		},
+		{
+			"code": "Assainissement|24. Réalisation une campagne de nettoyage",
+			"sous_cluster": "Assainissement",
+			"libelle": "24. Réalisation une campagne de nettoyage",
+			"unite": "# de campagne",
+			"indicateur": "# de personnes faisant campagne de nettoyage"
+		},
+		{
+			"code": "Assainissement|25. Formation des comités d'assainissement",
+			"sous_cluster": "Assainissement",
+			"libelle": "25. Formation des comités d'assainissement",
+			"unite": "# de personnes",
+			"indicateur": "# de personnes formées sur les approches d'assainissement communautaires"
+		},
+		{
+			"code": "Assainissement|26. Sensibilisation des communautés sur les approches d'assainissement communautaires",
+			"sous_cluster": "Assainissement",
+			"libelle": "26. Sensibilisation des communautés sur les approches d'assainissement communautaires",
+			"unite": "# de personnes",
+			"indicateur": "# de communautés sensibilisées sur les approches communautaires d'assainissement"
+		},
+		{
+			"code": "Assainissement|27. Réalisation d'activités de suivi de la communauté sensibilisée",
+			"sous_cluster": "Assainissement",
+			"libelle": "27. Réalisation d'activités de suivi de la communauté sensibilisée",
+			"unite": "# de missions",
+			"indicateur": "# de rapport de mission"
+		},
+		{
+			"code": "Assainissement|28. Distribution de kits d'assainissement",
+			"sous_cluster": "Assainissement",
+			"libelle": "28. Distribution de kits d'assainissement",
+			"unite": "# de kits",
+			"indicateur": "# de personnes bénéficiant des kits distribués"
+		},
+		{
+			"code": "Assainissement|29. Vérification et certification du statut de fin de défecation à l'air libre pour la communauté (ODF)",
+			"sous_cluster": "Assainissement",
+			"libelle": "29. Vérification et certification du statut de fin de défecation à l'air libre pour la communauté (ODF)",
+			"unite": "# de communautés",
+			"indicateur": "# de personnes vivant dans des communautés certifiées ODF"
+		},
+		{
+			"code": "Assainissement|30. Réalisation d'enquêtes / d'études / d'évalutations dans le domaine sanitaire",
+			"sous_cluster": "Assainissement",
+			"libelle": "30. Réalisation d'enquêtes / d'études / d'évalutations dans le domaine sanitaire",
+			"unite": "# d'études",
+			"indicateur": "# d'enquêtes / études / évaluation effectuées"
+		},
+		{
+			"code": "Hygiène & changement de comportement|01. Installation/Construction de nouvelle station de lavage de main",
+			"sous_cluster": "Hygiène & changement de comportement",
+			"libelle": "01. Installation/Construction de nouvelle station de lavage de main",
+			"unite": "# de station",
+			"indicateur": "# de personnes ayant accès aux sations de lavage des mains"
+		},
+		{
+			"code": "Hygiène & changement de comportement|02. Réhabilitation de station de lavage de main",
+			"sous_cluster": "Hygiène & changement de comportement",
+			"libelle": "02. Réhabilitation de station de lavage de main",
+			"unite": "# de station",
+			"indicateur": "# de personnes ayant accès aux sations de lavage des mains"
+		},
+		{
+			"code": "Hygiène & changement de comportement|03. Réalisation de séances de promotion de l'hygiène générale",
+			"sous_cluster": "Hygiène & changement de comportement",
+			"libelle": "03. Réalisation de séances de promotion de l'hygiène générale",
+			"unite": "# de personnes",
+			"indicateur": "# de personnes bénéficiant l'activité de promotion/sensibilisées"
+		},
+		{
+			"code": "Hygiène & changement de comportement|04. Réalisation de séances de promotion des gestes barrière COVID",
+			"sous_cluster": "Hygiène & changement de comportement",
+			"libelle": "04. Réalisation de séances de promotion des gestes barrière COVID",
+			"unite": "# de personnes",
+			"indicateur": "# de personnes bénéficiant l'activité de promotion/sensibilisées"
+		},
+		{
+			"code": "Hygiène & changement de comportement|05. Distribution de matériel IEC",
+			"sous_cluster": "Hygiène & changement de comportement",
+			"libelle": "05. Distribution de matériel IEC",
+			"unite": "# de kit",
+			"indicateur": "# de kits IEC distribués"
+		},
+		{
+			"code": "Hygiène & changement de comportement|06. Distribution de kit d'hygiène ménage",
+			"sous_cluster": "Hygiène & changement de comportement",
+			"libelle": "06. Distribution de kit d'hygiène ménage",
+			"unite": "# de kits",
+			"indicateur": "# de personnes bénéficiaires du kit"
+		},
+		{
+			"code": "Hygiène & changement de comportement|07. Distribution de kit d'hygiène menstruelle",
+			"sous_cluster": "Hygiène & changement de comportement",
+			"libelle": "07. Distribution de kit d'hygiène menstruelle",
+			"unite": "# de kits",
+			"indicateur": "# de femmes/filles bénéficiaires de kit hygiène menstruelle"
+		},
+		{
+			"code": "Hygiène & changement de comportement|08. Distribution de kits COVID",
+			"sous_cluster": "Hygiène & changement de comportement",
+			"libelle": "08. Distribution de kits COVID",
+			"unite": "# de kits",
+			"indicateur": "# de personnes bénéficiaires du kit"
+		},
+		{
+			"code": "Hygiène & changement de comportement|09. Distribution de kits d'hygiène aux enfants MAS",
+			"sous_cluster": "Hygiène & changement de comportement",
+			"libelle": "09. Distribution de kits d'hygiène aux enfants MAS",
+			"unite": "# de kits",
+			"indicateur": "# de personnes beneficiaires du kit MAS"
+		},
+		{
+			"code": "Hygiène & changement de comportement|10. Mise en place de nouveau clubs d'hygiène dans les écoles",
+			"sous_cluster": "Hygiène & changement de comportement",
+			"libelle": "10. Mise en place de nouveau clubs d'hygiène dans les écoles",
+			"unite": "# de clubs",
+			"indicateur": "# de personnes dans de nouveaux clubs d'hygiène établis et fonctionnels"
+		},
+		{
+			"code": "Hygiène & changement de comportement|11. Renforcer les clubs d'hygiène existants",
+			"sous_cluster": "Hygiène & changement de comportement",
+			"libelle": "11. Renforcer les clubs d'hygiène existants",
+			"unite": "# de clubs",
+			"indicateur": "# de personnes dans des clubs d'hygiène renforcés"
+		},
+		{
+			"code": "Hygiène & changement de comportement|12. Distribution de kits PCI dans les structures de santé",
+			"sous_cluster": "Hygiène & changement de comportement",
+			"libelle": "12. Distribution de kits PCI dans les structures de santé",
+			"unite": "# de kits",
+			"indicateur": "# de structures de santé appuyés avec les kits PCI"
+		},
+		{
+			"code": "Hygiène & changement de comportement|13. Distribution de kits WASH dans les écoles",
+			"sous_cluster": "Hygiène & changement de comportement",
+			"libelle": "13. Distribution de kits WASH dans les écoles",
+			"unite": "# de kits",
+			"indicateur": "# d'écoles qui ont reçu un kit"
+		},
+		{
+			"code": "Hygiène & changement de comportement|14. Formation/sensibilisation des personnels de santé",
+			"sous_cluster": "Hygiène & changement de comportement",
+			"libelle": "14. Formation/sensibilisation des personnels de santé",
+			"unite": "# de personnes",
+			"indicateur": "# de personnes formées"
+		},
+		{
+			"code": "Hygiène & changement de comportement|15. Formation des relais communautaire",
+			"sous_cluster": "Hygiène & changement de comportement",
+			"libelle": "15. Formation des relais communautaire",
+			"unite": "# de personnes",
+			"indicateur": "# de personnes formées"
+		},
+		{
+			"code": "Hygiène & changement de comportement|16. Formation des hygiénistes",
+			"sous_cluster": "Hygiène & changement de comportement",
+			"libelle": "16. Formation des hygiénistes",
+			"unite": "# de personnes",
+			"indicateur": "# de personnes formées"
+		},
+		{
+			"code": "Hygiène & changement de comportement|17. Réalisation d'enquêtes / d'études / d'évaluations",
+			"sous_cluster": "Hygiène & changement de comportement",
+			"libelle": "17. Réalisation d'enquêtes / d'études / d'évaluations",
+			"unite": "# d'études",
+			"indicateur": "# d'enquêtes / études/ évaluation effectuées"
+		},
+		{
+			"code": "Hygiène & changement de comportement|18. Construction d'aires de lavage",
+			"sous_cluster": "Hygiène & changement de comportement",
+			"libelle": "18. Construction d'aires de lavage",
+			"unite": "# d'aires",
+			"indicateur": "# de personnes bénéficiant des aires de lavage"
+		},
+		{
+			"code": "Hygiène & changement de comportement|19. Réhabilitation d'aires de lavage",
+			"sous_cluster": "Hygiène & changement de comportement",
+			"libelle": "19. Réhabilitation d'aires de lavage",
+			"unite": "# d'aires",
+			"indicateur": "# de personnes bénéficiant des aires de lavage"
+		},
+		{
+			"code": "Gouvernance & appui institutionnel|01. Renforcement des capacités institutionnelles (formation)",
+			"sous_cluster": "Gouvernance & appui institutionnel",
+			"libelle": "01. Renforcement des capacités institutionnelles (formation)",
+			"unite": "# de personnes",
+			"indicateur": "# de personnes formées"
+		},
+		{
+			"code": "Gouvernance & appui institutionnel|02. Appui à l'organisation/facilitation des réunions communautaires/institutionnelles",
+			"sous_cluster": "Gouvernance & appui institutionnel",
+			"libelle": "02. Appui à l'organisation/facilitation des réunions communautaires/institutionnelles",
+			"unite": "# de réunions",
+			"indicateur": "# de réunions/activités appuyées"
+		},
+		{
+			"code": "Gouvernance & appui institutionnel|03. Developement de strategie WASH ou plan d'action communautaire",
+			"sous_cluster": "Gouvernance & appui institutionnel",
+			"libelle": "03. Developement de strategie WASH ou plan d'action communautaire",
+			"unite": "# de stratégie",
+			"indicateur": "# d'activites de développement de stratégie ou plan d'action communautaires"
+		},
+		{
+			"code": "Gouvernance & appui institutionnel|04. Activité de plaidoyer",
+			"sous_cluster": "Gouvernance & appui institutionnel",
+			"libelle": "04. Activité de plaidoyer",
+			"unite": "# d'activités",
+			"indicateur": "# nombre d'activités de plaidoirie réalisées"
+		},
+		{
+			"code": "Gouvernance & appui institutionnel|05. Donation d'équipements et matériel aux institutions",
+			"sous_cluster": "Gouvernance & appui institutionnel",
+			"libelle": "05. Donation d'équipements et matériel aux institutions",
+			"unite": "# d'institutions",
+			"indicateur": "# d'institutions concernées"
+		},
+		{
+			"code": "Gouvernance & appui institutionnel|06. Réunions avec les autorités/communautés (présentation projets/restitutions ouvrages, etc..)",
+			"sous_cluster": "Gouvernance & appui institutionnel",
+			"libelle": "06. Réunions avec les autorités/communautés (présentation projets/restitutions ouvrages, etc..)",
+			"unite": "# de réunions",
+			"indicateur": "# de réunions"
+		},
+		{
+			"code": "Gouvernance & appui institutionnel|07. Enquêtes/Evaluations/missions de suivi des activités",
+			"sous_cluster": "Gouvernance & appui institutionnel",
+			"libelle": "07. Enquêtes/Evaluations/missions de suivi des activités",
+			"unite": "# de rapports",
+			"indicateur": "# de rapports"
+		},
+		{
+			"code": "Gouvernance & appui institutionnel|08. Délégation de services publics",
+			"sous_cluster": "Gouvernance & appui institutionnel",
+			"libelle": "08. Délégation de services publics",
+			"unite": "# de services publics",
+			"indicateur": "# de services publics délégués"
+		}
+	],
+	"listes": {
+		"secteur": "EHA",
+		"sous_clusters": [
+			"Eau",
+			"Assainissement",
+			"Hygiène & changement de comportement",
+			"Gouvernance & appui institutionnel"
+		],
+		"modalites": [
+			"Cash",
+			"Coupon",
+			"Implementation directe"
+		],
+		"statuts": [
+			"Plannifié",
+			"En cours",
+			"Suspendu",
+			"Terminé",
+			"Annulé"
+		],
+		"types_beneficiaire": [
+			"Communauté Hôte",
+			"Déplacés Internes (PDI)",
+			"Ecole",
+			"FOSA",
+			"Retournés"
+		],
+		"reponses": [
+			"Conflit",
+			"Epidémie",
+			"Crise nutritionnelle",
+			"Résilience",
+			"Choc naturel",
+			"Développement"
+		],
+		"mois": [
+			"Janvier",
+			"Février",
+			"Mars",
+			"Avril",
+			"Mai",
+			"Juin",
+			"Juillet",
+			"Août",
+			"Septembre",
+			"Octobre",
+			"Novembre",
+			"Décembre"
+		]
+	},
+	"organisations": [
+		{
+			"nom": "Action Urgence Resilience Developpement",
+			"sigle": "AURD"
+		},
+		{
+			"nom": "Action Concrète pour le Développement",
+			"sigle": "ACD"
+		},
+		{
+			"nom": "Action Communautaire pour la Reconstruction et le Developpement Durable",
+			"sigle": "ACRED"
+		},
+		{
+			"nom": "ACTED",
+			"sigle": "ACTED"
+		},
+		{
+			"nom": "Action Contre la Faim",
+			"sigle": "ACF"
+		},
+		{
+			"nom": "SAD AFRICA",
+			"sigle": "SAD AFRICA"
+		},
+		{
+			"nom": "ADDC",
+			"sigle": "ADDC"
+		},
+		{
+			"nom": "Association pour le Développement de l'Enfance et de la Famille",
+			"sigle": "ADEF"
+		},
+		{
+			"nom": "ADEM",
+			"sigle": "ADEM"
+		},
+		{
+			"nom": "ADICAR",
+			"sigle": "ADICAR"
+		},
+		{
+			"nom": "Amour Du Prochain",
+			"sigle": "ADP"
+		},
+		{
+			"nom": "AEO",
+			"sigle": "AEO"
+		},
+		{
+			"nom": "AEPA",
+			"sigle": "AEPA"
+		},
+		{
+			"nom": "Association des Femmes Chretiennes d'Aides et de Developpement",
+			"sigle": "AFECAD"
+		},
+		{
+			"nom": "AFJC",
+			"sigle": "AFJC"
+		},
+		{
+			"nom": "ALERTES HUMANITAIRES",
+			"sigle": "AH"
+		},
+		{
+			"nom": "Agence Humanitaire Africaine",
+			"sigle": "AHA"
+		},
+		{
+			"nom": "Association des Humanitaires pour le Développment",
+			"sigle": "AHD"
+		},
+		{
+			"nom": "Action Humanitaire pour le développement social en Centrafrique",
+			"sigle": "AHDSCA"
+		},
+		{
+			"nom": "African Initiative for Development",
+			"sigle": "AID"
+		},
+		{
+			"nom": "Alternatives Durables",
+			"sigle": "ALDU"
+		},
+		{
+			"nom": "ALIMA",
+			"sigle": "ALIMA"
+		},
+		{
+			"nom": "Agence Nationale de l'Eau et l'Assainissement",
+			"sigle": "ANEA"
+		},
+		{
+			"nom": "All For Peace and Dignity",
+			"sigle": "APADE"
+		},
+		{
+			"nom": "Action pour la Paix et la Culture",
+			"sigle": "APC"
+		},
+		{
+			"nom": "Agir Pour l'Environnement",
+			"sigle": "APE"
+		},
+		{
+			"nom": "Alliance pour la Protection de l' Enfant en Centrafrique",
+			"sigle": "APEC"
+		},
+		{
+			"nom": "APSUD",
+			"sigle": "APSUD"
+		},
+		{
+			"nom": "ARESDI",
+			"sigle": "ARESDI"
+		},
+		{
+			"nom": "ARS",
+			"sigle": "ARS"
+		},
+		{
+			"nom": "Afrique Sans Frontière",
+			"sigle": "ASF"
+		},
+		{
+			"nom": "Association Espoir du développement",
+			"sigle": "Association Espoir du développement"
+		},
+		{
+			"nom": "ATEDEC",
+			"sigle": "ATEDEC"
+		},
+		{
+			"nom": "AUDESEC",
+			"sigle": "AUDESEC"
+		},
+		{
+			"nom": "Actions Urgentes pour le Developpement Intégré",
+			"sigle": "AUDEVI"
+		},
+		{
+			"nom": "AVIDESC",
+			"sigle": "AVIDESC"
+		},
+		{
+			"nom": "Banque Mondiale",
+			"sigle": "Banque Mondiale"
+		},
+		{
+			"nom": "Bangui sans frontiere",
+			"sigle": "BSF"
+		},
+		{
+			"nom": "CARITAS",
+			"sigle": "Caritas"
+		},
+		{
+			"nom": "CANAL D'ASSISTANCE ET DE DEVELOPPEMENT",
+			"sigle": "CASSIDEV"
+		},
+		{
+			"nom": "CENTA",
+			"sigle": "CENTA"
+		},
+		{
+			"nom": "CESAD",
+			"sigle": "CESAD"
+		},
+		{
+			"nom": "Comité International de la Croix Rouge",
+			"sigle": "CICR"
+		},
+		{
+			"nom": "Commision de Développement Economique et Social",
+			"sigle": "CODES"
+		},
+		{
+			"nom": "Community Humanitarian Emergency Board",
+			"sigle": "COHEB"
+		},
+		{
+			"nom": "Concern Worldwide",
+			"sigle": "CONCERN"
+		},
+		{
+			"nom": "COOPADEM",
+			"sigle": "COOPADEM"
+		},
+		{
+			"nom": "COOPIADAA",
+			"sigle": "COOPIADAA"
+		},
+		{
+			"nom": "CORDAID",
+			"sigle": "CORDAID"
+		},
+		{
+			"nom": "CRADEC",
+			"sigle": "CRADEC"
+		},
+		{
+			"nom": "Croix Rouge Centrafricaine",
+			"sigle": "CRCA"
+		},
+		{
+			"nom": "Catholic Relief Services",
+			"sigle": "CRS"
+		},
+		{
+			"nom": "CENTRE DE SANTE DE L'ESPOIR POTENTIEL",
+			"sigle": "CSEP"
+		},
+		{
+			"nom": "Centrafrique Secours Urgence",
+			"sigle": "CSU"
+		},
+		{
+			"nom": "Direction Générale des Ressources Hydrauliques",
+			"sigle": "DGRH"
+		},
+		{
+			"nom": "DEMAIN LES HOMMES",
+			"sigle": "DLH"
+		},
+		{
+			"nom": "Danish Refugee Council",
+			"sigle": "DRC"
+		},
+		{
+			"nom": "ECHELLE APPUI AU DEVELOPPEMENT",
+			"sigle": "ECHELLE"
+		},
+		{
+			"nom": "Protection civile et Aide humanitaire de l'UE",
+			"sigle": "ECHO"
+		},
+		{
+			"nom": "EDEN",
+			"sigle": "EDEN"
+		},
+		{
+			"nom": "Enfants sans frontiere",
+			"sigle": "ESF"
+		},
+		{
+			"nom": "EURECA",
+			"sigle": "EURECA"
+		},
+		{
+			"nom": "Federation Internationale de la Croix Rouge",
+			"sigle": "FICR"
+		},
+		{
+			"nom": "Fédération Luthérienne Mondiale",
+			"sigle": "FLM"
+		},
+		{
+			"nom": "FNOHD",
+			"sigle": "FNOHD"
+		},
+		{
+			"nom": "FRTAB",
+			"sigle": "FRTAB"
+		},
+		{
+			"nom": "FSD",
+			"sigle": "FSD"
+		},
+		{
+			"nom": "GADY",
+			"sigle": "GADY"
+		},
+		{
+			"nom": "GAPAFOT",
+			"sigle": "GAPAFOT"
+		},
+		{
+			"nom": "GEN-RCA",
+			"sigle": "GEN-RCA"
+		},
+		{
+			"nom": "Genre Paix et Développement",
+			"sigle": "GEPAD"
+		},
+		{
+			"nom": "Global Social Action",
+			"sigle": "GSA"
+		},
+		{
+			"nom": "Handicap Action Solidaire",
+			"sigle": "HAS"
+		},
+		{
+			"nom": "HUMAN DEVELOPMENT FOR AFRICA",
+			"sigle": "HDA"
+		},
+		{
+			"nom": "HEMLE",
+			"sigle": "HEMLE"
+		},
+		{
+			"nom": "Humanité et Inclusion",
+			"sigle": "HI"
+		},
+		{
+			"nom": "HOPIN",
+			"sigle": "HOPIN"
+		},
+		{
+			"nom": "I3D",
+			"sigle": "I3D"
+		},
+		{
+			"nom": "IDC",
+			"sigle": "IDC"
+		},
+		{
+			"nom": "IDEAL",
+			"sigle": "IDEAL"
+		},
+		{
+			"nom": "IEDA Relief",
+			"sigle": "IEDA Relief"
+		},
+		{
+			"nom": "IOM",
+			"sigle": "IOM"
+		},
+		{
+			"nom": "IRAD",
+			"sigle": "IRAD"
+		},
+		{
+			"nom": "Jeunesse pour la Protection de l'Environnement en Centrafrique",
+			"sigle": "JPEC"
+		},
+		{
+			"nom": "Jeunesse Unie pour la Protection de l'Environnement et le Développement Communautaire",
+			"sigle": "JUPEDEC"
+		},
+		{
+			"nom": "Levier Plus",
+			"sigle": "Levier Plus"
+		},
+		{
+			"nom": "Lutheran World",
+			"sigle": "Lutheran World"
+		},
+		{
+			"nom": "Mercy Corps",
+			"sigle": "MC"
+		},
+		{
+			"nom": "MDA",
+			"sigle": "MDA"
+		},
+		{
+			"nom": "Médecins du Monde",
+			"sigle": "MDM"
+		},
+		{
+			"nom": "Mentor Initiative",
+			"sigle": "Mentor"
+		},
+		{
+			"nom": "MHDDS",
+			"sigle": "MHDDS"
+		},
+		{
+			"nom": "Malteser International",
+			"sigle": "MI"
+		},
+		{
+			"nom": "MONAM",
+			"sigle": "MONAM"
+		},
+		{
+			"nom": "MSF-Belgique",
+			"sigle": "MSF-B"
+		},
+		{
+			"nom": "MSF-Espagne",
+			"sigle": "MSF-E"
+		},
+		{
+			"nom": "MSF-France",
+			"sigle": "MSF-F"
+		},
+		{
+			"nom": "MSF-Hollande",
+			"sigle": "MSF-H"
+		},
+		{
+			"nom": "MVAD",
+			"sigle": "MVAD"
+		},
+		{
+			"nom": "Norvegian Refugee Council",
+			"sigle": "NRC"
+		},
+		{
+			"nom": "Bureau de coordination des affaires humanitaires",
+			"sigle": "OCHA"
+		},
+		{
+			"nom": "Organisation des Jeunes Leaders pour le Développement",
+			"sigle": "OJLD"
+		},
+		{
+			"nom": "La Main du Batisseur",
+			"sigle": "OMDB"
+		},
+		{
+			"nom": "ONFR/FC",
+			"sigle": "ONFR/FC"
+		},
+		{
+			"nom": "OXFAM",
+			"sigle": "OXFAM"
+		},
+		{
+			"nom": "PASE",
+			"sigle": "PASE"
+		},
+		{
+			"nom": "PLAN",
+			"sigle": "PLAN"
+		},
+		{
+			"nom": "Premiere Urgence International",
+			"sigle": "PUI"
+		},
+		{
+			"nom": "Quart Monde Parrainage",
+			"sigle": "Quart Monde Parrainage"
+		},
+		{
+			"nom": "REMOD",
+			"sigle": "REMOD"
+		},
+		{
+			"nom": "Secoursdenhaut",
+			"sigle": "Secoursdenhaut"
+		},
+		{
+			"nom": "Solidarités International",
+			"sigle": "SI"
+		},
+		{
+			"nom": "SODECA",
+			"sigle": "SODECA"
+		},
+		{
+			"nom": "Solidarité pour la Paix et le Développement Intégré",
+			"sigle": "SOPADI"
+		},
+		{
+			"nom": "TEARFUND",
+			"sigle": "TEARFUND"
+		},
+		{
+			"nom": "TRIANGLE",
+			"sigle": "TGH"
+		},
+		{
+			"nom": "Union européenne",
+			"sigle": "UE"
+		},
+		{
+			"nom": "UNHCR",
+			"sigle": "UNHCR"
+		},
+		{
+			"nom": "UNICEF",
+			"sigle": "UNICEF"
+		},
+		{
+			"nom": "USAID",
+			"sigle": "USAID"
+		},
+		{
+			"nom": "Vision to Change the World",
+			"sigle": "VCW"
+		},
+		{
+			"nom": "VERDURE",
+			"sigle": "VERDURE"
+		},
+		{
+			"nom": "Vision et Développement",
+			"sigle": "Vision & Dev"
+		},
+		{
+			"nom": "Vitalité Plus",
+			"sigle": "Vitalité Plus"
+		},
+		{
+			"nom": "Vision Sincère",
+			"sigle": "VS"
+		},
+		{
+			"nom": "Water for Good",
+			"sigle": "WFG"
+		},
+		{
+			"nom": "Welthungerhilfe",
+			"sigle": "WHH"
+		},
+		{
+			"nom": "Wali Ti Kodro",
+			"sigle": "WTK"
+		},
+		{
+			"nom": "World Vision",
+			"sigle": "WV"
+		},
+		{
+			"nom": "APDC",
+			"sigle": "APDC"
+		},
+		{
+			"nom": "AVD",
+			"sigle": "AVD"
+		},
+		{
+			"nom": "AEH",
+			"sigle": "AEH"
+		},
+		{
+			"nom": "CEAH",
+			"sigle": "CEAH"
+		},
+		{
+			"nom": "EBA-CODES",
+			"sigle": "EBA-CODES"
+		},
+		{
+			"nom": "EDA",
+			"sigle": "EDA"
+		},
+		{
+			"nom": "FEMI",
+			"sigle": "FEMI"
+		},
+		{
+			"nom": "Humanitarian Data Support",
+			"sigle": "HDS"
+		},
+		{
+			"nom": "IDEACA",
+			"sigle": "IDEACA"
+		},
+		{
+			"nom": "LUX-MUNDI",
+			"sigle": "LUX-MUNDI"
+		},
+		{
+			"nom": "SHW",
+			"sigle": "SHW"
+		},
+		{
+			"nom": "AIRD",
+			"sigle": "AIRD"
+		},
+		{
+			"nom": "GECED",
+			"sigle": "GECED"
+		},
+		{
+			"nom": "A3D",
+			"sigle": "A3D"
+		},
+		{
+			"nom": "Humanitarian African Vision",
+			"sigle": "HAV"
+		},
+		{
+			"nom": "ACUFF",
+			"sigle": "ACUFF"
+		},
+		{
+			"nom": "Association des Femmes Rurales de Batangafo pour le Developpement",
+			"sigle": "AFRBD"
+		}
+	],
+	"lieux": [
+		{
+			"prefecture": "Bamingui-Bangoran",
+			"sous_prefectures": [
+				{
+					"nom": "Ndélé",
+					"communes": [
+						"Dar El Kouti",
+						"Mbolo-Pata"
+					]
+				},
+				{
+					"nom": "Bamingui",
+					"communes": [
+						"Vassako"
+					]
+				}
+			]
+		},
+		{
+			"prefecture": "Bangui",
+			"sous_prefectures": [
+				{
+					"nom": "Bangui",
+					"communes": [
+						"1è arrondissement",
+						"2è arrondissement",
+						"3è arrondissement",
+						"4è arrondissement",
+						"5è arrondissement",
+						"6è arrondissement",
+						"7è arrondissement",
+						"8è arrondissement",
+						"Bangui"
+					]
+				}
+			]
+		},
+		{
+			"prefecture": "Basse-Kotto",
+			"sous_prefectures": [
+				{
+					"nom": "Mobaye",
+					"communes": [
+						"Mbéima",
+						"Mobaye"
+					]
+				},
+				{
+					"nom": "Alindao",
+					"communes": [
+						"Alindao",
+						"Bakou",
+						"Bangui-Ketté",
+						"Guiligui",
+						"Yambélé-Ewou"
+					]
+				},
+				{
+					"nom": "Kembé",
+					"communes": [
+						"Élevage de Ewou",
+						"Kembé",
+						"Mboui"
+					]
+				},
+				{
+					"nom": "Mingala",
+					"communes": [
+						"Kotto",
+						"Séliba",
+						"Siriki"
+					]
+				},
+				{
+					"nom": "Zangba",
+					"communes": [
+						"Ouambé",
+						"Yabongo"
+					]
+				},
+				{
+					"nom": "Satéma",
+					"communes": [
+						"Kotto-Oubangui"
+					]
+				}
+			]
+		},
+		{
+			"prefecture": "Haut-M'bomou",
+			"sous_prefectures": [
+				{
+					"nom": "Obo",
+					"communes": [
+						"Mboki",
+						"Obo"
+					]
+				},
+				{
+					"nom": "Bambouti",
+					"communes": [
+						"Lili"
+					]
+				},
+				{
+					"nom": "Zémio",
+					"communes": [
+						"Zémio"
+					]
+				},
+				{
+					"nom": "Djemah",
+					"communes": [
+						"Djemah"
+					]
+				}
+			]
+		},
+		{
+			"prefecture": "Haute-Kotto",
+			"sous_prefectures": [
+				{
+					"nom": "Bria",
+					"communes": [
+						"Daba-Nydou",
+						"Daho-Mboutou",
+						"Samba-Boungou"
+					]
+				},
+				{
+					"nom": "Ouadda",
+					"communes": [
+						"Ouadda",
+						"Ouandja Kotto"
+					]
+				},
+				{
+					"nom": "Yalinga",
+					"communes": [
+						"Yalinga"
+					]
+				}
+			]
+		},
+		{
+			"prefecture": "Kémo",
+			"sous_prefectures": [
+				{
+					"nom": "Sibut",
+					"communes": [
+						"Ngoumbélé",
+						"Sibut"
+					]
+				},
+				{
+					"nom": "Dékoa",
+					"communes": [
+						"Dékoa",
+						"Guiffa",
+						"Tilo"
+					]
+				},
+				{
+					"nom": "Mala",
+					"communes": [
+						"Mala"
+					]
+				},
+				{
+					"nom": "Ndjoukou",
+					"communes": [
+						"Galabadja",
+						"Galafondo"
+					]
+				}
+			]
+		},
+		{
+			"prefecture": "Lobaye",
+			"sous_prefectures": [
+				{
+					"nom": "Mbaïki",
+					"communes": [
+						"Balé-Loko",
+						"Bogongo Gaza",
+						"Léssé",
+						"Mbaïki",
+						"Mbata",
+						"Moboma",
+						"Nola",
+						"Pissa"
+					]
+				},
+				{
+					"nom": "Mongoumba",
+					"communes": [
+						"Mongoumba"
+					]
+				},
+				{
+					"nom": "Boda",
+					"communes": [
+						"Lobaye"
+					]
+				},
+				{
+					"nom": "Boganangone",
+					"communes": [
+						"Boganangone"
+					]
+				},
+				{
+					"nom": "Boganda",
+					"communes": [
+						"Boganda"
+					]
+				}
+			]
+		},
+		{
+			"prefecture": "M'bomou",
+			"sous_prefectures": [
+				{
+					"nom": "Bangassou",
+					"communes": [
+						"Bangassou",
+						"Sayo Niakari",
+						"Voungba-Balifondo",
+						"Zangandou"
+					]
+				},
+				{
+					"nom": "Ouango",
+					"communes": [
+						"Ngbandinga",
+						"Ouango"
+					]
+				},
+				{
+					"nom": "Gambo",
+					"communes": [
+						"Élevage de Pombolo",
+						"Gambo",
+						"Ngandou"
+					]
+				},
+				{
+					"nom": "Rafaï",
+					"communes": [
+						"Rafaï"
+					]
+				},
+				{
+					"nom": "Bakouma",
+					"communes": [
+						"Bakouma"
+					]
+				}
+			]
+		},
+		{
+			"prefecture": "Mambéré-Kadeï",
+			"sous_prefectures": [
+				{
+					"nom": "Berbérati",
+					"communes": [
+						"Basse-Batouri",
+						"Basse-Mambéré",
+						"Berbérati",
+						"Haute-Batouri",
+						"Ouakanga"
+					]
+				},
+				{
+					"nom": "Gamboula",
+					"communes": [
+						"Basse-Boumné"
+					]
+				},
+				{
+					"nom": "Carnot",
+					"communes": [
+						"Carnot",
+						"Senkpa-Mbaéré"
+					]
+				},
+				{
+					"nom": "Amada-Gaza",
+					"communes": [
+						"Haute-Boumbé"
+					]
+				},
+				{
+					"nom": "Sosso-Nakombo",
+					"communes": [
+						"Basse-Kadéi"
+					]
+				},
+				{
+					"nom": "Dédé-Makouba",
+					"communes": [
+						"Basse-Kadéï"
+					]
+				},
+				{
+					"nom": "Gadzi",
+					"communes": [
+						"Mbali",
+						"Topia"
+					]
+				}
+			]
+		},
+		{
+			"prefecture": "Nana-Gribizi",
+			"sous_prefectures": [
+				{
+					"nom": "Kaga-Bandoro",
+					"communes": [
+						"Botto",
+						"Grivaï-Pamia",
+						"Kaga-Bandoro",
+						"Nana-Outa",
+						"Ndenga"
+					]
+				},
+				{
+					"nom": "Mbrès",
+					"communes": [
+						"Mbrès"
+					]
+				}
+			]
+		},
+		{
+			"prefecture": "Nana-Mambéré",
+			"sous_prefectures": [
+				{
+					"nom": "Bouar",
+					"communes": [
+						"Béa-Nana",
+						"Bouar",
+						"Doaka-Koursou",
+						"Herman-Brousse",
+						"Niem-Yelewa",
+						"Yénga",
+						"Zotoua-Bangarem"
+					]
+				},
+				{
+					"nom": "Baoro",
+					"communes": [
+						"Bawi-Tédoa",
+						"Yoro-Samba Bougoulou"
+					]
+				},
+				{
+					"nom": "Baboua",
+					"communes": [
+						"Baboua",
+						"Bingué",
+						"FÔ",
+						"Goudrot",
+						"Koundé"
+					]
+				},
+				{
+					"nom": "Abba",
+					"communes": [
+						"Abba",
+						"Nadziboro"
+					]
+				}
+			]
+		},
+		{
+			"prefecture": "Ombella-M'Poko",
+			"sous_prefectures": [
+				{
+					"nom": "Bimbo",
+					"communes": [
+						"Bimbo",
+						"Élevage de L'Ombella-M'Poko"
+					]
+				},
+				{
+					"nom": "Damara",
+					"communes": [
+						"Damara"
+					]
+				},
+				{
+					"nom": "Bogangolo",
+					"communes": [
+						"Bogangolo"
+					]
+				},
+				{
+					"nom": "Boali",
+					"communes": [
+						"Boali"
+					]
+				},
+				{
+					"nom": "Bossembélé",
+					"communes": [
+						"Bossembélé",
+						"La Mbi"
+					]
+				},
+				{
+					"nom": "Yaloké",
+					"communes": [
+						"Guézéli",
+						"Yaloké"
+					]
+				}
+			]
+		},
+		{
+			"prefecture": "Ouaka",
+			"sous_prefectures": [
+				{
+					"nom": "Bambari",
+					"communes": [
+						"Bambari",
+						"Danga-Gboudou",
+						"Élevage de Ouro-Djafoun",
+						"Haute Baïdou",
+						"Ngougbia",
+						"Pladama-Ouaka"
+					]
+				},
+				{
+					"nom": "Bakala",
+					"communes": [
+						"Koudou-Bégo"
+					]
+				},
+				{
+					"nom": "Grimari",
+					"communes": [
+						"Grimari",
+						"Kobadja",
+						"Lissa",
+						"Pouyamba"
+					]
+				},
+				{
+					"nom": "Kouango",
+					"communes": [
+						"Azengué-Mindou",
+						"Cochio-Toulou",
+						"Kouango"
+					]
+				},
+				{
+					"nom": "Ippy",
+					"communes": [
+						"Baïdou-Ngoumbourou",
+						"Ippy",
+						"Yéngou"
+					]
+				}
+			]
+		},
+		{
+			"prefecture": "Ouham",
+			"sous_prefectures": [
+				{
+					"nom": "Bossangoa",
+					"communes": [
+						"Benzambé",
+						"Bossangoa",
+						"Koro-Mpoko",
+						"Ndoro-Mboli",
+						"Ouham-Bac",
+						"Soumbé"
+					]
+				},
+				{
+					"nom": "Nana-Bakassa",
+					"communes": [
+						"Nana-Bakassa"
+					]
+				},
+				{
+					"nom": "Markounda",
+					"communes": [
+						"Nana-Markounda"
+					]
+				},
+				{
+					"nom": "Nanga Boguila",
+					"communes": [
+						"Nanga Boguila"
+					]
+				},
+				{
+					"nom": "Bouca",
+					"communes": [
+						"Bouca-Bobo",
+						"Fafa-Boungou",
+						"Lady-Gbawi",
+						"Ouham-Fafa"
+					]
+				},
+				{
+					"nom": "Batangafo",
+					"communes": [
+						"Bakassa",
+						"Batangafo",
+						"Bédé",
+						"Hama",
+						"Ouassi"
+					]
+				},
+				{
+					"nom": "Kabo",
+					"communes": [
+						"Moyenne Sido",
+						"Ouaki",
+						"Sido"
+					]
+				}
+			]
+		},
+		{
+			"prefecture": "Ouham-Pendé",
+			"sous_prefectures": [
+				{
+					"nom": "Bozoum",
+					"communes": [
+						"Birvan-Bolé",
+						"Bozoum",
+						"Dan-Gbabiri",
+						"Danayéré",
+						"Kouazo"
+					]
+				},
+				{
+					"nom": "Bocaranga",
+					"communes": [
+						"Bocaranga",
+						"Loura",
+						"Pendé"
+					]
+				},
+				{
+					"nom": "Koui",
+					"communes": [
+						"Koui"
+					]
+				},
+				{
+					"nom": "Paoua",
+					"communes": [
+						"Bah-Bessar",
+						"Banh",
+						"Bimbi",
+						"Malé",
+						"Mia-Péndé",
+						"Mom",
+						"Nana-Barya",
+						"Paoua"
+					]
+				},
+				{
+					"nom": "Ngaoundaye",
+					"communes": [
+						"Dilouki",
+						"Kodi",
+						"Lim",
+						"Mbili",
+						"Yémé"
+					]
+				},
+				{
+					"nom": "Bossemptélé",
+					"communes": [
+						"Binon"
+					]
+				}
+			]
+		},
+		{
+			"prefecture": "Sangha-Mbaéré",
+			"sous_prefectures": [
+				{
+					"nom": "Nola",
+					"communes": [
+						"Bilolo",
+						"Nola",
+						"Salo"
+					]
+				},
+				{
+					"nom": "Bambio",
+					"communes": [
+						"Mbaéré"
+					]
+				},
+				{
+					"nom": "Bayanga",
+					"communes": [
+						"Yobé-Sangha"
+					]
+				}
+			]
+		},
+		{
+			"prefecture": "Vakaga",
+			"sous_prefectures": [
+				{
+					"nom": "Birao",
+					"communes": [
+						"Ouandja",
+						"Ridina"
+					]
+				},
+				{
+					"nom": "Ouanda-Djallé",
+					"communes": [
+						"Vokouma"
+					]
+				}
+			]
+		}
+	]
+}

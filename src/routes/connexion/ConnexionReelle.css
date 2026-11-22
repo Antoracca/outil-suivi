@@ -1,0 +1,266 @@
+@layer components {
+	.p-reel {
+		display: grid;
+		gap: var(--space-lg);
+		inline-size: 100%;
+		max-inline-size: 26rem;
+		padding: var(--space-xl);
+		border: var(--hairline-w) solid var(--color-hairline-strong);
+		border-radius: var(--rounded-xl);
+		background: var(--color-surface-card);
+	}
+	/* Le logo reste en tête de la carte partout : sur tablette et téléphone, en mode réel,
+	   le bandeau de marque est retiré (connexion.css) et c'est la carte qui porte l'identité. */
+	@media (max-width: 40em) {
+		.p-reel {
+			gap: var(--space-base);
+			padding: var(--space-lg) var(--space-base);
+		}
+	}
+	/* En-tête de marque : logo APSUD centré au-dessus du formulaire. */
+	.p-reel__entete {
+		display: grid;
+		justify-items: center;
+		gap: var(--space-sm);
+		padding-block-end: var(--space-xs);
+	}
+	.p-reel__entete .c-logo {
+		align-self: center;
+	}
+	.p-reel__accroche {
+		font-size: var(--fs-body-sm);
+		font-weight: var(--fw-medium);
+		color: var(--color-body);
+	}
+	.p-reel__onglets {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 2px;
+		padding: 3px;
+		border-radius: var(--rounded-md);
+		background: var(--color-surface-strong);
+	}
+	.p-reel__onglets button {
+		min-block-size: var(--button-h);
+		border-radius: var(--rounded-sm);
+		font-size: var(--fs-button);
+		font-weight: var(--fw-medium);
+		color: var(--color-body);
+	}
+	.p-reel__onglets button.is-actif {
+		background: var(--color-surface-card);
+		color: var(--color-ink);
+		font-weight: var(--fw-semibold);
+		box-shadow: 0 0 0 var(--hairline-w) var(--color-hairline-strong);
+	}
+	.p-reel__formulaire {
+		display: grid;
+		gap: var(--space-base);
+	}
+	.p-reel__formulaire > .c-bouton {
+		inline-size: 100%;
+		margin-block-start: var(--space-xs);
+	}
+	.p-reel__titre {
+		font-size: var(--fs-display-sm);
+		letter-spacing: var(--ls-display-sm);
+	}
+	.p-reel__texte {
+		font-size: var(--fs-body-sm);
+		color: var(--color-body);
+	}
+	.p-reel__mdp {
+		position: relative;
+	}
+	.p-reel__voir {
+		position: absolute;
+		inset-block-start: 0;
+		inset-inline-end: 0;
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-xxs);
+		min-block-size: 1.5rem;
+		font-size: var(--fs-caption);
+		font-weight: var(--fw-medium);
+		color: var(--color-link);
+	}
+	.p-reel__aide {
+		font-size: var(--fs-caption);
+		color: var(--color-muted);
+		text-align: center;
+	}
+	.p-reel__retour {
+		justify-self: center;
+		min-block-size: var(--button-h);
+		padding-inline: var(--space-sm);
+		border: 0;
+		background: none;
+		font: inherit;
+		font-size: var(--fs-body-sm);
+		color: var(--color-link);
+		text-decoration: underline;
+		cursor: pointer;
+	}
+}
+
+@layer components {
+	/* ---------- Connexion rapide ---------- */
+	.p-reel__rapide {
+		display: grid;
+		gap: var(--space-xs);
+		padding-block-start: var(--space-base);
+		border-block-start: var(--hairline-w) solid var(--color-hairline);
+	}
+	.p-reel__rapide-titre {
+		font-size: var(--fs-title-sm);
+		text-align: center;
+	}
+	/* Les 5 organisations sur une seule ligne, du téléphone (360 px) à l'ordinateur. */
+	.p-reel__organisations {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(3.25rem, 1fr));
+		gap: var(--space-xxs);
+		padding: 0;
+		list-style: none;
+	}
+	.p-reel__organisation {
+		position: relative;
+		display: grid;
+		justify-items: center;
+		gap: var(--space-xxs);
+		inline-size: 100%;
+		min-block-size: var(--button-h);
+		padding: var(--space-xs) var(--space-xxs);
+		border: var(--hairline-w) solid transparent;
+		border-radius: var(--rounded-md);
+		background: none;
+		cursor: pointer;
+		transition: border-color var(--dur-fast) linear, background-color var(--dur-fast) linear;
+	}
+	.p-reel__organisation:hover {
+		border-color: var(--color-hairline-strong);
+		background: var(--color-canvas-soft);
+	}
+	.p-reel__organisation.is-actif {
+		border-color: var(--color-ink);
+		background: var(--color-wash-pousse-light);
+	}
+	.p-reel__organisation-sigle {
+		font-size: var(--fs-caption);
+		font-weight: var(--fw-semibold);
+		color: var(--color-ink);
+	}
+	/* Pastille : un compte de cette organisation est déjà connu sur cet appareil. */
+	.p-reel__organisation-connu {
+		position: absolute;
+		inset-block-start: var(--space-xxs);
+		inset-inline-end: var(--space-xxs);
+		inline-size: var(--space-xs);
+		block-size: var(--space-xs);
+		border-radius: var(--rounded-pill);
+		background: var(--color-jauge-cumul);
+		box-shadow: inset 0 0 0 var(--hairline-w) var(--color-ink);
+	}
+	.p-reel__comptes {
+		display: grid;
+		gap: var(--space-xxs);
+		padding: 0;
+		list-style: none;
+	}
+	.p-reel__compte {
+		display: flex;
+		align-items: center;
+		gap: var(--space-sm);
+		inline-size: 100%;
+		min-block-size: var(--button-h);
+		padding: var(--space-xs) var(--space-sm);
+		border: var(--hairline-w) solid var(--color-hairline-strong);
+		border-radius: var(--rounded-md);
+		background: var(--color-surface-card);
+		text-align: start;
+		cursor: pointer;
+	}
+	.p-reel__compte:hover {
+		border-color: var(--color-ink);
+	}
+	.p-reel__compte > .c-icone {
+		margin-inline-start: auto;
+		color: var(--color-muted);
+	}
+	/* Compte choisi : qui se connecte, au-dessus du mot de passe. */
+	.p-reel__identite {
+		display: flex;
+		align-items: center;
+		gap: var(--space-sm);
+		padding: var(--space-xs) var(--space-sm);
+		border-radius: var(--rounded-md);
+		background: var(--color-canvas-soft);
+	}
+	.p-reel__identite-texte {
+		display: grid;
+		min-inline-size: 0;
+		line-height: var(--lh-table);
+	}
+	.p-reel__identite-texte strong {
+		font-size: var(--fs-body-sm);
+	}
+	.p-reel__identite-texte span {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		font-size: var(--fs-caption);
+		color: var(--color-muted);
+	}
+	.p-reel__note {
+		display: flex;
+		align-items: flex-start;
+		gap: var(--space-xs);
+		font-size: var(--fs-caption);
+		color: var(--color-body);
+	}
+	.p-reel__case {
+		display: flex;
+		align-items: flex-start;
+		gap: var(--space-xs);
+		font-size: var(--fs-caption);
+		color: var(--color-body);
+		cursor: pointer;
+	}
+	.p-reel__case input {
+		inline-size: var(--space-base);
+		block-size: var(--space-base);
+		accent-color: var(--color-ink);
+	}
+	.p-reel__liens {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 0 var(--space-base);
+	}
+}
+
+@layer components {
+	/* Téléphone : carte resserrée pour que la connexion rapide (les 5 organisations)
+	   apparaisse sans défiler sous le formulaire. */
+	@media (max-width: 40em) {
+		.p-reel__entete {
+			gap: var(--space-xxs);
+			padding-block-end: 0;
+		}
+		.p-reel__entete .c-logo--lg {
+			block-size: 3.5rem;
+		}
+		.p-reel__formulaire {
+			gap: var(--space-sm);
+		}
+		.p-reel__titre {
+			font-size: var(--fs-title-md);
+		}
+		.p-reel__rapide {
+			padding-block-start: var(--space-sm);
+		}
+		.p-reel__rapide .p-reel__aide {
+			display: none; /* le titre « Connexion rapide » et les logos suffisent */
+		}
+	}
+}

@@ -1,0 +1,251 @@
+@layer layout {
+	.c-contexte {
+		position: sticky;
+		inset-block-start: 0;
+		z-index: var(--z-sticky);
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-base);
+		min-block-size: var(--context-bar-h);
+		padding: var(--space-xs) clamp(var(--space-base), 3vw, var(--space-xl));
+		background: var(--color-canvas);
+		border-block-end: var(--hairline-w) solid var(--color-hairline-strong);
+	}
+}
+
+@layer components {
+	.c-contexte__gauche,
+	.c-contexte__droite {
+		display: flex;
+		align-items: center;
+		gap: var(--space-xs);
+		min-inline-size: 0;
+	}
+	.c-contexte__champ {
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+	}
+	.c-contexte__champ .c-icone {
+		position: absolute;
+		inset-inline-end: var(--space-xs);
+		pointer-events: none;
+		color: var(--color-muted);
+	}
+	.c-contexte__select {
+		appearance: none;
+		min-block-size: 2.25rem;
+		padding: 0 calc(var(--space-xl)) 0 var(--space-sm);
+		border: var(--hairline-w) solid var(--color-border-control);
+		border-radius: var(--rounded-md);
+		background: var(--color-surface-card);
+		font-size: var(--fs-nav-link);
+		font-weight: var(--fw-medium);
+		color: var(--color-ink);
+		cursor: pointer;
+	}
+	.c-contexte__select:hover {
+		border-color: var(--color-ink);
+	}
+	.c-contexte__mois {
+		display: inline-flex;
+		align-items: center;
+		gap: 2px;
+	}
+	.c-contexte__champ--mois .c-contexte__select {
+		padding-inline-end: var(--space-sm);
+		text-align: center;
+	}
+	.c-contexte__fleche {
+		display: grid;
+		place-items: center;
+		inline-size: 2.25rem;
+		block-size: 2.25rem;
+		border-radius: var(--rounded-md);
+		color: var(--color-body);
+	}
+	.c-contexte__fleche:hover:not(:disabled) {
+		background: var(--color-surface-strong);
+		color: var(--color-ink);
+	}
+	.c-contexte__fleche:disabled {
+		color: var(--color-muted-soft);
+		cursor: not-allowed;
+	}
+	.c-contexte__reseau {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-xs);
+		min-block-size: 2.25rem;
+		padding: 0 var(--space-sm);
+		border-radius: var(--rounded-pill);
+		font-size: var(--fs-caption);
+		font-weight: var(--fw-medium);
+		color: var(--color-success);
+	}
+	.c-contexte__reseau:hover {
+		background: var(--color-success-soft);
+	}
+	.c-contexte__reseau.is-hors-ligne {
+		color: var(--color-warning);
+		background: var(--color-warning-soft);
+	}
+	.c-contexte__cloche {
+		position: relative;
+		display: grid;
+		place-items: center;
+		inline-size: var(--button-h);
+		block-size: var(--button-h);
+		border-radius: var(--rounded-md);
+		color: var(--color-body);
+	}
+	.c-contexte__cloche:hover {
+		background: var(--color-surface-strong);
+		color: var(--color-ink);
+	}
+	.c-contexte__pastille {
+		position: absolute;
+		inset-block-start: 4px;
+		inset-inline-end: 2px;
+		min-inline-size: 1.125rem;
+		padding: 0 4px;
+		border-radius: var(--rounded-pill);
+		background: var(--color-primary);
+		color: var(--color-on-primary);
+		font-size: 0.6875rem;
+		font-weight: var(--fw-semibold);
+		line-height: 1.125rem;
+		text-align: center;
+	}
+	.c-contexte__compte {
+		position: relative;
+	}
+	.c-contexte__utilisateur {
+		display: flex;
+		align-items: center;
+		gap: var(--space-xs);
+		padding: var(--space-xxs) var(--space-xs) var(--space-xxs) var(--space-xxs);
+		border-radius: var(--rounded-pill);
+		text-align: start;
+	}
+	.c-contexte__utilisateur:hover {
+		background: var(--color-surface-strong);
+	}
+	.c-contexte__identite {
+		display: flex;
+		flex-direction: column;
+		line-height: var(--lh-table);
+	}
+	.c-contexte__nom {
+		font-size: var(--fs-body-sm);
+		font-weight: var(--fw-semibold);
+	}
+	.c-contexte__role {
+		font-size: var(--fs-caption);
+		color: var(--color-muted);
+	}
+	.c-contexte__menu {
+		position: absolute;
+		inset-inline-end: 0;
+		inset-block-start: calc(100% + var(--space-xs));
+		min-inline-size: 18rem;
+		padding: var(--space-xs);
+		background: var(--color-surface-card);
+		border: var(--hairline-w) solid var(--color-hairline-strong);
+		border-radius: var(--rounded-md);
+		box-shadow: var(--shadow-floating);
+		z-index: var(--z-drawer);
+	}
+	.c-contexte__menu-info {
+		padding: var(--space-xs) var(--space-sm);
+		font-size: var(--fs-caption);
+		color: var(--color-muted);
+		border-block-end: var(--hairline-w) solid var(--color-hairline);
+		margin-block-end: var(--space-xxs);
+	}
+	.c-contexte__menu-lien {
+		display: flex;
+		align-items: center;
+		gap: var(--space-xs);
+		inline-size: 100%;
+		min-block-size: 2.5rem;
+		padding: 0 var(--space-sm);
+		border-radius: var(--rounded-sm);
+		font-size: var(--fs-body-sm);
+		color: var(--color-ink);
+		text-decoration: none;
+		text-align: start;
+	}
+	.c-contexte__menu-lien:hover {
+		background: var(--color-surface-strong);
+		color: var(--color-ink);
+	}
+	.c-contexte__select {
+		max-inline-size: 22rem;
+		text-overflow: ellipsis;
+	}
+	/* Tablette : l'identité se réduit à l'avatar, le réseau à son icône. */
+	@media (max-width: 64em) {
+		.c-contexte__identite,
+		.c-contexte__reseau span {
+			display: none;
+		}
+		.c-contexte__reseau {
+			padding-inline: var(--space-xs);
+		}
+	}
+	/* Téléphone : volet et mois passent sur une seconde ligne pleine largeur. */
+	@media (max-width: 40em) {
+		.c-contexte {
+			flex-wrap: wrap;
+			row-gap: var(--space-xxs);
+		}
+		.c-contexte__gauche {
+			order: 2;
+			flex: 1 1 100%;
+		}
+		.c-contexte__droite {
+			margin-inline-start: auto;
+		}
+		.c-contexte__gauche .c-contexte__champ:not(.c-contexte__champ--mois) {
+			flex: 1;
+			min-inline-size: 0;
+		}
+		.c-contexte__gauche .c-contexte__select {
+			inline-size: 100%;
+			max-inline-size: none;
+		}
+		.c-contexte__mois {
+			/* Le mois (avec ses flèches) prend plus de place que le volet. */
+			flex: 1.6;
+			min-inline-size: 0;
+		}
+		.c-contexte__champ--mois {
+			flex: 1;
+			min-inline-size: 0;
+		}
+		.c-contexte__champ--mois .c-contexte__select {
+			padding-inline: var(--space-xs);
+		}
+		.c-contexte__fleche {
+			inline-size: 2rem;
+		}
+		.c-contexte__compte .c-icone {
+			display: none;
+		}
+	}
+}
+
+@layer components {
+	/* Icône du compte (fichier fourni : assets/processus.png) à la place des initiales. */
+	.c-contexte__icone-compte {
+		background: var(--color-surface-card);
+		box-shadow: inset 0 0 0 var(--hairline-w) var(--color-hairline-strong);
+	}
+	.c-contexte__icone-compte img {
+		inline-size: 80%;
+		block-size: 80%;
+		object-fit: contain;
+	}
+}

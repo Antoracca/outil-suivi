@@ -1,0 +1,201 @@
+@layer components {
+	.p-rapport {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		gap: var(--space-base);
+	}
+	.p-rapport__tete {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-base) var(--space-xl);
+	}
+	.p-rapport__titres {
+		display: grid;
+		gap: var(--space-xs);
+	}
+	.p-rapport__titre {
+		font-size: var(--fs-display-md);
+		letter-spacing: var(--ls-display-md);
+	}
+	.p-rapport__meta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--space-xs) var(--space-base);
+		font-size: var(--fs-caption);
+		color: var(--color-body);
+	}
+	.p-rapport__trace {
+		font-size: var(--fs-caption);
+		color: var(--color-muted);
+	}
+	.p-rapport__sommaire {
+		position: sticky;
+		inset-block-start: var(--context-bar-h);
+		z-index: var(--z-sticky);
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-xs);
+		padding-block: var(--space-xs);
+		background: var(--color-canvas-soft);
+	}
+	.p-rapport__sommaire a {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-xs);
+		min-block-size: 2.25rem;
+		padding: 0 var(--space-sm);
+		border-radius: var(--rounded-pill);
+		border: var(--hairline-w) solid var(--color-hairline-strong);
+		background: var(--color-surface-card);
+		font-size: var(--fs-nav-link);
+		font-weight: var(--fw-medium);
+		color: var(--color-ink);
+		text-decoration: none;
+	}
+	.p-rapport__sommaire a:hover {
+		border-color: var(--color-ink);
+	}
+	.p-rapport__sommaire a span {
+		color: var(--color-muted);
+		font-variant-numeric: tabular-nums;
+	}
+	.p-rapport__section {
+		scroll-margin-block-start: calc(var(--context-bar-h) + 3.5rem);
+	}
+	.p-rapport__groupe-tete {
+		position: sticky;
+		inset-block-start: calc(var(--context-bar-h) + 3.25rem);
+		z-index: 1;
+		padding: var(--space-xs) var(--space-md);
+		background: var(--color-canvas-soft);
+		border-block-end: var(--hairline-w) solid var(--color-hairline);
+		font-size: var(--fs-caption);
+		color: var(--color-body);
+	}
+	.p-rapport__groupe-tete span {
+		margin-inline-end: var(--space-xs);
+		font-weight: var(--fw-semibold);
+		color: var(--color-ink);
+	}
+	.p-rapport__vide {
+		padding: var(--space-md);
+	}
+	.p-rapport__fichiers {
+		display: grid;
+		gap: var(--space-xs);
+		margin-block-end: var(--space-base);
+	}
+	.p-rapport__fichier {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--space-xs) var(--space-sm);
+		padding: var(--space-xs) var(--space-sm);
+		border: var(--hairline-w) solid var(--color-hairline-strong);
+		border-radius: var(--rounded-md);
+		font-size: var(--fs-body-sm);
+	}
+	.p-rapport__fichier-nom {
+		font-weight: var(--fw-medium);
+	}
+	.p-rapport__fichier .u-attenue {
+		font-size: var(--fs-caption);
+	}
+	.p-rapport__joindre {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		align-items: end;
+		gap: var(--space-sm);
+		margin-block-start: var(--space-base);
+	}
+	.p-rapport__joindre > .c-bouton {
+		justify-self: start;
+	}
+	.p-rapport__fichier-champ {
+		display: grid;
+		gap: var(--space-xxs);
+		font-size: var(--fs-body-sm);
+		font-weight: var(--fw-medium);
+	}
+	.p-rapport__fichier-champ input {
+		min-block-size: var(--input-h);
+		padding: var(--space-xs);
+		border: var(--hairline-w) dashed var(--color-border-control);
+		border-radius: var(--rounded-md);
+		background: var(--color-canvas-soft);
+		font-size: var(--fs-caption);
+		font-weight: var(--fw-regular);
+	}
+	.p-rapport__note {
+		margin-block-start: var(--space-xs);
+		font-size: var(--fs-caption);
+		color: var(--color-muted);
+	}
+	/* Barre d'actions collante en bas de page. */
+	.p-rapport__barre {
+		position: sticky;
+		inset-block-end: var(--space-base);
+		z-index: var(--z-sticky);
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-sm) var(--space-base);
+		padding: var(--space-sm) var(--space-md);
+		border-radius: var(--rounded-lg);
+		border: var(--hairline-w) solid var(--color-hairline-strong);
+		background: var(--color-surface-card);
+		box-shadow: var(--shadow-floating);
+	}
+	.p-rapport__barre-texte {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--space-xs) var(--space-sm);
+		font-size: var(--fs-caption);
+		color: var(--color-body);
+	}
+	.p-rapport__barre-actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-xs);
+	}
+	@media (max-width: 48em) {
+		.p-rapport__joindre {
+			grid-template-columns: 1fr;
+		}
+	}
+	/* Téléphone : la barre de contexte fait deux lignes, les en-têtes collants
+	   deviendraient imprévisibles ; la barre d'actions se compacte au-dessus de la barre basse. */
+	@media (max-width: 40em) {
+		.p-rapport__sommaire,
+		.p-rapport__groupe-tete {
+			position: static;
+		}
+		.p-rapport__sommaire {
+			flex-wrap: nowrap;
+			overflow-x: auto;
+			scrollbar-width: none;
+		}
+		.p-rapport__sommaire a {
+			flex: none;
+		}
+		.p-rapport__barre {
+			inset-block-end: calc(3.5rem + var(--space-xs));
+			flex-wrap: nowrap;
+			padding: var(--space-xs) var(--space-sm);
+		}
+		.p-rapport__barre-texte > span:not(.c-statut) {
+			display: none;
+		}
+		.p-rapport__barre-actions {
+			flex-wrap: nowrap;
+		}
+		.p-rapport__barre-actions .c-bouton {
+			padding-inline: var(--space-sm);
+		}
+	}
+}

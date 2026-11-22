@@ -1,0 +1,85 @@
+@layer components {
+	.p-volet,
+	.p-volet__contenu {
+		/* minmax(0, 1fr) : un contenu large défile dans son panneau au lieu d'élargir la page. */
+		grid-template-columns: minmax(0, 1fr);
+	}
+	.p-volet {
+		display: grid;
+		gap: var(--space-lg);
+	}
+	.p-volet__tete {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: var(--space-base) var(--space-xl);
+		padding-inline-start: var(--space-base);
+		border-inline-start: var(--sector-filet) solid var(--_secteur, var(--color-brand-mark));
+	}
+	.p-volet--wash {
+		--_secteur: var(--secteur-wash);
+	}
+	.p-volet--nut {
+		--_secteur: var(--secteur-nut);
+	}
+	.p-volet--san {
+		--_secteur: var(--secteur-san);
+	}
+	.p-volet--pe {
+		--_secteur: var(--secteur-pe);
+	}
+	.p-volet--secal {
+		--_secteur: var(--secteur-secal);
+	}
+	.p-volet__identite {
+		display: flex;
+		align-items: center;
+		gap: var(--space-base);
+	}
+	.p-volet__surtitre {
+		font-size: var(--fs-caption);
+		font-weight: var(--fw-medium);
+		color: var(--color-muted);
+	}
+	.p-volet__identite > div {
+		min-inline-size: 0;
+	}
+	.p-volet__titre {
+		font-size: clamp(var(--fs-display-sm), 2.5vw + 0.75rem, var(--fs-display-lg));
+		overflow-wrap: anywhere;
+		font-stretch: var(--fst-display);
+		letter-spacing: var(--ls-display-lg);
+		line-height: var(--lh-display);
+	}
+	.p-volet__meta {
+		margin-block-start: var(--space-xxs);
+		font-size: var(--fs-body-sm);
+		color: var(--color-body);
+	}
+	.p-volet__etat {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--space-xs);
+	}
+	.p-volet__badge {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-xxs);
+		padding: 4px var(--space-sm) 4px var(--space-xs);
+		border-radius: var(--rounded-pill);
+		background: var(--color-surface-strong);
+		font-size: var(--fs-badge);
+		font-weight: var(--fw-label);
+		color: var(--color-ink);
+	}
+	.p-volet__badge--droit {
+		background: var(--color-success-soft);
+		color: var(--color-success);
+	}
+	.p-volet__contenu {
+		display: grid;
+		gap: var(--space-lg);
+	}
+}

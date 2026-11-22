@@ -1,0 +1,94 @@
+@layer components {
+	.c-tiroir {
+		inline-size: min(var(--drawer-w), 100vw);
+		max-inline-size: 100vw;
+		block-size: 100dvh;
+		max-block-size: 100dvh;
+		margin: 0 0 0 auto;
+		padding: 0;
+		border: 0;
+		border-start-start-radius: var(--rounded-xl);
+		border-end-start-radius: var(--rounded-xl);
+		background: var(--color-surface-card);
+		color: var(--color-ink);
+		box-shadow: var(--shadow-floating);
+	}
+	.c-tiroir[open] {
+		display: flex;
+		flex-direction: column;
+		animation: c-tiroir-entree var(--dur-panel) var(--ease-out);
+	}
+	.c-tiroir::backdrop {
+		background: var(--backdrop);
+	}
+	@keyframes c-tiroir-entree {
+		from {
+			transform: translateX(var(--space-xl));
+			opacity: 0;
+		}
+	}
+	.c-tiroir__tete {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		min-block-size: var(--context-bar-h);
+		padding: 0 var(--space-md);
+		border-block-end: var(--hairline-w) solid var(--color-hairline);
+	}
+	.c-tiroir__titre {
+		font-size: var(--fs-title-md);
+	}
+	.c-tiroir__fermer {
+		display: grid;
+		place-items: center;
+		inline-size: var(--button-h);
+		block-size: var(--button-h);
+		border-radius: var(--rounded-md);
+		color: var(--color-body);
+	}
+	.c-tiroir__fermer:hover {
+		background: var(--color-surface-strong);
+	}
+	.c-tiroir__outils {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-xs);
+		padding: var(--space-xs) var(--space-md);
+		border-block-end: var(--hairline-w) solid var(--color-hairline);
+	}
+	.c-tiroir__filtres {
+		display: flex;
+		gap: 2px;
+		padding: 2px;
+		border-radius: var(--rounded-md);
+		background: var(--color-surface-strong);
+	}
+	.c-tiroir__filtres button {
+		min-block-size: 2rem;
+		padding: 0 var(--space-sm);
+		border-radius: var(--rounded-sm);
+		font-size: var(--fs-caption);
+		font-weight: var(--fw-medium);
+		color: var(--color-body);
+	}
+	.c-tiroir__filtres button.is-actif {
+		background: var(--color-surface-card);
+		color: var(--color-ink);
+		box-shadow: 0 0 0 var(--hairline-w) var(--color-hairline-strong);
+	}
+	.c-tiroir__corps {
+		flex: 1;
+		overflow-y: auto;
+		padding: 0 var(--space-md) var(--space-lg);
+	}
+	.c-tiroir__jour {
+		position: sticky;
+		inset-block-start: 0;
+		padding: var(--space-sm) 0 var(--space-xxs);
+		background: var(--color-surface-card);
+		font-size: var(--fs-caption);
+		font-weight: var(--fw-medium);
+		color: var(--color-muted);
+	}
+}

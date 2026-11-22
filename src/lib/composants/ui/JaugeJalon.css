@@ -1,0 +1,60 @@
+@layer components {
+	.c-jauge {
+		display: grid;
+		gap: var(--space-xs);
+		min-inline-size: 8rem;
+	}
+	.c-jauge__piste {
+		position: relative;
+		block-size: var(--jauge-h);
+		background: var(--color-jauge-fond);
+		border-radius: var(--rounded-xs);
+	}
+	.c-jauge--grande .c-jauge__piste {
+		block-size: var(--jauge-h-lg);
+	}
+	.c-jauge__cumul,
+	.c-jauge__mois {
+		position: absolute;
+		inset-block: 0;
+		inset-inline-start: 0;
+		transition: inline-size var(--dur-jauge) var(--ease-out), inset-inline-start var(--dur-jauge) var(--ease-out);
+	}
+	.c-jauge__cumul {
+		background: var(--color-jauge-cumul);
+		border-start-start-radius: var(--rounded-xs);
+		border-end-start-radius: var(--rounded-xs);
+	}
+	.c-jauge__mois {
+		background: var(--color-jauge-mois);
+	}
+	.c-jauge__jalon {
+		position: absolute;
+		inset-block: calc(var(--jalon-depasse) * -1);
+		inline-size: var(--jalon-w);
+		margin-inline-start: calc(var(--jalon-w) / -2);
+		background: var(--color-jauge-jalon);
+		border-radius: 1px;
+	}
+	.c-jauge__texte {
+		display: flex;
+		align-items: baseline;
+		gap: var(--space-xxs);
+		font-size: var(--fs-caption);
+		line-height: var(--lh-caption);
+		color: var(--color-body);
+		font-variant-numeric: tabular-nums;
+	}
+	.c-jauge__texte strong {
+		color: var(--color-ink);
+		font-weight: var(--fw-semibold);
+	}
+	.c-jauge__taux {
+		margin-inline-start: auto;
+		color: var(--color-ink);
+		font-weight: var(--fw-medium);
+	}
+	.c-jauge__taux.is-atteint {
+		color: var(--color-success);
+	}
+}
