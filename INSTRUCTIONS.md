@@ -215,6 +215,7 @@ Outils partagés : deux entrées ajoutées à `../.claude/launch.json` :
 
 | Date | Étape | État | Notes |
 |------|-------|------|-------|
+| 2026-11-22 | 6. Préparation de la mise en ligne | ✅ Fait | Dépôt distinct créé et poussé sur `Antoracca/outil-suivi` ; `npm run check` et `npm run build` passent. La sortie statique est prête (`build/`) et les variables publiques Supabase sont intégrées uniquement à la construction, sans fichier `.env` dans Git. Vercel est prêt, en attente de la connexion au compte pour rendre le lien permanent et public. |
 | 2026-11-21 | 0. Analyse des 5 plans d'action + modèle 5W | ✅ Fait | Structure des 2 feuilles relevée, 13 anomalies (§3.1) |
 | 2026-11-21 | 0. Recherche : lien OCHA, solutions existantes, base de données, interface | ✅ Fait | RECHERCHE.md ; lien OCHA = portail OneGMS (à alimenter, pas à copier) ; modèles : ActivityInfo, Akvo RSR, DHIS2, LogAlto, DevResults, PRP ; base : Supabase (PostgreSQL) |
 | 2026-11-21 | 0. Dossier du projet + INSTRUCTIONS, DESIGN, ARCHITECTURE, PLAN | ✅ Fait — à valider | Ce dossier |

@@ -24,3 +24,8 @@ vite.config.ts.timestamp-*
 
 # CLI Supabase (fichiers de travail locaux)
 supabase/.temp
+
+# Métadonnées locales créées par la CLI Vercel
+.vercel
+
+.vercel
