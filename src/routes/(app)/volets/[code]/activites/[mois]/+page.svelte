@@ -38,7 +38,14 @@
 		contexte.mois = mois;
 	});
 
-	const activites = $derived(etat.activites.filter((a) => a.volet === code && !a.archive_le));
+	/** Planification validée pour ce mois (onglet Activités planifiées) : les activités prévues passent en tête. */
+	const planifs = $derived(etat.planifications.filter((p) => p.volet === code && p.mois === mois));
+	const prevues = $derived(new Set(planifs.filter((p) => p.prevue).map((p) => p.activite_id)));
+	const activites = $derived.by(() => {
+		const liste = etat.activites.filter((a) => a.volet === code && !a.archive_le);
+		return planifs.length ? [...liste.filter((a) => prevues.has(a.id)), ...liste.filter((a) => !prevues.has(a.id))] : liste;
+	});
+	const moisSuivant = $derived(etat.projet.mois[etat.projet.mois.indexOf(mois) + 1]);
 	const justificatifs = $derived(etat.justificatifs.filter((j) => j.volet === code && j.mois === mois && !j.archive_le).length);
 	const lignes5w = $derived(etat.lignes_5w.filter((l) => l.volet === code && l.mois === mois && !l.archive_le).length);
 
@@ -83,7 +90,11 @@
 <section class="p-rapport" aria-labelledby="rapport-titre">
 	<EnTeteRapport volet={code} {mois} titre="Activités de {libelleMois(mois)}">
 		{#snippet meta()}
-			<span>{activites.length} activités</span>
+			{#if planifs.length}
+				<span>{prevues.size} prévue{prevues.size > 1 ? 's' : ''} sur {activites.length} activités</span>
+			{:else}
+				<span>{activites.length} activités · <a href="/volets/{code}/planification/{mois}">mois non planifié</a></span>
+			{/if}
 		{/snippet}
 	</EnTeteRapport>
 	{#if erreur}<Alerte variante="erreur" onfermer={() => (erreur = null)}>{erreur}</Alerte>{/if}
@@ -95,13 +106,16 @@
 			<a href="#section-5w"><Icone nom="carte" taille="sm" /> 5W du cluster <span>{lignes5w}</span></a>
 		{/if}
 		<a href="#section-justificatifs"><Icone nom="justificatif" taille="sm" /> Justificatifs <span>{justificatifs}</span></a>
+		{#if moisSuivant}
+			<a href="/volets/{code}/planification/{moisSuivant}"><Icone nom="calendrier" taille="sm" /> Planifier {libelleMois(moisSuivant)}</a>
+		{/if}
 		<a href="/volets/{code}/plan-action"><Icone nom="calendrier" taille="sm" /> Calendrier des tâches</a>
 	</nav>
 
 	<div id="section-activites" class="p-rapport__section">
-		<Panneau titre="Activités et budget" sousTitre="Taux d’exécution, résultats, observations et dépenses du mois, activité par activité." sansMarge>
+		<Panneau titre="Activités et budget" sousTitre={planifs.length ? 'Les activités prévues pour ce mois viennent en premier. Taux d’exécution, résultats, observations et dépenses, activité par activité.' : 'Taux d’exécution, résultats, observations et dépenses du mois, activité par activité.'} sansMarge>
 			{#each activites as a (a.id)}
-				<BlocActivite activite={a} {mois} {modifiable} />
+				<BlocActivite activite={a} {mois} {modifiable} prevue={planifs.length ? prevues.has(a.id) : null} />
 			{/each}
 		</Panneau>
 	</div>

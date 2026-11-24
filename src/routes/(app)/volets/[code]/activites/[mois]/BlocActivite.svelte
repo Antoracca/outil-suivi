@@ -12,8 +12,10 @@
 		activite: Activite;
 		mois: Mois;
 		modifiable: boolean;
+		/** Prévue par la planification du mois (null : mois non planifié). */
+		prevue?: boolean | null;
 	}
-	let { activite: act, mois, modifiable }: Props = $props();
+	let { activite: act, mois, modifiable, prevue = null }: Props = $props();
 
 	const av = $derived(avancementCourant(depot.etat, act.id, mois));
 	const budget = $derived(budgetActivite(depot.etat, act.id));
@@ -58,9 +60,12 @@
 	}
 </script>
 
-<article class="c-bloc-act" class:is-direct={!!depot.estEnDirect(act.id)} id={domId} aria-labelledby="{domId}-titre">
+<article class="c-bloc-act" class:is-direct={!!depot.estEnDirect(act.id)} class:is-non-prevue={prevue === false} id={domId} aria-labelledby="{domId}-titre">
 	<header class="c-bloc-act__tete">
-		<h3 class="c-bloc-act__titre" id="{domId}-titre"><span class="c-bloc-act__num">{act.numero}</span> {act.libelle}</h3>
+		<h3 class="c-bloc-act__titre" id="{domId}-titre">
+			<span class="c-bloc-act__num">{act.numero}</span> {act.libelle}
+			{#if prevue === true}<span class="c-bloc-act__prevue"><Icone nom="calendrier" taille="sm" /> Prévue</span>{:else if prevue === false}<span class="c-bloc-act__non-prevue">Non prévue</span>{/if}
+		</h3>
 		<div class="c-bloc-act__budget">
 			<span>Budget {montant(budget.planifie)} · exécuté {montant(budget.execute)}</span>
 			<JaugeJalon cumulPrecedent={budget.execute} ceMois={0} cible={budget.planifie} sansTexte />

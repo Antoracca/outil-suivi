@@ -333,6 +333,35 @@ await test('Nouvelle ONG : son compte de saisie écrit dans son volet, pas aille
 	egal(Number(await valeur(`select count(*) from public.volets`)), 7, 'elle lit le consortium :');
 });
 
+/* ---------- Planification du mois suivant (cahier des charges APSUD, §3.4) ---------- */
+
+await test('Planification M+1 : l’ONG coche ses activités, les autres sont « non prévues », l’appel est rejouable', async () => {
+	await en(idc);
+	const e = ev();
+	await db.query(`select public.planifier_mois($1, 'WASH-IDC', '2027-01', array[$2])`, [e, ACT_WASH]);
+	await db.query(`select public.planifier_mois($1, 'WASH-IDC', '2027-01', array[$2])`, [e, ACT_WASH]);
+	egal(Number(await valeur(`select count(*) from public.planifications where volet = 'WASH-IDC' and mois = '2027-01' and prevue`)), 1, 'une seule prévue :');
+	const total = Number(await valeur(`select count(*) from public.activites where volet = 'WASH-IDC' and archive_le is null`));
+	egal(Number(await valeur(`select count(*) from public.planifications where volet = 'WASH-IDC' and mois = '2027-01'`)), total, 'une ligne par activité :');
+	egal(Number(await valeur(`select count(*) from public.journal where type = 'planification_validee' and volet = 'WASH-IDC'`)), 1, 'une seule trace au fil :');
+	// Nouvelle validation : la sélection est remplacée, rien n'est supprimé.
+	await db.query(`select public.planifier_mois($1, 'WASH-IDC', '2027-01', '{}')`, [ev()]);
+	egal(Number(await valeur(`select count(*) from public.planifications where volet = 'WASH-IDC' and mois = '2027-01' and prevue`)), 0);
+	egal(Number(await valeur(`select count(*) from public.planifications where volet = 'WASH-IDC' and mois = '2027-01'`)), total);
+});
+await test('Planification M+1 : refusée hors de son volet, pour une activité d’un autre volet, et après soumission', async () => {
+	await en(ars);
+	await refuse(db.query(`select public.planifier_mois($1, 'WASH-IDC', '2027-01', '{}')`, [ev()]), /ne peut pas planifier/);
+	await en(idc);
+	await refuse(db.query(`select public.planifier_mois($1, 'WASH-IDC', '2027-01', array['NUT-ARS:act:1.1.1'])`, [ev()]), /n’appartient pas au volet/);
+	await refuse(db.query(`select public.planifier_mois($1, 'WASH-IDC', '2031-01', '{}')`, [ev()]), /ne fait pas partie du projet/);
+	await enPostgres();
+	await db.query(`update public.rapports set statut = 'soumis' where volet = 'WASH-IDC' and mois = '2027-02'`);
+	await en(idc);
+	await refuse(db.query(`select public.planifier_mois($1, 'WASH-IDC', '2027-02', '{}')`, [ev()]), /déjà soumis ou validé/);
+	await refuse(db.query(`insert into public.planifications (id, activite_id, volet, mois, prevue, valide_par) values ('x', $1, 'WASH-IDC', '2027-03', true, $2)`, [ACT_WASH, idc]), /permission denied/);
+});
+
 /* ---------- Comptes ---------- */
 
 await test('Comptes : seul le super-admin désactive, et jamais lui-même', async () => {

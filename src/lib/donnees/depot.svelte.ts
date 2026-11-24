@@ -49,6 +49,7 @@ import type {
 	Justificatif,
 	Ligne5W,
 	Mois,
+	Planification,
 	SemaineTache,
 	StatutRapport,
 	Tache,
@@ -634,6 +635,35 @@ class Depot {
 			fn: 'enregistrer_avancement',
 			args: { p_id: idAvancement, p_activite: activiteId, p_mois: mois, p_taux: champs.taux_execution, p_resultats: champs.resultats, p_observations: champs.observations }
 		});
+	}
+
+	/* ---------- Planification du mois suivant (cahier des charges APSUD, §3.4) ---------- */
+
+	/**
+	 * Valide la planification d'un volet pour un mois : les activités listées sont prévues,
+	 * les autres activités actives du volet ne le sont pas. Rien n'est supprimé : chaque ligne
+	 * est mise à jour. Mêmes règles que la fonction SQL planifier_mois.
+	 */
+	planifierMois(volet: CodeVolet, mois: Mois, activiteIds: string[]) {
+		const u = this.#exigerUtilisateur();
+		const v = this.volet(volet);
+		if (!peutEcrireVolet(u, v)) throw new ErreurRegle(`Votre organisation (${u.organisation}) ne peut pas planifier le volet ${volet}.`);
+		if (!this.etat.projet.mois.includes(mois)) throw new ErreurRegle(`Le mois ${mois} ne fait pas partie du projet.`);
+		if (!peutSaisirMois(u, v, trouverRapport(this.etat, volet, mois))) throw new ErreurRegle('Le rapport de ce mois est déjà soumis ou validé : la planification ne peut plus changer.');
+		const actives = this.etat.activites.filter((a) => a.volet === volet && !a.archive_le);
+		const choisies = new Set(activiteIds);
+		if ([...choisies].some((id) => !actives.some((a) => a.id === id))) throw new ErreurRegle(`Une activité choisie n’appartient pas au volet ${volet} ou est archivée.`);
+		const le = this.#horodatage();
+		for (const a of actives) {
+			const id = `${a.id}:${mois}`;
+			const ligne: Planification = { id, activite_id: a.id, volet, mois, prevue: choisies.has(a.id), valide_par: u.id, valide_le: le };
+			const i = this.etat.planifications.findIndex((p) => p.id === id);
+			if (i >= 0) this.etat.planifications[i] = ligne;
+			else this.etat.planifications.push(ligne);
+		}
+		const nb = choisies.size;
+		const ev = this.#journaliser('planification_validee', volet, mois, { type: 'planification', id: `${volet}:${mois}`, libelle: `${nb} activité${nb > 1 ? 's' : ''}` }, 'a validé la planification du mois :');
+		this.#valider(ev, 'Planification enregistrée.', { fn: 'planifier_mois', args: { p_volet: volet, p_mois: mois, p_activites: [...choisies] } });
 	}
 
 	ajouterDepense(activiteId: string, mois: Mois, montant: number, libelle: string) {

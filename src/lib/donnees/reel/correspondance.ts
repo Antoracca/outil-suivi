@@ -21,6 +21,7 @@ import type {
 	Organisation,
 	Outcome,
 	Output,
+	Planification,
 	Rapport,
 	Secteur,
 	SemaineTache,
@@ -179,6 +180,15 @@ export const vers = {
 		date: heureLocale(r.date)!,
 		archive_le: heureLocale(r.archive_le)
 	}),
+	planifications: (r: Ligne): Planification => ({
+		id: r.id,
+		activite_id: r.activite_id,
+		volet: r.volet,
+		mois: r.mois,
+		prevue: !!r.prevue,
+		valide_par: r.valide_par,
+		valide_le: heureLocale(r.valide_le)!
+	}),
 	rapports: (r: Ligne): Rapport => ({
 		id: r.id,
 		volet: r.volet,
@@ -220,6 +230,7 @@ export const COLLECTIONS = {
 	depenses: { cle: 'id', etat: 'depenses' },
 	justificatifs: { cle: 'id', etat: 'justificatifs' },
 	lignes_5w: { cle: 'id', etat: 'lignes_5w' },
+	planifications: { cle: 'id', etat: 'planifications' },
 	rapports: { cle: 'id', etat: 'rapports' },
 	journal: { cle: 'id', etat: 'journal' },
 	notifications: { cle: 'id', etat: 'notifications' },
@@ -245,7 +256,7 @@ export const LIMITE_JOURNAL = 1000;
 /** Charge tout l'état du consortium visible par le compte connecté. */
 export async function chargerEtatReel(sb: SupabaseClient): Promise<EtatDepot> {
 	const lecture = (table: string, ordre?: string) => tout(sb, table, ordre);
-	const [organisations, secteurs, projets, periodes, profils, volets, outcomes, outputs, activites, indicateurs, taches, semaines, valeurs, avancements, depenses, justificatifs, lignes5w, rapports, notifications] =
+	const [organisations, secteurs, projets, periodes, profils, volets, outcomes, outputs, activites, indicateurs, taches, semaines, valeurs, avancements, depenses, justificatifs, lignes5w, planifications, rapports, notifications] =
 		await Promise.all([
 			lecture('organisations'),
 			lecture('secteurs'),
@@ -264,6 +275,7 @@ export async function chargerEtatReel(sb: SupabaseClient): Promise<EtatDepot> {
 			lecture('depenses', 'date'),
 			lecture('justificatifs', 'date'),
 			lecture('lignes_5w', 'date'),
+			lecture('planifications'),
 			lecture('rapports'),
 			lecture('notifications')
 		]);
@@ -307,6 +319,7 @@ export async function chargerEtatReel(sb: SupabaseClient): Promise<EtatDepot> {
 		depenses: depenses.map(vers.depenses),
 		justificatifs: justificatifs.map(vers.justificatifs),
 		lignes_5w: lignes5w.map(vers.lignes_5w),
+		planifications: planifications.map(vers.planifications),
 		rapports: rapports.map(vers.rapports),
 		journal: (journal ?? []).map(vers.journal),
 		notifications: notifications.map(vers.notifications)
@@ -333,6 +346,7 @@ export function etatVide(): EtatDepot {
 		depenses: [],
 		justificatifs: [],
 		lignes_5w: [],
+		planifications: [],
 		rapports: [],
 		journal: [],
 		notifications: []

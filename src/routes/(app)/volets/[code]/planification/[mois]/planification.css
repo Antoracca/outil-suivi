@@ -1,0 +1,159 @@
+@layer components {
+	.p-planif {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		gap: var(--space-base);
+	}
+	.p-planif__titres {
+		display: grid;
+		gap: var(--space-xs);
+	}
+	.p-planif__titre {
+		font-size: var(--fs-display-md);
+		letter-spacing: var(--ls-display-md);
+	}
+	.p-planif__meta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--space-xs) var(--space-sm);
+		font-size: var(--fs-caption);
+		color: var(--color-body);
+	}
+	.p-planif__etat {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-xxs);
+		padding: var(--space-xxs) var(--space-sm);
+		border-radius: var(--rounded-pill);
+		border: var(--hairline-w) solid var(--color-hairline-strong);
+		font-weight: var(--fw-semibold);
+		color: var(--color-ink);
+	}
+	.p-planif__etat--validee {
+		border-color: var(--color-ink);
+		background: var(--color-wash-pousse-light);
+	}
+	.p-planif__consigne {
+		max-inline-size: 70ch;
+		font-size: var(--fs-body-sm);
+		color: var(--color-body);
+	}
+	.p-planif__consigne a {
+		color: var(--color-link);
+		font-weight: var(--fw-medium);
+	}
+	.p-planif__raccourcis {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-xxs);
+	}
+	.p-planif__vide {
+		padding: var(--space-md);
+	}
+	.p-planif__groupe {
+		min-inline-size: 0;
+		margin: 0;
+		padding: 0;
+		border: 0;
+	}
+	.p-planif__groupe-tete {
+		display: block;
+		inline-size: 100%;
+		padding: var(--space-xs) var(--space-md);
+		background: var(--color-canvas-soft);
+		border-block: var(--hairline-w) solid var(--color-hairline);
+		font-size: var(--fs-caption);
+		color: var(--color-body);
+	}
+	.p-planif__groupe-tete span {
+		margin-inline-end: var(--space-xs);
+		font-weight: var(--fw-semibold);
+		color: var(--color-ink);
+	}
+	.p-planif__liste {
+		display: grid;
+		padding: 0;
+		list-style: none;
+	}
+	.p-planif__ligne {
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr);
+		align-items: start;
+		gap: var(--space-xxs) var(--space-sm);
+		padding: var(--space-sm) var(--space-md);
+		border-block-end: var(--hairline-w) solid var(--color-hairline);
+		transition: background-color var(--dur-fast) linear;
+	}
+	.p-planif__ligne.is-cochee {
+		background: var(--color-wash-pousse-light);
+	}
+	.p-planif__case {
+		inline-size: 1.25rem;
+		block-size: 1.25rem;
+		margin-block-start: var(--space-xxs);
+		accent-color: var(--color-ink);
+		cursor: pointer;
+	}
+	.p-planif__case:disabled {
+		cursor: not-allowed;
+	}
+	.p-planif__libelle {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-xxs) var(--space-xs);
+		font-size: var(--fs-body-sm);
+		font-weight: var(--fw-medium);
+		color: var(--color-ink);
+		cursor: pointer;
+	}
+	.p-planif__numero {
+		font-variant-numeric: tabular-nums;
+		font-weight: var(--fw-semibold);
+	}
+	.p-planif__details {
+		grid-column: 2;
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-xxs) var(--space-base);
+		font-size: var(--fs-caption);
+		color: var(--color-muted);
+	}
+	.p-planif__calendrier {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-xxs);
+		color: var(--color-body);
+	}
+	/* Barre de validation collante en bas de page. */
+	.p-planif__barre {
+		position: sticky;
+		inset-block-end: var(--space-base);
+		z-index: var(--z-sticky);
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-sm) var(--space-base);
+		padding: var(--space-sm) var(--space-md);
+		border-radius: var(--rounded-lg);
+		border: var(--hairline-w) solid var(--color-hairline-strong);
+		background: var(--color-surface-card);
+		box-shadow: var(--shadow-floating);
+	}
+	.p-planif__barre-texte {
+		font-size: var(--fs-body-sm);
+		color: var(--color-body);
+	}
+	.p-planif__non-valide {
+		color: var(--color-ink);
+		font-weight: var(--fw-medium);
+	}
+	/* Téléphone : la barre se place au-dessus de la barre de navigation basse. */
+	@media (max-width: 40em) {
+		.p-planif__barre {
+			inset-block-end: calc(3.5rem + var(--space-xs));
+			padding: var(--space-xs) var(--space-sm);
+		}
+	}
+}

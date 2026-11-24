@@ -40,7 +40,8 @@
 		element_archive: 'archivage',
 		element_restaure: 'archivage',
 		element_supprime: 'archivage',
-		volet_cree: 'structure'
+		volet_cree: 'structure',
+		planification_validee: 'saisies'
 	};
 	const PARTS: { cle: keyof Desagregation; libelle: string }[] = [
 		{ cle: 'femmes', libelle: 'Femmes' },

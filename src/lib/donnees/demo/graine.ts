@@ -25,6 +25,7 @@ import type {
 	Notification,
 	Outcome,
 	Output,
+	Planification,
 	Rapport,
 	SemaineTache,
 	Sigle,
@@ -34,7 +35,7 @@ import type {
 	ValeurIndicateur
 } from '../types';
 
-export const VERSION_SCHEMA = 8;
+export const VERSION_SCHEMA = 9;
 export const AUJOURDHUI_DEMO = '2027-01-12T09:30:00';
 
 /* ---------- Hasard déterministe ---------- */
@@ -455,6 +456,21 @@ export function construireEtatDemo(): EtatDepot {
 		}
 	}
 
+	// Planification M+1 de démonstration : pour les mois déjà ouverts, l'ONG avait coché
+	// les activités dont une tâche était prévue ce mois-là ; le mois suivant reste à planifier.
+	const planifications: Planification[] = [];
+	for (const v of structure.volets) {
+		const volet = v.code as CodeVolet;
+		for (const mois of ['2026-11', '2026-12', '2027-01'] as Mois[]) {
+			const precedent = structure.projet.mois[structure.projet.mois.indexOf(mois) - 1];
+			const valide_le = precedent ? dateDuMois(precedent, 26, 10) : dateDuMois(mois, 8, 10);
+			for (const a of activites.filter((x) => x.volet === volet)) {
+				const prevue = taches.some((t) => t.activite_id === a.id && t.semaines.some((s) => s.mois === mois && s.prevu));
+				planifications.push({ id: `${a.id}:${mois}`, activite_id: a.id, volet, mois, prevue, valide_par: saisieParVolet[volet], valide_le });
+			}
+		}
+	}
+
 	journal.sort((a, b) => b.date.localeCompare(a.date));
 
 	// Notifications non lues de démonstration pour la coordination et pour AFPE.
@@ -491,6 +507,7 @@ export function construireEtatDemo(): EtatDepot {
 		depenses,
 		justificatifs,
 		lignes_5w: lignes5w,
+		planifications,
 		rapports,
 		journal,
 		notifications

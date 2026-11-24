@@ -26,6 +26,30 @@
 		color: var(--color-muted);
 		font-weight: var(--fw-medium);
 	}
+	/* Mention issue de l'onglet Activités planifiées : texte + icône, jamais la couleur seule. */
+	.c-bloc-act__prevue,
+	.c-bloc-act__non-prevue {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-xxs);
+		margin-inline-start: var(--space-xs);
+		padding: 0 var(--space-xs);
+		border-radius: var(--rounded-pill);
+		border: var(--hairline-w) solid var(--color-hairline-strong);
+		font-size: var(--fs-caption);
+		font-weight: var(--fw-semibold);
+		vertical-align: middle;
+		white-space: nowrap;
+	}
+	.c-bloc-act__prevue {
+		border-color: var(--color-ink);
+		background: var(--color-wash-pousse-light);
+		color: var(--color-ink);
+	}
+	.c-bloc-act__non-prevue {
+		font-weight: var(--fw-medium);
+		color: var(--color-muted);
+	}
 	.c-bloc-act__budget {
 		display: grid;
 		gap: var(--space-xxs);

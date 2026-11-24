@@ -198,6 +198,21 @@ export interface AvancementActivite {
 	date: string;
 }
 
+/**
+ * Planification du mois suivant (cahier des charges APSUD, §3.4) : une ligne par activité
+ * et par mois, écrite à chaque validation de l'onglet « Activités planifiées ».
+ */
+export interface Planification {
+	/** « <activité>:<mois> ». */
+	id: string;
+	activite_id: string;
+	volet: CodeVolet;
+	mois: Mois;
+	prevue: boolean;
+	valide_par: string;
+	valide_le: string;
+}
+
 export interface Depense {
 	id: string;
 	activite_id: string;
@@ -260,7 +275,8 @@ export type TypeEvenement =
 	| 'element_supprime'
 	| 'cadre_verrouille'
 	| 'cadre_deverrouille'
-	| 'volet_cree';
+	| 'volet_cree'
+	| 'planification_validee';
 
 /** Journal d'audit : en ajout seul. */
 export interface Evenement {
@@ -302,6 +318,7 @@ export interface EtatDepot {
 	depenses: Depense[];
 	justificatifs: Justificatif[];
 	lignes_5w: Ligne5W[];
+	planifications: Planification[];
 	rapports: Rapport[];
 	journal: Evenement[];
 	notifications: Notification[];

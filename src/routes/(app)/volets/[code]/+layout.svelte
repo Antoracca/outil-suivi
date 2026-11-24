@@ -26,12 +26,22 @@
 	const nbIndicateurs = $derived(depot.etat.indicateurs.filter((i) => i.volet === code && !i.archive_le).length);
 	const base = $derived(`/volets/${code}`);
 	const chemin = $derived(page.url.pathname);
-	const moisRapport = $derived((page.params.mois as string | undefined) ?? contexte.mois);
+	const listeMois = $derived(depot.etat.projet.mois);
+	const surPlanification = $derived(chemin.startsWith(`${base}/planification`));
+	/** Mois du rapport (Indicateurs, Activités). Sur la planification, l'adresse porte M+1 : on revient d'un mois. */
+	const moisRapport = $derived.by(() => {
+		const m = (page.params.mois as string | undefined) ?? contexte.mois;
+		if (!surPlanification || !page.params.mois) return m;
+		const i = listeMois.indexOf(m);
+		return i > 0 ? listeMois[i - 1] : m;
+	});
+	const moisSuivant = $derived(listeMois[Math.min(listeMois.indexOf(moisRapport) + 1, listeMois.length - 1)] ?? moisRapport);
 
 	const onglets = $derived([
 		{ libelle: 'Synthèse', href: base, actif: chemin === base },
 		{ libelle: 'Indicateurs', href: `${base}/indicateurs/${moisRapport}`, actif: chemin.startsWith(`${base}/indicateurs`) || chemin.startsWith(`${base}/cadre-logique`) },
-		{ libelle: 'Activités', href: `${base}/activites/${moisRapport}`, actif: chemin.startsWith(`${base}/activites`) || chemin.startsWith(`${base}/plan-action`) }
+		{ libelle: 'Activités', href: `${base}/activites/${moisRapport}`, actif: chemin.startsWith(`${base}/activites`) || chemin.startsWith(`${base}/plan-action`) },
+		{ libelle: 'Activités planifiées', href: `${base}/planification/${moisSuivant}`, actif: surPlanification }
 	]);
 </script>
 
