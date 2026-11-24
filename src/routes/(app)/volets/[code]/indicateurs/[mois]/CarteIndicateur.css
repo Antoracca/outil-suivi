@@ -107,7 +107,8 @@
 	.c-carte-ind__grille .u-nombre {
 		inline-size: 16%;
 	}
-	.c-carte-ind__ligne--planifie td {
+	.c-carte-ind__ligne--planifie td,
+	.c-carte-ind__ligne--precedent td {
 		color: var(--color-body);
 	}
 	.c-carte-ind__ligne--cumul td,
@@ -149,7 +150,7 @@
 	}
 	.c-carte-ind__chiffres {
 		display: grid;
-		grid-template-columns: repeat(3, minmax(0, 1fr));
+		grid-template-columns: repeat(4, minmax(0, 1fr));
 		gap: var(--space-base);
 	}
 	.c-carte-ind__chiffres dt {
@@ -184,35 +185,10 @@
 	.c-carte-ind__alerte {
 		color: var(--color-warning);
 	}
-	.c-carte-ind__preuve {
-		display: flex;
-		flex-wrap: wrap;
-		align-items: center;
-		gap: var(--space-xs) var(--space-base);
-	}
-	.c-carte-ind__ouinon {
-		display: inline-flex;
-		align-items: center;
-		gap: var(--space-xxs);
-		padding: 2px var(--space-sm) 2px var(--space-xs);
-		border-radius: var(--rounded-pill);
-		background: var(--color-surface-strong);
-		font-size: var(--fs-caption);
-		color: var(--color-body);
-	}
-	.c-carte-ind__ouinon strong {
-		color: var(--color-ink);
-	}
-	.c-carte-ind__ouinon.is-oui {
-		background: var(--color-success-soft);
-		color: var(--color-success);
-	}
-	.c-carte-ind__ouinon.is-oui strong {
-		color: var(--color-success);
-	}
 	.c-carte-ind__joindre {
 		display: inline-flex;
 		align-items: center;
+		justify-self: start;
 		gap: var(--space-xxs);
 		min-block-size: 2rem;
 		font-size: var(--fs-caption);
@@ -222,13 +198,83 @@
 	.c-carte-ind__joindre:hover {
 		text-decoration: underline;
 	}
+	/* Moyens de vérification : une case par moyen, le téléversement apparaît quand elle est cochée. */
 	.c-carte-ind__moyens {
-		font-size: var(--fs-caption);
-		color: var(--color-muted);
+		display: grid;
+		gap: var(--space-xs);
+		min-inline-size: 0;
+		margin: 0;
+		padding: var(--space-sm) 0 0;
+		border: 0;
+		border-block-start: var(--hairline-w) solid var(--color-hairline);
 	}
-	.c-carte-ind__moyens span {
+	.c-carte-ind__moyens-titre {
+		padding: 0;
+		font-size: var(--fs-caption);
+		font-weight: var(--fw-semibold);
+		color: var(--color-ink);
+	}
+	.c-carte-ind__moyens-liste {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+		gap: var(--space-xs);
+		padding: 0;
+		list-style: none;
+	}
+	.c-carte-ind__moyen {
+		display: grid;
+		align-content: start;
+		gap: var(--space-xxs);
+		padding: var(--space-xs) var(--space-sm);
+		border: var(--hairline-w) solid var(--color-hairline-strong);
+		border-radius: var(--rounded-md);
+		font-size: var(--fs-caption);
 		color: var(--color-body);
+	}
+	.c-carte-ind__moyen.is-coche {
+		border-color: var(--color-ink);
+		background: var(--color-wash-pousse-light);
+	}
+	.c-carte-ind__moyen-tete {
+		display: flex;
+		align-items: flex-start;
+		gap: var(--space-xs);
+	}
+	.c-carte-ind__moyen-tete label {
 		font-weight: var(--fw-medium);
+		color: var(--color-ink);
+		cursor: pointer;
+	}
+	.c-carte-ind__moyen-case {
+		flex: none;
+		inline-size: 1.125rem;
+		block-size: 1.125rem;
+		accent-color: var(--color-ink);
+		cursor: pointer;
+	}
+	.c-carte-ind__piece {
+		display: inline-flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--space-xxs);
+		overflow-wrap: anywhere;
+	}
+	.c-carte-ind__televerser {
+		display: inline-flex;
+		align-items: center;
+		justify-self: start;
+		gap: var(--space-xxs);
+		min-block-size: 2rem;
+		font-weight: var(--fw-medium);
+		color: var(--color-link);
+		cursor: pointer;
+	}
+	.c-carte-ind__televerser:hover {
+		text-decoration: underline;
+	}
+	.c-carte-ind__televerser:has(input:focus-visible) {
+		outline: var(--focus-w) solid var(--color-ink);
+		outline-offset: var(--focus-gap);
 	}
 	.c-carte-ind__versions {
 		display: grid;
@@ -318,7 +364,7 @@
 		.c-carte-ind__chiffres {
 			grid-template-columns: 1fr 1fr;
 		}
-		.c-carte-ind__chiffres > div:nth-child(2) {
+		.c-carte-ind__chiffres > div:nth-child(3) {
 			grid-column: 1 / -1;
 			order: -1;
 		}

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { depot } from '#lib/donnees/depot.svelte.ts';
-	import { cumul, historique, justificatifsIndicateur, valeurCourante } from '#lib/donnees/calculs.ts';
-	import { dateHeure, lireNombre, nombre, pourcent } from '#lib/format.ts';
+	import { cumul, historique, valeurCourante } from '#lib/donnees/calculs.ts';
+	import { dateHeure, lireNombre, nombre, pourcent, taille } from '#lib/format.ts';
 	import type { Desagregation, Indicateur, Mois } from '#lib/donnees/types.ts';
 	import JaugeJalon from '#lib/composants/ui/JaugeJalon.svelte';
 	import Icone from '#lib/icones/Icone.svelte';
@@ -24,7 +24,26 @@
 		onjustificatif?: () => void;
 	}
 	let { indicateur: ind, mois, modifiable, numero, onjustificatif }: Props = $props();
-	const nbJustificatifs = $derived(justificatifsIndicateur(depot.etat, ind.id, mois));
+	/** Pièces du mois rattachées à cet indicateur, par moyen de vérification. */
+	const pieces = $derived(depot.etat.justificatifs.filter((j) => j.volet === ind.volet && j.mois === mois && !j.archive_le && j.rattachement.type === 'indicateur' && j.rattachement.id === ind.id));
+	const piecesDe = (moyen: string) => pieces.filter((j) => j.moyen_verification === moyen);
+	/** Cases cochées sur cet écran (une case cochée ouvre le téléversement ; une pièce envoyée la garde cochée). */
+	let coches = $state<Record<string, boolean>>({});
+	const coche = (moyen: string) => coches[moyen] ?? piecesDe(moyen).length > 0;
+	let erreurPiece = $state<string | null>(null);
+	function televerser(moyen: string, champ: HTMLInputElement) {
+		const f = champ.files?.[0];
+		if (!f) return;
+		erreurPiece = null;
+		try {
+			depot.ajouterJustificatif(ind.volet, mois, { type: 'indicateur', id: ind.id }, { nom: f.name, type: f.type, taille: f.size }, moyen, f);
+		} catch (e) {
+			erreurPiece = e instanceof Error ? e.message : String(e);
+		}
+		champ.value = '';
+	}
+	const pct = $derived(ind.type_valeur === 'pourcentage');
+	const val = (n: number | null | undefined) => (pct ? pourcent(n ?? null) : nombre(n ?? null));
 
 	type Cle = 'femmes' | 'filles' | 'hommes' | 'garcons' | 'total';
 	const COLONNES: { cle: Cle; libelle: string }[] = [
@@ -147,7 +166,7 @@
 
 	{#if ind.desagrege}
 		<table class="c-carte-ind__grille">
-			<caption class="u-visuellement-masque">Planifié, réalisé ce mois et cumul pour {ind.libelle}</caption>
+			<caption class="u-visuellement-masque">Planifié, précédent, actuel et cumul pour {ind.libelle}</caption>
 			<thead>
 				<tr>
 					<th scope="col"><span class="u-visuellement-masque">Ligne</span></th>
@@ -157,12 +176,17 @@
 			</thead>
 			<tbody>
 				<tr class="c-carte-ind__ligne--planifie">
-					<th scope="row">Cible</th>
+					<th scope="row">Planifié</th>
 					{#each COLONNES as c (c.cle)}<td class="u-nombre" data-libelle={c.libelle}>{nombre(ind.cible[c.cle])}</td>{/each}
 					<td class="u-nombre" data-libelle="Total">{nombre(ind.cible.total)}</td>
 				</tr>
+				<tr class="c-carte-ind__ligne--precedent">
+					<th scope="row">Précédent</th>
+					{#each COLONNES as c (c.cle)}<td class="u-nombre" data-libelle={c.libelle}>{nombre(precedent[c.cle])}</td>{/each}
+					<td class="u-nombre" data-libelle="Total">{nombre(precedent.total)}</td>
+				</tr>
 				<tr class="c-carte-ind__ligne--saisie">
-					<th scope="row">Ce mois</th>
+					<th scope="row">Actuel</th>
 					{#each COLONNES as c (c.cle)}
 						<td class="u-nombre" data-libelle={c.libelle}>
 							<input
@@ -170,7 +194,7 @@
 								type="text"
 								inputmode="numeric"
 								autocomplete="off"
-								aria-label="{c.libelle}, réalisé ce mois"
+								aria-label="{c.libelle}, actuel (réalisé ce mois)"
 								aria-describedby="{domId}-titre"
 								bind:value={saisie[c.cle]}
 								onchange={enregistrer}
@@ -190,14 +214,15 @@
 	{:else}
 		<div class="c-carte-ind__simple">
 			<dl class="c-carte-ind__chiffres">
-				<div><dt>Cible</dt><dd>{ind.type_valeur === 'pourcentage' ? pourcent(ind.cible.total) : nombre(ind.cible.total)}</dd></div>
+				<div><dt>Planifié</dt><dd>{val(ind.cible.total)}</dd></div>
+				<div><dt>{pct ? 'Valeur précédente' : 'Précédent'}</dt><dd>{val(precedent.total)}</dd></div>
 				<div>
-					<dt><label for="{domId}-total">{ind.type_valeur === 'pourcentage' ? 'Valeur ce mois (%)' : 'Réalisé ce mois'}</label></dt>
+					<dt><label for="{domId}-total">{pct ? 'Actuel (%)' : 'Actuel'}</label></dt>
 					<dd>
 						<input id="{domId}-total" class="c-carte-ind__case" type="text" inputmode="decimal" autocomplete="off" bind:value={saisie.total} onchange={enregistrer} disabled={!modifiable} />
 					</dd>
 				</div>
-				<div><dt>{ind.type_valeur === 'pourcentage' ? 'Dernière valeur' : 'Cumul'}</dt><dd>{ind.type_valeur === 'pourcentage' ? pourcent(cumulInclus.total) : nombre(cumulInclus.total)}</dd></div>
+				<div><dt>{pct ? 'Dernière valeur' : 'Cumul'}</dt><dd>{val(cumulInclus.total)}</dd></div>
 			</dl>
 		</div>
 	{/if}
@@ -207,19 +232,41 @@
 	{#if erreur}<p class="c-carte-ind__erreur" role="alert"><Icone nom="alerte" taille="sm" /> {erreur}</p>{/if}
 	{#each alertes as a (a)}<p class="c-carte-ind__alerte"><Icone nom="info" taille="sm" /> {a}</p>{/each}
 
-	<div class="c-carte-ind__preuve">
-		<!-- Colonne « Oui/Non » des fiches Excel : calculée à partir des pièces jointes du mois (D11). -->
-		<p class="c-carte-ind__ouinon" class:is-oui={nbJustificatifs > 0}>
-			<Icone nom={nbJustificatifs > 0 ? 'valider' : 'fermer'} taille="sm" />
-			Justificatif fourni : <strong>{nbJustificatifs > 0 ? `Oui (${nbJustificatifs})` : 'Non'}</strong>
-		</p>
-		{#if modifiable && onjustificatif}
-			<button type="button" class="c-carte-ind__joindre" onclick={onjustificatif}><Icone nom="televerser" taille="sm" /> Joindre un justificatif</button>
+	<!-- Moyens de vérification : une case par moyen ; cochée, elle ouvre le téléversement de la pièce
+	     (retour d'APSUD du 2026-11-24, docs/retours/ANNOTATIONS-IMAGE-2026-11-24.md). -->
+	<fieldset class="c-carte-ind__moyens">
+		<legend class="c-carte-ind__moyens-titre">Moyens de vérification</legend>
+		{#if ind.moyens_verification.length}
+			<ul class="c-carte-ind__moyens-liste" role="list">
+				{#each ind.moyens_verification as moyen, k (k)}
+					{@const deja = piecesDe(moyen)}
+					{@const idCase = `${domId}-moyen-${k}`}
+					<li class="c-carte-ind__moyen" class:is-coche={coche(moyen)}>
+						<span class="c-carte-ind__moyen-tete">
+							<input id={idCase} type="checkbox" class="c-carte-ind__moyen-case" checked={coche(moyen)} disabled={!modifiable || deja.length > 0} onchange={(e) => (coches[moyen] = e.currentTarget.checked)} />
+							<label for={idCase}>{moyen}</label>
+						</span>
+						{#each deja as j (j.id)}
+							<span class="c-carte-ind__piece"><Icone nom="justificatif" taille="sm" /> {j.nom_fichier} <span class="u-attenue">· {taille(j.taille)}</span></span>
+						{/each}
+						{#if modifiable && coche(moyen)}
+							<label class="c-carte-ind__televerser">
+								<Icone nom="televerser" taille="sm" />
+								<span>{deja.length ? 'Ajouter une autre pièce' : 'Téléverser la pièce'}</span>
+								<input type="file" class="u-visuellement-masque" accept="image/*,application/pdf,.doc,.docx,.xls,.xlsx" onchange={(e) => televerser(moyen, e.currentTarget)} />
+							</label>
+						{/if}
+					</li>
+				{/each}
+			</ul>
+		{:else}
+			<p class="u-attenue">Aucun moyen de vérification dans le cadre logique.</p>
 		{/if}
-	</div>
-	{#if ind.moyens_verification.length}
-		<p class="c-carte-ind__moyens"><span>Moyens de vérification :</span> {ind.moyens_verification.join(' · ')}</p>
-	{/if}
+		{#if erreurPiece}<p class="c-carte-ind__erreur" role="alert"><Icone nom="alerte" taille="sm" /> {erreurPiece}</p>{/if}
+		{#if modifiable && onjustificatif}
+			<button type="button" class="c-carte-ind__joindre" onclick={onjustificatif}><Icone nom="plus" taille="sm" /> Autre pièce</button>
+		{/if}
+	</fieldset>
 </article>
 
 <Dialogue ouvert={dialogueOuvert} titre="Commentaire et historique" onfermer={() => (dialogueOuvert = false)}>

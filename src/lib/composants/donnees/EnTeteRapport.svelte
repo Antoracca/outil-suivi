@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import { depot } from '#lib/donnees/depot.svelte.ts';
-	import { echeance, joursRetard, rapport as trouverRapport } from '#lib/donnees/calculs.ts';
-	import { peutSaisirMois } from '#lib/donnees/regles.ts';
+	import { echeance, echeanceFH, joursRetard, rapportDuCalendrier, rapport as trouverRapport } from '#lib/donnees/calculs.ts';
+	import { peutSaisirMois, peutValider } from '#lib/donnees/regles.ts';
 	import { date, dateHeure } from '#lib/format.ts';
 	import type { CodeVolet, Mois } from '#lib/donnees/types.ts';
 	import Alerte from '#lib/composants/ui/Alerte.svelte';
@@ -29,7 +29,9 @@
 	const statut = $derived(r?.statut ?? 'non_commence');
 	const modifiable = $derived(peutSaisirMois(depot.utilisateur, volet, r));
 	const maintenant = $derived(depot.maintenant());
-	const retard = $derived(joursRetard(r, maintenant));
+	const retard = $derived(joursRetard(depot.etat, r, maintenant));
+	const attendu = $derived(rapportDuCalendrier(depot.etat, mois));
+	const fh = $derived(echeanceFH(depot.etat, mois));
 	const futur = $derived(mois > `${maintenant.getFullYear()}-${String(maintenant.getMonth() + 1).padStart(2, '0')}`);
 </script>
 
@@ -38,7 +40,9 @@
 		<h2 id="rapport-titre" class="c-entete-rapport__titre">{titre}</h2>
 		<p class="c-entete-rapport__meta">
 			<MarqueurStatut {statut} {retard} />
-			<span>Échéance : {date(echeance(mois).toISOString())}</span>
+			{#if attendu}<span class="c-entete-rapport__type">{attendu.libelle}</span>{/if}
+			<span>À soumettre à APSUD avant le {date(echeance(depot.etat, mois).toISOString())}</span>
+			{#if fh && peutValider(depot.utilisateur)}<span>Transmission au FH : {date(fh.toISOString())}</span>{/if}
 			{@render meta?.()}
 		</p>
 	</div>

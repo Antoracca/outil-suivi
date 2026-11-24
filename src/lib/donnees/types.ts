@@ -1,3 +1,4 @@
+import type { EcheanceRapport } from './calendrier';
 /**
  * Types métier de la plateforme. Ils reflètent le modèle de docs/ARCHITECTURE.md §4.
  * En phase « maquette », ils sont servis par le dépôt simulé (depot.svelte.ts) ;
@@ -48,6 +49,8 @@ export interface Projet {
 	zones: string[];
 	objectif_general: string;
 	mois: Mois[];
+	/** Calendrier officiel de soumission (un rapport par mois), depuis la table periodes. */
+	echeances: EcheanceRapport[];
 }
 
 export interface Volet {

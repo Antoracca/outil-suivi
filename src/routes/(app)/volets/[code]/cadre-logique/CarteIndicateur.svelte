@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { depot, type MajEnDirect } from '#lib/donnees/depot.svelte.ts';
-	import { cumul, justificatifsIndicateur, valeurCourante } from '#lib/donnees/calculs.ts';
+	import { cumul, valeurCourante } from '#lib/donnees/calculs.ts';
 	import { libelleMois, moisCourt, nombre, pourcent } from '#lib/format.ts';
 	import type { CodeVolet, Desagregation, Indicateur, Mois } from '#lib/donnees/types.ts';
 	import Bouton from '#lib/composants/ui/Bouton.svelte';
@@ -34,7 +34,6 @@
 	const jusqua = $derived(cumul(etat, ind, mois, true));
 	const duMois = $derived(valeurCourante(etat, ind.id, mois));
 	const apport = $derived(duMois?.valeurs.total ?? null);
-	const nbJustificatifs = $derived(justificatifsIndicateur(etat, ind.id, mois));
 	const idTitre = $derived(`ind-${ind.id.replace(/[^a-zA-Z0-9_-]/g, '-')}`);
 	const lien = $derived(`/volets/${code}/indicateurs/${mois}#${encodeURIComponent(ind.id)}`);
 	const valeur = (n: number | null) => (pct ? pourcent(n) : nombre(n));
@@ -75,11 +74,6 @@
 				{:else}
 					<p class="u-attenue">Aucun moyen de vérification renseigné dans le fichier.</p>
 				{/if}
-				<!-- Colonne « Oui/Non » des fiches Excel : justificatif joint pour le mois choisi (D11). -->
-				<p class="p-cadre-logique__ouinon" class:is-oui={nbJustificatifs > 0}>
-					<Icone nom={nbJustificatifs > 0 ? 'valider' : 'fermer'} taille="sm" />
-					Justificatif fourni en {libelleMois(mois, false)} : <strong>{nbJustificatifs > 0 ? `Oui (${nbJustificatifs})` : 'Non'}</strong>
-				</p>
 			</div>
 
 			{#if ind.commentaire}

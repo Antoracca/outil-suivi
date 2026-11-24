@@ -27,3 +27,10 @@
 		color: var(--color-muted);
 	}
 }
+
+@layer components {
+	.c-entete-rapport__type {
+		font-weight: var(--fw-semibold);
+		color: var(--color-ink);
+	}
+}

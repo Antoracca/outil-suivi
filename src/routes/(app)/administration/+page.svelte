@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { depot } from '#lib/donnees/depot.svelte.ts';
-	import { echeance, moisCourant } from '#lib/donnees/calculs.ts';
+	import { echeance, echeanceFH, moisCourant, rapportDuCalendrier } from '#lib/donnees/calculs.ts';
 	import {
 		DESCRIPTION_ROLE,
 		LIBELLES_ROLE,
@@ -223,7 +223,7 @@
 	const comptesDe = (sigle: Sigle) => etat.utilisateurs.filter((x) => x.organisation === sigle).length;
 	const situation = (m: string) => {
 		if (m === courant) return 'En cours';
-		return echeance(m).getTime() < maintenant.getTime() ? 'Échéance passée' : m < courant ? 'Rapport attendu' : 'À venir';
+		return echeance(etat, m).getTime() < maintenant.getTime() ? 'Échéance passée' : m < courant ? 'Rapport attendu' : 'À venir';
 	};
 	const lienVolet = (code: CodeVolet) => `/volets/${code}`;
 </script>
@@ -455,25 +455,30 @@
 
 		<!-- Périodes -->
 		<div class="p-admin__ancre" id="periodes">
-			<Panneau titre="Périodes de rapportage" sousTitre="Un rapport par mois et par volet, attendu le 5 du mois suivant (décision D4)." id="panneau-periodes" sansMarge>
+			<Panneau titre="Périodes de rapportage" sousTitre="Un rapport par mois et par volet, selon le calendrier officiel d’APSUD : le 2 du mois suivant (le 9 pour les trimestriels 2 et 3), transmis au FH le 7 (le 14 pour les trimestriels)." id="panneau-periodes" sansMarge>
 				<!-- svelte-ignore a11y_no_noninteractive_tabindex (zone défilante : doit être atteignable au clavier, WCAG 2.1.1) -->
 				<div class="p-admin__defilement" tabindex="0" role="region" aria-label="Tableau des périodes">
 					<table class="p-admin__table">
-						<caption class="u-visuellement-masque">Les {etat.projet.mois.length} mois du projet et leur échéance</caption>
+						<caption class="u-visuellement-masque">Les {etat.projet.mois.length} mois du projet, le rapport attendu et ses échéances (calendrier officiel APSUD)</caption>
 						<thead>
 							<tr>
 								<th scope="col">Mois</th>
 								<th scope="col">Période</th>
-								<th scope="col">Échéance du rapport</th>
+								<th scope="col">Rapport attendu</th>
+								<th scope="col">Partenaire → APSUD</th>
+								<th scope="col">APSUD → FH</th>
 								<th scope="col">Situation</th>
 							</tr>
 						</thead>
 						<tbody>
 							{#each etat.projet.mois as m, i (m)}
+								{@const fh = echeanceFH(etat, m)}
 								<tr class:is-courant={m === courant}>
 									<th scope="row">Mois {i + 1}</th>
 									<td>{majuscule(libelleMois(m))}</td>
-									<td><time datetime={echeance(m).toISOString()}>{date(echeance(m).toISOString())}</time></td>
+									<td>{rapportDuCalendrier(etat, m)?.libelle ?? '–'}</td>
+									<td><time datetime={echeance(etat, m).toISOString()}>{date(echeance(etat, m).toISOString())}</time></td>
+									<td>{#if fh}<time datetime={fh.toISOString()}>{date(fh.toISOString())}</time>{:else}–{/if}</td>
 									<td>{situation(m)}</td>
 								</tr>
 							{/each}

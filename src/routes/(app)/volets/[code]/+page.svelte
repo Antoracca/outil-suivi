@@ -35,10 +35,10 @@
 <svelte:head><title>{code} · Suivi consortium APSUD</title></svelte:head>
 
 <div class="p-synthese__tuiles">
-	<Tuile sombre chiffre={libelleMois(attendu, false)} libelle="rapport attendu le {date(echeance(attendu).toISOString())}" href="/volets/{code}/activites/{attendu}">
+	<Tuile sombre chiffre={libelleMois(attendu, false)} libelle="rapport attendu le {date(echeance(etat, attendu).toISOString())}" href="/volets/{code}/activites/{attendu}">
 		{#snippet pied()}
 			<div class="p-synthese__statut">
-				<MarqueurStatut statut={r?.statut ?? 'non_commence'} retard={joursRetard(r, maintenant)} />
+				<MarqueurStatut statut={r?.statut ?? 'non_commence'} retard={joursRetard(etat, r, maintenant)} />
 				<span class="p-synthese__ouvrir">{verbe} le rapport</span>
 			</div>
 		{/snippet}
@@ -59,7 +59,7 @@
 			<li>
 				<a class="p-synthese__mois" class:is-attendu={m === attendu} href="/volets/{code}/activites/{m}">
 					<span class="p-synthese__mois-nom">{moisCourt(m)} <span class="u-attenue">{m.slice(0, 4)}</span></span>
-					<MarqueurStatut statut={rm?.statut ?? 'non_commence'} retard={joursRetard(rm, maintenant)} compact />
+					<MarqueurStatut statut={rm?.statut ?? 'non_commence'} retard={joursRetard(etat, rm, maintenant)} compact />
 					<span class="u-attenue">Mois {i + 1}</span>
 				</a>
 			</li>

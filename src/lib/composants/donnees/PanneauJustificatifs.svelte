@@ -12,7 +12,7 @@
 
 	/**
 	 * Pièces justificatives d'un mois.
-	 * - Onglet Indicateurs : pièces rattachées à un indicateur (elles passent « Justificatif fourni » à Oui).
+	 * - Onglet Indicateurs : pièces rattachées à un indicateur (en plus de celles déposées sur chaque moyen de vérification).
 	 * - Onglet Activités : toutes les pièces du mois, pour le contrôle par APSUD ; on y joint
 	 *   une pièce pour une activité ou pour le rapport en général.
 	 */
@@ -115,7 +115,7 @@
 				type="select"
 				bind:valeur={rattachement}
 				{options}
-				aide={portee === 'indicateurs' ? 'La case « Justificatif fourni » de l’indicateur passe à Oui.' : undefined}
+				aide={portee === 'indicateurs' ? 'Pour une pièce prévue au cadre logique, utilisez plutôt la case du moyen de vérification sur la carte.' : undefined}
 			/>
 			<Champ id="moyen-justificatif-{portee}" libelle="Moyen de vérification" type="select" bind:valeur={moyen} options={[{ valeur: '', libelle: 'Choisir…' }, ...moyens.map((m) => ({ valeur: m, libelle: m }))]} />
 			<Bouton variante="secondaire" icone="televerser" disabled={!pret} onclick={joindre}>Joindre</Bouton>

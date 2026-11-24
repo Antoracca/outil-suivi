@@ -3,6 +3,7 @@
  * Fonctions pures : le cumul, les taux et les totaux ne sont JAMAIS saisis.
  */
 import type { CodeVolet, Desagregation, EtatDepot, Indicateur, Mois, Rapport, ValeurIndicateur } from './types';
+import type { EcheanceRapport } from './calendrier';
 
 export const VIDE: Desagregation = { femmes: null, filles: null, hommes: null, garcons: null, total: null };
 
@@ -96,21 +97,43 @@ export function moisCourant(etat: EtatDepot, maintenant: Date): Mois {
 	return m;
 }
 
-/** Mois dont le rapport est attendu (le mois précédent, échéance le 5). */
+/**
+ * Mois dont le rapport est attendu : le dernier mois du projet déjà terminé.
+ * Après la fin du projet, c'est le dernier mois (rapport final), et non l'avant-dernier.
+ */
 export function moisARapporter(etat: EtatDepot, maintenant: Date): Mois {
-	const courant = moisCourant(etat, maintenant);
-	const i = etat.projet.mois.indexOf(courant);
-	return etat.projet.mois[Math.max(0, i - 1)];
+	const m = `${maintenant.getFullYear()}-${String(maintenant.getMonth() + 1).padStart(2, '0')}`;
+	const termines = etat.projet.mois.filter((x) => x < m);
+	return termines.at(-1) ?? etat.projet.mois[0];
 }
 
-export function echeance(mois: Mois): Date {
+/** Rapport attendu pour un mois selon le calendrier officiel (type, intitulé, dates). */
+export function rapportDuCalendrier(etat: EtatDepot, mois: Mois): EcheanceRapport | undefined {
+	return etat.projet.echeances?.find((e) => e.mois === mois);
+}
+
+const finDeJournee = (iso: string) => {
+	const [a, m, j] = iso.split('-').map(Number);
+	return new Date(a, m - 1, j, 23, 59);
+};
+
+/** Date limite partenaire → APSUD (calendrier officiel ; à défaut, le 2 du mois suivant). */
+export function echeance(etat: EtatDepot, mois: Mois): Date {
+	const c = rapportDuCalendrier(etat, mois);
+	if (c) return finDeJournee(c.partenaire);
 	const [a, m] = mois.split('-').map(Number);
-	return new Date(a, m, 5, 23, 59); // le 5 du mois suivant
+	return new Date(a, m, 2, 23, 59);
 }
 
-export function joursRetard(r: Rapport | undefined, maintenant: Date): number {
+/** Date limite APSUD → Fonds humanitaire, si le calendrier la donne. */
+export function echeanceFH(etat: EtatDepot, mois: Mois): Date | null {
+	const c = rapportDuCalendrier(etat, mois);
+	return c ? finDeJournee(c.fh) : null;
+}
+
+export function joursRetard(etat: EtatDepot, r: Rapport | undefined, maintenant: Date): number {
 	if (!r || !['non_commence', 'brouillon', 'a_corriger'].includes(r.statut)) return 0;
-	const e = echeance(r.mois);
+	const e = echeance(etat, r.mois);
 	const diff = Math.floor((maintenant.getTime() - e.getTime()) / 86400000);
 	return diff > 0 ? diff : 0;
 }

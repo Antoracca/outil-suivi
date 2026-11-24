@@ -34,8 +34,9 @@ import type {
 	Utilisateur,
 	ValeurIndicateur
 } from '../types';
+import { CALENDRIER_FH } from '../calendrier';
 
-export const VERSION_SCHEMA = 9;
+export const VERSION_SCHEMA = 10;
 export const AUJOURDHUI_DEMO = '2027-01-12T09:30:00';
 
 /* ---------- Hasard déterministe ---------- */
@@ -288,11 +289,11 @@ export function construireEtatDemo(): EtatDepot {
 			const suivant = moisSuivant(mois);
 			if (['soumis', 'valide', 'verrouille', 'a_corriger'].includes(statut)) {
 				rapport.soumis_par = auteur;
-				rapport.soumis_le = dateDuMois(suivant, 3 + Math.floor(entre(volet + mois, 0, 4)), 15);
+				rapport.soumis_le = dateDuMois(suivant, 1 + Math.floor(entre(volet + mois, 0, 2)), 15); // avant l'échéance du 2 (calendrier officiel)
 			}
 			if (['valide', 'verrouille', 'a_corriger'].includes(statut)) {
 				rapport.decision_par = 'u-apsud-coord';
-				rapport.decision_le = dateDuMois(suivant, 7 + Math.floor(entre(volet + mois + 'd', 0, 3)), 11);
+				rapport.decision_le = dateDuMois(suivant, 3 + Math.floor(entre(volet + mois + 'd', 0, 3)), 11); // avant la transmission au FH le 7
 			}
 			if (statut === 'a_corriger') {
 				rapport.motif =
@@ -490,7 +491,7 @@ export function construireEtatDemo(): EtatDepot {
 		organisations,
 		utilisateurs: utilisateursDemo,
 		secteurs,
-		projet: structure.projet,
+		projet: { ...structure.projet, echeances: CALENDRIER_FH },
 		volets: structure.volets.map((v) => ({
 			code: v.code as CodeVolet,
 			organisation: v.organisation as Sigle,

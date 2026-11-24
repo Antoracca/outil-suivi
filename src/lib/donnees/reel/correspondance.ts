@@ -306,7 +306,10 @@ export async function chargerEtatReel(sb: SupabaseClient): Promise<EtatDepot> {
 			devise: p.devise,
 			zones: p.zones ?? [],
 			objectif_general: p.objectif_general,
-			mois: periodes.map((x) => x.mois)
+			mois: periodes.map((x) => x.mois),
+			echeances: periodes
+				.filter((x) => x.numero_rapport && x.type_rapport)
+				.map((x) => ({ mois: x.mois, numero: x.numero_rapport, type: x.type_rapport, libelle: x.libelle_rapport ?? '', partenaire: x.echeance, fh: x.echeance_fh ?? x.echeance }))
 		},
 		volets: volets.map(vers.volets),
 		outcomes: outcomes.map(vers.outcomes),
@@ -334,7 +337,7 @@ export function etatVide(): EtatDepot {
 		organisations: [],
 		utilisateurs: [],
 		secteurs: [],
-		projet: { code_cbpf: '', intitule: '', bailleur: '', date_debut: '', date_fin: '', devise: 'USD', zones: [], objectif_general: '', mois: [] },
+		projet: { code_cbpf: '', intitule: '', bailleur: '', date_debut: '', date_fin: '', devise: 'USD', zones: [], objectif_general: '', mois: [], echeances: [] },
 		volets: [],
 		outcomes: [],
 		outputs: [],

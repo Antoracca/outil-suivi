@@ -170,25 +170,3 @@
 		gap: var(--space-xxs);
 	}
 }
-
-@layer components {
-	.p-cadre-logique__ouinon {
-		display: inline-flex;
-		align-items: center;
-		gap: var(--space-xxs);
-		margin-block-start: var(--space-xs);
-		padding: 2px var(--space-sm) 2px var(--space-xs);
-		border-radius: var(--rounded-pill);
-		background: var(--color-surface-strong);
-		font-size: var(--fs-caption);
-		color: var(--color-body);
-	}
-	.p-cadre-logique__ouinon strong {
-		color: var(--color-ink);
-	}
-	.p-cadre-logique__ouinon.is-oui,
-	.p-cadre-logique__ouinon.is-oui strong {
-		background: var(--color-success-soft);
-		color: var(--color-success);
-	}
-}

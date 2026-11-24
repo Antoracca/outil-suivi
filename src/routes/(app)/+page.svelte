@@ -24,7 +24,7 @@
 	const rapportsAttendus = $derived(etat.volets.map((v) => ({ v, r: rapport(etat, v.code, attendu) })));
 	const soumis = $derived(rapportsAttendus.filter(({ r }) => r && ['soumis', 'valide', 'verrouille'].includes(r.statut)).length);
 	const aValider = $derived(etat.rapports.filter((r) => r.statut === 'soumis').length);
-	const retards = $derived(rapportsAttendus.filter(({ r }) => joursRetard(r, maintenant) > 0));
+	const retards = $derived(rapportsAttendus.filter(({ r }) => joursRetard(etat, r, maintenant) > 0));
 
 	const budget = $derived.by(() => {
 		const parVolet = etat.volets.map((v) => ({ v, ...budgetVolet(etat, v.code) }));
@@ -72,7 +72,7 @@
 		<div class="p-tdb__bandeau-texte">
 			<h1 id="tdb-titre" class="p-tdb__titre">Consortium FH, Nanga-Boguila, Paoua, Bossangoa</h1>
 			<p class="p-tdb__sous-titre">
-				{majuscule(libelleMois(courant))}, mois {rang} sur {etat.projet.mois.length}. Rapports de {libelleMois(attendu, false)} attendus le {date(echeance(attendu).toISOString())}.
+				{majuscule(libelleMois(courant))}, mois {rang} sur {etat.projet.mois.length}. Rapports de {libelleMois(attendu, false)} attendus le {date(echeance(etat, attendu).toISOString())}.
 			</p>
 		</div>
 		<Bouton variante="primaire" href={action.href}>{action.libelle}</Bouton>
@@ -83,7 +83,7 @@
 			{#snippet pied()}
 				<ul class="p-tdb__gouttes" role="list" aria-label="Statut par volet">
 					{#each rapportsAttendus as { v, r } (v.code)}
-						<li><MarqueurStatut statut={r?.statut ?? 'non_commence'} texte="{v.organisation} {libelleSecteur(v.secteur).toLowerCase()}" retard={joursRetard(r, maintenant)} /></li>
+						<li><MarqueurStatut statut={r?.statut ?? 'non_commence'} texte="{v.organisation} {libelleSecteur(v.secteur).toLowerCase()}" retard={joursRetard(etat, r, maintenant)} /></li>
 					{/each}
 				</ul>
 			{/snippet}
@@ -131,7 +131,7 @@
 						</td>
 						<td>
 							<a class="p-tdb__lien-statut" href="/volets/{a.v.code}/activites/{attendu}">
-								<MarqueurStatut statut={a.r?.statut ?? 'non_commence'} retard={joursRetard(a.r, maintenant)} />
+								<MarqueurStatut statut={a.r?.statut ?? 'non_commence'} retard={joursRetard(etat, a.r, maintenant)} />
 							</a>
 						</td>
 					</tr>
@@ -161,7 +161,7 @@
 									{@const r = rapport(etat, v.code, m)}
 									<td class:is-courant={m === attendu}>
 										<a class="p-tdb__case" href="/volets/{v.code}/activites/{m}" aria-label="{v.code}, {libelleMois(m)}">
-											<MarqueurStatut statut={r?.statut ?? 'non_commence'} retard={joursRetard(r, maintenant)} compact />
+											<MarqueurStatut statut={r?.statut ?? 'non_commence'} retard={joursRetard(etat, r, maintenant)} compact />
 										</a>
 									</td>
 								{/each}

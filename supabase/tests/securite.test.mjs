@@ -333,6 +333,19 @@ await test('Nouvelle ONG : son compte de saisie écrit dans son volet, pas aille
 	egal(Number(await valeur(`select count(*) from public.volets`)), 7, 'elle lit le consortium :');
 });
 
+/* ---------- Calendrier officiel de soumission (PDF d'APSUD du 2026-11-24) ---------- */
+
+await test('Échéances : la base porte les dates du PDF, identiques à src/lib/donnees/calendrier.ts', async () => {
+	const { CALENDRIER_FH } = await import('../../src/lib/donnees/calendrier.ts');
+	const { rows } = await db.query(`select mois, numero_rapport, type_rapport, libelle_rapport, to_char(echeance, 'YYYY-MM-DD') as partenaire, to_char(echeance_fh, 'YYYY-MM-DD') as fh from public.periodes order by rang`);
+	egal(rows.length, CALENDRIER_FH.length, 'nombre de mois :');
+	for (const c of CALENDRIER_FH) {
+		const r = rows.find((x) => x.mois === c.mois);
+		egal([r?.numero_rapport, r?.type_rapport, r?.libelle_rapport, r?.partenaire, r?.fh], [c.numero, c.type, c.libelle, c.partenaire, c.fh], `${c.mois} :`);
+	}
+	egal(await valeur(`select to_char(echeance, 'YYYY-MM-DD') from public.periodes where mois = '2026-11'`), '2026-12-02', 'premier rapport :');
+});
+
 /* ---------- Planification du mois suivant (cahier des charges APSUD, §3.4) ---------- */
 
 await test('Planification M+1 : l’ONG coche ses activités, les autres sont « non prévues », l’appel est rejouable', async () => {

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { tick } from 'svelte';
 	import { depot } from '#lib/donnees/depot.svelte.ts';
-	import { cumul, echeance, indicateursAJour, joursRetard, moisARapporter, rapport as trouverRapport, valeurCourante } from '#lib/donnees/calculs.ts';
+	import { cumul, echeance, echeanceFH, indicateursAJour, joursRetard, moisARapporter, rapport as trouverRapport, valeurCourante } from '#lib/donnees/calculs.ts';
 	import { peutValider, transitionsPossibles, type Transition } from '#lib/donnees/regles.ts';
 	import { date, dateHeure, entier, libelleMois, majuscule, nombre, pourcent } from '#lib/format.ts';
 	import type { CodeVolet, Indicateur, Rapport, StatutRapport, Volet } from '#lib/donnees/types.ts';
@@ -126,7 +126,7 @@
 					decision_le: null,
 					motif: null
 				};
-				const retard = joursRetard(r, maintenant);
+				const retard = joursRetard(etat, r, maintenant);
 				if (retard > 0) liste.push({ r, v, retard });
 			}
 		}
@@ -246,7 +246,7 @@
 			<Tuile
 				chiffre={entier(enRetard.length)}
 				libelle={enRetard.length > 1 ? 'rapports en retard' : 'rapport en retard'}
-				detail={enRetard.length ? `Échéance le 5 du mois suivant. Le plus long : ${jours(enRetard[0].retard)}.` : 'Tous les volets sont dans les temps.'}
+				detail={enRetard.length ? `Échéances du calendrier officiel d’APSUD. Le plus long : ${jours(enRetard[0].retard)}.` : 'Tous les volets sont dans les temps.'}
 			/>
 			<Tuile chiffre="{entier(nbValides)} sur {entier(attendusAuJour)}" libelle="rapports validés ou verrouillés" detail="Rapports attendus à ce jour, tous volets confondus.">
 				{#snippet pied()}<JaugeJalon cumulPrecedent={nbValides} ceMois={0} cible={attendusAuJour} sansTexte />{/snippet}
@@ -278,9 +278,13 @@
 						<tbody>
 							{#each aValider as { r, v, attente, renseignes, ecarts, transitions } (r.id)}
 								{@const ouvert = !!ecartsOuverts[r.id]}
+								{@const fh = echeanceFH(etat, r.mois)}
 								<tr class:is-ouvert={ouvert}>
 									<th scope="row"><EtiquetteVolet secteur={v.secteur} organisation={v.organisation} libelleSecteur={libelleSecteur(v)} /></th>
-									<td class="p-validation__mois">{majuscule(libelleMois(r.mois))}</td>
+									<td class="p-validation__mois">
+										{majuscule(libelleMois(r.mois))}
+										{#if fh}<span class="p-validation__quand">À transmettre au FH le {date(fh.toISOString())}</span>{/if}
+									</td>
 									<td>
 										<span class="p-validation__qui">{depot.nomUtilisateur(r.soumis_par)}</span>
 										<span class="p-validation__quand">le {date(r.soumis_le)}</span>
@@ -371,7 +375,7 @@
 		</Panneau>
 
 		<!-- ================= En retard ================= -->
-		<Panneau titre="En retard" sousTitre="Rapports non soumis dont l’échéance (le 5 du mois suivant) est dépassée." id="en-retard" sansMarge>
+		<Panneau titre="En retard" sousTitre="Rapports non soumis dont l’échéance du calendrier officiel (le 2 du mois suivant, le 9 pour les trimestriels 2 et 3) est dépassée." id="en-retard" sansMarge>
 			{#if enRetard.length}
 				<div class="p-validation__defilement">
 					<table class="p-validation__table">
@@ -392,7 +396,7 @@
 									<th scope="row"><EtiquetteVolet secteur={v.secteur} organisation={v.organisation} libelleSecteur={libelleSecteur(v)} /></th>
 									<td class="p-validation__mois">{majuscule(libelleMois(r.mois))}</td>
 									<td><MarqueurStatut statut={r.statut} {retard} /></td>
-									<td>{date(echeance(r.mois).toISOString())}</td>
+									<td>{date(echeance(etat, r.mois).toISOString())}</td>
 									<td class="u-nombre">{jours(retard)}</td>
 									<td>
 										<a class="p-validation__lien" href="/volets/{r.volet}/activites/{r.mois}">
