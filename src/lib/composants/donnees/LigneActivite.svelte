@@ -17,8 +17,8 @@
 
 	function lien(e: Evenement): string | null {
 		if (!e.volet) return null;
-		if (e.cible.type === 'rapport' && e.mois) return `/volets/${e.volet}/rapports/${e.mois}`;
-		if (e.type === 'valeur_modifiee' && e.mois) return `/volets/${e.volet}/rapports/${e.mois}#${encodeURIComponent(e.cible.id)}`;
+		if (e.cible.type === 'rapport' && e.mois) return `/volets/${e.volet}/activites/${e.mois}`;
+		if (e.type === 'valeur_modifiee' && e.mois) return `/volets/${e.volet}/indicateurs/${e.mois}#${encodeURIComponent(e.cible.id)}`;
 		if (e.cible.type === 'tache' || e.type === 'semaine_cochee') return `/volets/${e.volet}/plan-action`;
 		return `/volets/${e.volet}`;
 	}

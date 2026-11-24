@@ -1,0 +1,50 @@
+@layer components {
+	.p-indicateurs {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		gap: var(--space-base);
+	}
+	.p-indicateurs__outils {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-sm) var(--space-base);
+	}
+	.p-indicateurs__consigne {
+		max-inline-size: 60ch;
+		font-size: var(--fs-body-sm);
+		color: var(--color-body);
+	}
+	.p-indicateurs__consigne a {
+		color: var(--color-link);
+		font-weight: var(--fw-medium);
+	}
+	.p-indicateurs__section {
+		scroll-margin-block-start: calc(var(--context-bar-h) + var(--space-base));
+	}
+	.p-indicateurs__groupe-tete {
+		position: sticky;
+		inset-block-start: var(--context-bar-h);
+		z-index: 1;
+		padding: var(--space-xs) var(--space-md);
+		background: var(--color-canvas-soft);
+		border-block-end: var(--hairline-w) solid var(--color-hairline);
+		font-size: var(--fs-caption);
+		color: var(--color-body);
+	}
+	.p-indicateurs__groupe-tete span {
+		margin-inline-end: var(--space-xs);
+		font-weight: var(--fw-semibold);
+		color: var(--color-ink);
+	}
+	.p-indicateurs__vide {
+		padding: var(--space-md);
+	}
+	/* Téléphone : la barre de contexte fait deux lignes, l'en-tête collant deviendrait imprévisible. */
+	@media (max-width: 40em) {
+		.p-indicateurs__groupe-tete {
+			position: static;
+		}
+	}
+}

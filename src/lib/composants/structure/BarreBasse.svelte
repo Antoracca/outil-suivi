@@ -21,7 +21,7 @@
 		if (u?.role === 'saisie') {
 			const mes = depot.etat.volets.filter((v) => v.organisation === u.organisation);
 			const volet = mes.find((v) => ['non_commence', 'brouillon', 'a_corriger'].includes(rapport(depot.etat, v.code, attendu)?.statut ?? 'non_commence')) ?? mes[0];
-			return { href: `/volets/${volet.code}/rapports/${attendu}`, libelle: 'Saisir', icone: 'saisie' as NomIcone, compteur: 0 };
+			return { href: `/volets/${volet.code}/activites/${attendu}`, libelle: 'Saisir', icone: 'saisie' as NomIcone, compteur: 0 };
 		}
 		if (peutValider(u)) return { href: '/validation', libelle: 'Valider', icone: 'validation' as NomIcone, compteur: aValider };
 		return { href: '/exports', libelle: 'Exports', icone: 'export' as NomIcone, compteur: 0 };
@@ -42,7 +42,7 @@
 		].filter((l) => l.visible)
 	);
 
-	const actif = (href: string) => (href === '/' ? chemin === '/' : chemin.startsWith(href.split('/rapports')[0]));
+	const actif = (href: string) => (href === '/' ? chemin === '/' : chemin.startsWith(href.split('/activites')[0]));
 	const secteur = (code: string) => depot.etat.secteurs.find((s) => s.code === code)!;
 
 	function aller(href: string) {

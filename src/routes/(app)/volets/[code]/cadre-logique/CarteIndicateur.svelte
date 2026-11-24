@@ -36,7 +36,7 @@
 	const apport = $derived(duMois?.valeurs.total ?? null);
 	const nbJustificatifs = $derived(justificatifsIndicateur(etat, ind.id, mois));
 	const idTitre = $derived(`ind-${ind.id.replace(/[^a-zA-Z0-9_-]/g, '-')}`);
-	const lien = $derived(`/volets/${code}/rapports/${mois}#${encodeURIComponent(ind.id)}`);
+	const lien = $derived(`/volets/${code}/indicateurs/${mois}#${encodeURIComponent(ind.id)}`);
 	const valeur = (n: number | null) => (pct ? pourcent(n) : nombre(n));
 
 	const colonnes: { cle: keyof Desagregation; libelle: string }[] = [

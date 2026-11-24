@@ -21,7 +21,8 @@
 
 	function allerMois(m: Mois) {
 		contexte.mois = m;
-		if (moisAdresse && codeVolet) goto(`/volets/${codeVolet}/rapports/${m}`);
+		// Garde l’onglet ouvert (Indicateurs ou Activités) et change seulement le mois de l’adresse.
+		if (moisAdresse && codeVolet) goto(page.url.pathname.replace(/\/\d{4}-\d{2}$/,`/${m}`));
 	}
 
 	function changerVolet(code: string) {

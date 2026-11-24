@@ -1,0 +1,29 @@
+@layer components {
+	.c-entete-rapport {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-base) var(--space-xl);
+	}
+	.c-entete-rapport__titres {
+		display: grid;
+		gap: var(--space-xs);
+	}
+	.c-entete-rapport__titre {
+		font-size: var(--fs-display-md);
+		letter-spacing: var(--ls-display-md);
+	}
+	.c-entete-rapport__meta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--space-xs) var(--space-base);
+		font-size: var(--fs-caption);
+		color: var(--color-body);
+	}
+	.c-entete-rapport__trace {
+		font-size: var(--fs-caption);
+		color: var(--color-muted);
+	}
+}

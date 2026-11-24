@@ -160,6 +160,7 @@ plateforme-consortium/
     ├── DESIGN.md          ← identité visuelle, tokens, composants, écrans, icônes
     ├── ARCHITECTURE.md    ← pile, modèle de données, sécurité, temps réel, hors-ligne, exports
     ├── PLAN.md            ← phases, livrables, critères d'acceptation
+    ├── REPONSE-CAHIER-DES-CHARGES.md ← réponse au cahier des charges APSUD du 2026-11-24 et ordre des étapes de la refonte
     ├── RECHERCHE.md       ← lien OCHA GMS, solutions existantes, choix de la base, contre-vérification (avec sources)
     └── reference/
         ├── expo-DESIGN.md                  ← modèle de format et d'esprit du DESIGN.md (copie fidèle, VoltAgent/awesome-design-md)
@@ -197,9 +198,11 @@ plateforme-consortium/
         └── (app)/                             garde de connexion + cadre de l'application
             ├── +page.svelte                   tableau de bord du consortium
             ├── volets/[code]/                 en-tête de volet + onglets ; synthèse
-            │   ├── cadre-logique/             arbre outcome → output → activité → indicateurs
-            │   ├── plan-action/               calendrier S1-S5, tâches, budget
-            │   └── rapports/[mois]/           saisie du mois : indicateurs, activités et dépenses, 5W (WASH), justificatifs, circuit
+            │   ├── indicateurs/[mois]/        onglet Indicateurs : saisie des valeurs du mois (CarteIndicateur), justificatifs d'indicateur
+            │   ├── cadre-logique/             structure : arbre outcome → output → activité → indicateurs (ouvert depuis Indicateurs)
+            │   ├── activites/[mois]/          onglet Activités : avancement, budget, 5W (WASH), pièces du mois, soumission du rapport
+            │   ├── plan-action/               calendrier S1-S5 des tâches (ouvert depuis Activités)
+            │   └── rapports/                  anciennes adresses, redirigées vers Activités ou Indicateurs
             ├── validation/                    file des rapports à valider (coordination)
             ├── activite/                      journal d'audit complet et filtrable
             ├── archives/                      éléments archivés, restauration, suppression définitive (super-admin)
@@ -215,6 +218,10 @@ Outils partagés : deux entrées ajoutées à `../.claude/launch.json` :
 
 | Date | Étape | État | Notes |
 |------|-------|------|-------|
+| 2026-11-24 | Refonte (cahier des charges APSUD) — étape 1 : navigation, Indicateurs, Activités | ✅ Fait — à valider | Cahier des charges reçu (`../docs/excel/Specifications_Techniques_Refonte_Interface.docx`), réponse point par point et ordre des étapes : [docs/REPONSE-CAHIER-DES-CHARGES.md](docs/REPONSE-CAHIER-DES-CHARGES.md). Onglets du volet : **Synthèse · Indicateurs · Activités** (le 4e, « Activités planifiées », arrive à l'étape 2). **Indicateurs** (`indicateurs/[mois]`) : seul endroit de saisie des valeurs, justificatifs d'indicateur, accès à la structure du cadre logique (`cadre-logique/`, même onglet actif). **Activités** (`activites/[mois]`, ex-rapport mensuel) : activités et budget, 5W (WASH), toutes les pièces du mois, soumission du rapport ; lien vers le calendrier des tâches (`plan-action/`, en attente de la réponse d'APSUD, question 1). Composants communs extraits : `EnTeteRapport`, `EtapesCircuit`, `PanneauJustificatifs` (une pièce peut désormais être rattachée à une activité). Anciennes adresses `rapports/…` redirigées (un lien `#indicateur` ouvre Indicateurs). Le changement de mois garde l'onglet ouvert. Vérifié : `npm run check` 0 erreur, navigation et redirections dans le navigateur, aucun débordement à 375 px. Aucune modification de la base |
+| — | Refonte — étape 2 : onglet « Activités planifiées » (cases à cocher M+1) | 🔄 Prochaine | Migration 0010 (planification M+1), fonction SQL et test, mention « Prévue » dans Activités |
+| — | Refonte — étape 3 : budget exécuté par activité, taux financier, justificatif sur la ligne | ⏸ À faire | Attend la réponse d'APSUD (question 2 : montant du mois ou cumul) |
+| — | Refonte — étape 4 : Synthèse financière, import des budgets planifiés | ⏸ À faire | Attend le fichier des budgets (question 3) |
 | 2026-11-22 | 6. Préparation de la mise en ligne | ✅ Fait | Dépôt distinct créé et poussé sur `Antoracca/outil-suivi` ; `npm run check` et `npm run build` passent. La sortie statique est prête (`build/`) et `vercel.json` l'indique explicitement. Les variables publiques Supabase sont intégrées uniquement à la construction, sans fichier `.env` dans Git. Vercel est prêt, en attente de la connexion au compte pour rendre le lien permanent et public. |
 | 2026-11-21 | 0. Analyse des 5 plans d'action + modèle 5W | ✅ Fait | Structure des 2 feuilles relevée, 13 anomalies (§3.1) |
 | 2026-11-21 | 0. Recherche : lien OCHA, solutions existantes, base de données, interface | ✅ Fait | RECHERCHE.md ; lien OCHA = portail OneGMS (à alimenter, pas à copier) ; modèles : ActivityInfo, Akvo RSR, DHIS2, LogAlto, DevResults, PRP ; base : Supabase (PostgreSQL) |

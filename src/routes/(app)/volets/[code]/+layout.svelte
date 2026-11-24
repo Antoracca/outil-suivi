@@ -30,9 +30,8 @@
 
 	const onglets = $derived([
 		{ libelle: 'Synthèse', href: base, actif: chemin === base },
-		{ libelle: 'Cadre logique', href: `${base}/cadre-logique`, actif: chemin.startsWith(`${base}/cadre-logique`) },
-		{ libelle: 'Plan d’action', href: `${base}/plan-action`, actif: chemin.startsWith(`${base}/plan-action`) },
-		{ libelle: 'Rapports mensuels', href: `${base}/rapports/${moisRapport}`, actif: chemin.startsWith(`${base}/rapports`) }
+		{ libelle: 'Indicateurs', href: `${base}/indicateurs/${moisRapport}`, actif: chemin.startsWith(`${base}/indicateurs`) || chemin.startsWith(`${base}/cadre-logique`) },
+		{ libelle: 'Activités', href: `${base}/activites/${moisRapport}`, actif: chemin.startsWith(`${base}/activites`) || chemin.startsWith(`${base}/plan-action`) }
 	]);
 </script>
 

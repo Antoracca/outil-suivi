@@ -327,7 +327,7 @@
 													{t.action}
 												</Bouton>
 											{/each}
-											<a class="p-validation__lien" href="/volets/{r.volet}/rapports/{r.mois}">
+											<a class="p-validation__lien" href="/volets/{r.volet}/activites/{r.mois}">
 												Ouvrir le rapport<span class="u-visuellement-masque"> {nomVolet(v)} de {libelleMois(r.mois)}</span>
 											</a>
 										</div>
@@ -395,7 +395,7 @@
 									<td>{date(echeance(r.mois).toISOString())}</td>
 									<td class="u-nombre">{jours(retard)}</td>
 									<td>
-										<a class="p-validation__lien" href="/volets/{r.volet}/rapports/{r.mois}">
+										<a class="p-validation__lien" href="/volets/{r.volet}/activites/{r.mois}">
 											Ouvrir le rapport<span class="u-visuellement-masque"> {nomVolet(v)} de {libelleMois(r.mois)}</span>
 										</a>
 									</td>
@@ -462,7 +462,7 @@
 													{t.action}
 												</Bouton>
 											{/each}
-											<a class="p-validation__lien" href="/volets/{r.volet}/rapports/{r.mois}">
+											<a class="p-validation__lien" href="/volets/{r.volet}/activites/{r.mois}">
 												Ouvrir le rapport<span class="u-visuellement-masque"> {nomVolet(v)} de {libelleMois(r.mois)}</span>
 											</a>
 										</div>

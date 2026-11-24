@@ -57,7 +57,7 @@
 			const volet = mien ?? etat.volets.find((v) => v.organisation === u.organisation)!;
 			const r = rapport(etat, volet.code, attendu);
 			const verbe = r?.statut === 'a_corriger' ? 'Corriger' : mien ? 'Saisir' : 'Voir';
-			return { libelle: `${verbe} le rapport de ${libelleMois(attendu, false)} (${libelleSecteur(volet.secteur)})`, href: `/volets/${volet.code}/rapports/${attendu}` };
+			return { libelle: `${verbe} le rapport de ${libelleMois(attendu, false)} (${libelleSecteur(volet.secteur)})`, href: `/volets/${volet.code}/activites/${attendu}` };
 		}
 		return { libelle: 'Voir l’activité du consortium', href: '/activite' };
 	});
@@ -130,7 +130,7 @@
 							{#if a.ind}<JaugeJalon cumulPrecedent={a.precedent} ceMois={a.ceMois} cible={a.ind.cible.total} />{/if}
 						</td>
 						<td>
-							<a class="p-tdb__lien-statut" href="/volets/{a.v.code}/rapports/{attendu}">
+							<a class="p-tdb__lien-statut" href="/volets/{a.v.code}/activites/{attendu}">
 								<MarqueurStatut statut={a.r?.statut ?? 'non_commence'} retard={joursRetard(a.r, maintenant)} />
 							</a>
 						</td>
@@ -160,7 +160,7 @@
 								{#each etat.projet.mois as m (m)}
 									{@const r = rapport(etat, v.code, m)}
 									<td class:is-courant={m === attendu}>
-										<a class="p-tdb__case" href="/volets/{v.code}/rapports/{m}" aria-label="{v.code}, {libelleMois(m)}">
+										<a class="p-tdb__case" href="/volets/{v.code}/activites/{m}" aria-label="{v.code}, {libelleMois(m)}">
 											<MarqueurStatut statut={r?.statut ?? 'non_commence'} retard={joursRetard(r, maintenant)} compact />
 										</a>
 									</td>

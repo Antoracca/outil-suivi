@@ -35,7 +35,7 @@
 <svelte:head><title>{code} · Suivi consortium APSUD</title></svelte:head>
 
 <div class="p-synthese__tuiles">
-	<Tuile sombre chiffre={libelleMois(attendu, false)} libelle="rapport attendu le {date(echeance(attendu).toISOString())}" href="/volets/{code}/rapports/{attendu}">
+	<Tuile sombre chiffre={libelleMois(attendu, false)} libelle="rapport attendu le {date(echeance(attendu).toISOString())}" href="/volets/{code}/activites/{attendu}">
 		{#snippet pied()}
 			<div class="p-synthese__statut">
 				<MarqueurStatut statut={r?.statut ?? 'non_commence'} retard={joursRetard(r, maintenant)} />
@@ -57,7 +57,7 @@
 		{#each etat.projet.mois as m, i (m)}
 			{@const rm = rapport(etat, code, m)}
 			<li>
-				<a class="p-synthese__mois" class:is-attendu={m === attendu} href="/volets/{code}/rapports/{m}">
+				<a class="p-synthese__mois" class:is-attendu={m === attendu} href="/volets/{code}/activites/{m}">
 					<span class="p-synthese__mois-nom">{moisCourt(m)} <span class="u-attenue">{m.slice(0, 4)}</span></span>
 					<MarqueurStatut statut={rm?.statut ?? 'non_commence'} retard={joursRetard(rm, maintenant)} compact />
 					<span class="u-attenue">Mois {i + 1}</span>
@@ -69,7 +69,7 @@
 
 <div class="p-synthese__duo">
 	<Panneau titre="Indicateurs chiffrés" sousTitre="Cumul au mois de {libelleMois(attendu, false)} par rapport à la cible du projet." sansMarge>
-		{#snippet actions()}<Bouton variante="texte" taille="sm" href="/volets/{code}/cadre-logique">Voir le cadre logique</Bouton>{/snippet}
+		{#snippet actions()}<Bouton variante="texte" taille="sm" href="/volets/{code}/indicateurs/{attendu}">Ouvrir les indicateurs</Bouton>{/snippet}
 		<table class="p-synthese__table">
 			<caption class="u-visuellement-masque">Cumul des indicateurs du volet</caption>
 			<thead>
@@ -82,7 +82,7 @@
 					<tr>
 						<th scope="row">
 							{#if ind.code_cbpf}<span class="u-code">{ind.code_cbpf}</span>{/if}
-							<a href="/volets/{code}/rapports/{attendu}#{encodeURIComponent(ind.id)}">{ind.libelle}</a>
+							<a href="/volets/{code}/indicateurs/{attendu}#{encodeURIComponent(ind.id)}">{ind.libelle}</a>
 						</th>
 						<td class="p-synthese__col-jauge"><JaugeJalon cumulPrecedent={avant} {ceMois} cible={ind.cible.total} type={ind.type_valeur} /></td>
 					</tr>
