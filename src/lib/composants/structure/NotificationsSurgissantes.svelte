@@ -2,7 +2,6 @@
 	import { untrack } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { depot } from '#lib/donnees/depot.svelte.ts';
-	import { contexte } from '#lib/donnees/contexte.svelte.ts';
 	import { libelleMois } from '#lib/format.ts';
 	import { lienEvenement, nonLuesDe, titreEvenement, type NonLue } from '#lib/donnees/notifications.ts';
 	import type { Evenement } from '#lib/donnees/types.ts';
@@ -15,6 +14,8 @@
 	 * rapport soumis…) apparaît en haut à droite, avec « Ouvrir » et « Marquer comme lu ».
 	 * Onglet en arrière-plan et alertes autorisées sur l'appareil : alerte du navigateur en plus.
 	 * Fermer la fenêtre (×) ne marque pas comme lu : la notification reste dans la cloche.
+	 * Les notifications déjà là à l'ouverture de la session passent, elles, une par une dans
+	 * une fenêtre modale (NotificationsArrivee).
 	 */
 	interface Fenetre {
 		id: string;
@@ -25,7 +26,6 @@
 
 	const nonLues = $derived(nonLuesDe(depot.etat, depot.utilisateurId));
 	let fenetres = $state<Fenetre[]>([]);
-	let resume = $state<number | null>(null);
 	/** Notifications déjà présentées (ou déjà là à l'ouverture de la session). */
 	let vues = new Set<string>();
 	let compte: string | null = null;
@@ -39,12 +39,10 @@
 
 	function synchroniser(liste: NonLue[]) {
 		if (compte !== depot.utilisateurId) {
-			// Ouverture de session : pas une fenêtre par notification ancienne, un seul rappel.
+			// Ouverture de session : les notifications déjà là passent par NotificationsArrivee.
 			compte = depot.utilisateurId;
 			vues = new Set(liste.map((x) => x.n.id));
 			fenetres = [];
-			resume = liste.length || null;
-			if (resume) programmer('resume');
 			return;
 		}
 		const nouvelles = liste.filter((x) => !vues.has(x.n.id)).reverse();
@@ -73,8 +71,7 @@
 	function fermer(id: string) {
 		clearTimeout(minuteries.get(id));
 		minuteries.delete(id);
-		if (id === 'resume') resume = null;
-		else fenetres = fenetres.filter((f) => f.id !== id);
+		fenetres = fenetres.filter((f) => f.id !== id);
 	}
 
 	function ouvrir(f: Fenetre) {
@@ -112,20 +109,6 @@
 
 <section class="c-surgissantes" aria-label="Nouvelles notifications">
 	<div role="status" aria-live="polite" class="c-surgissantes__pile">
-		{#if resume}
-			<article class="c-surgissante c-surgissante--resume" onmouseenter={() => suspendre('resume')} onmouseleave={() => programmer('resume')} onfocusin={() => suspendre('resume')}>
-				<span class="c-surgissante__pictogramme" aria-hidden="true"><Icone nom="notification" /></span>
-				<div class="c-surgissante__texte">
-					<p class="c-surgissante__titre">{resume} notification{resume > 1 ? 's' : ''} non lue{resume > 1 ? 's' : ''}</p>
-					<p class="c-surgissante__corps">Depuis votre dernière visite.</p>
-					<div class="c-surgissante__actions">
-						<button type="button" class="c-surgissante__action c-surgissante__action--principale" onclick={() => { contexte.tiroirOuvert = true; fermer('resume'); }}>Voir</button>
-						<button type="button" class="c-surgissante__action" onclick={() => { depot.marquerToutLu(); fermer('resume'); }}>Tout marquer comme lu</button>
-					</div>
-				</div>
-				<button type="button" class="c-surgissante__fermer" onclick={() => fermer('resume')} aria-label="Fermer"><Icone nom="fermer" taille="sm" /></button>
-			</article>
-		{/if}
 		{#each fenetres as f (f.id)}
 			<article class="c-surgissante" onmouseenter={() => suspendre(f.id)} onmouseleave={() => programmer(f.id)} onfocusin={() => suspendre(f.id)}>
 				<span class="c-surgissante__logo" aria-hidden="true"><LogoOrganisation sigle={f.ev.organisation} taille="sm" /></span>
