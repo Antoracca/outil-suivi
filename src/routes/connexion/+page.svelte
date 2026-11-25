@@ -1,5 +1,7 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
+	import { page } from '$app/state';
 	import { depot } from '#lib/donnees/depot.svelte.ts';
 	import { mode } from '#lib/donnees/mode.svelte.ts';
 	import { DESCRIPTION_ROLE, LIBELLES_ROLE } from '#lib/donnees/regles.ts';
@@ -27,6 +29,12 @@
 		mode.basculer(actif);
 		void depot.utiliserSource(actif ? 'demo' : 'reel');
 	}
+
+	/** Lien reçu dans un message d'invitation (« /connexion?inscription ») : mode réel, onglet Inscription. */
+	const versInscription = page.url.searchParams.has('inscription');
+	onMount(() => {
+		if (versInscription && mode.demo) basculerMode(false);
+	});
 </script>
 
 <svelte:head><title>Connexion · Suivi consortium APSUD</title></svelte:head>
@@ -84,7 +92,7 @@
 			</div>
 		{:else}
 			<div class="p-connexion__reel">
-				<ConnexionReelle />
+				<ConnexionReelle ongletInitial={versInscription ? 'inscription' : 'connexion'} />
 			</div>
 		{/if}
 	</section>

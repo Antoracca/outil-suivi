@@ -34,7 +34,9 @@
 		{ sigle: 'IDC', precision: 'Eau, hygiène et assainissement' }
 	];
 
-	let onglet = $state<'connexion' | 'inscription'>('connexion');
+	let { ongletInitial = 'connexion' }: { ongletInitial?: 'connexion' | 'inscription' } = $props();
+	// svelte-ignore state_referenced_locally (valeur de départ seulement : l'onglet se change ensuite à la main)
+	let onglet = $state<'connexion' | 'inscription'>(ongletInitial);
 	let email = $state('');
 	let motDePasse = $state('');
 	let confirmation = $state('');

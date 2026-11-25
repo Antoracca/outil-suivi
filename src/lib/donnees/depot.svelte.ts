@@ -362,6 +362,13 @@ class Depot {
 
 	/** Coordination ou super-admin : crée une invitation et renvoie le code à transmettre. */
 	async creerInvitation(champs: { email: string; nom: string; fonction: string; organisation: string; role: string }): Promise<string> {
+		if (this.source === 'demo') {
+			// Démonstration : code fictif au même format, aucun compte ni invitation enregistrés.
+			const ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+			const t = crypto.getRandomValues(new Uint8Array(8));
+			const c = Array.from(t, (n) => ALPHABET[n % ALPHABET.length]).join('');
+			return `${c.slice(0, 4)}-${c.slice(4)}`;
+		}
 		const { data, error } = await serveur().rpc('creer_invitation', {
 			p_email: champs.email,
 			p_nom: champs.nom,

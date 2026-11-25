@@ -322,3 +322,10 @@
 		gap: var(--space-base);
 	}
 }
+
+@layer components {
+	/* Section ciblée au retour de la page de succès : focus donné par le script, sans cadre. */
+	.p-admin__ancre--focus:focus {
+		outline: none;
+	}
+}

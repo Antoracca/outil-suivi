@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { tick } from 'svelte';
 	import { depot } from '#lib/donnees/depot.svelte.ts';
 	import { echeance, echeanceFH, moisCourant, rapportDuCalendrier } from '#lib/donnees/calculs.ts';
 	import {
@@ -32,6 +33,8 @@
 	import LogoOrganisation from '#lib/composants/ui/LogoOrganisation.svelte';
 	import { ROLES_CONSORTIUM, codeSecteurPropose, libelleRoleConsortium, type RoleConsortium } from '#lib/donnees/referentiels/secteurs.ts';
 	import EtiquetteVolet from '#lib/composants/ui/EtiquetteVolet.svelte';
+	import { JOURS_VALIDITE_INVITATION, type Invitation } from '#lib/donnees/invitations.ts';
+	import SuccesInvitation from './SuccesInvitation.svelte';
 	import Icone from '#lib/icones/Icone.svelte';
 	import './administration.css';
 
@@ -43,18 +46,19 @@
 	const libelleSecteur = (code: string) => etat.secteurs.find((s) => s.code === code)?.libelle_court ?? code;
 
 	const reel = $derived(depot.source === 'reel');
+	// Ordre logique : d'abord ajouter l'ONG, ensuite inviter son point focal.
 	const TOUTES_SECTIONS = [
+		{ id: 'nouvelle-ong', libelle: 'Ajouter une ONG' },
+		{ id: 'invitations', libelle: 'Inviter une organisation' },
 		{ id: 'utilisateurs', libelle: 'Utilisateurs' },
-		{ id: 'invitations', libelle: 'Inviter' },
 		{ id: 'droits', libelle: 'Matrice des droits' },
 		{ id: 'organisations', libelle: 'Organisations et volets' },
-		{ id: 'nouvelle-ong', libelle: 'Nouvelle ONG' },
 		{ id: 'periodes', libelle: 'Périodes' },
 		{ id: 'anomalies', libelle: 'Anomalies d’import' },
 		{ id: 'demonstration', libelle: 'Démonstration' }
 	];
-	// Mode réel : invitations, pas de réinitialisation. Démonstration : l'inverse.
-	const SECTIONS = $derived(TOUTES_SECTIONS.filter((s) => (reel ? s.id !== 'demonstration' : s.id !== 'invitations')));
+	// Mode réel : pas de réinitialisation. Les invitations existent dans les deux modes (code fictif en démonstration).
+	const SECTIONS = $derived(TOUTES_SECTIONS.filter((s) => !(reel && s.id === 'demonstration')));
 
 	/* ---------- Matrice des droits : calculée À PARTIR de regles.ts ---------- */
 	const ROLES: Role[] = ['super_admin', 'coordination', 'saisie'];
@@ -164,7 +168,9 @@
 	let invEnvoi = $state(false);
 	let invErreurs = $state<{ email?: string; nom?: string }>({});
 	let invErreurServeur = $state<string | null>(null);
-	let codeCree = $state<{ code: string; email: string; nom: string } | null>(null);
+	/** Invitation qui vient d'être créée : affichée sur la page de succès, conservée nulle part ailleurs. */
+	let invitationCreee = $state<Invitation | null>(null);
+	let retourAdmin = $state(false);
 	const optionsOrganisations = $derived(etat.organisations.map((o) => ({ valeur: o.sigle, libelle: `${o.sigle} · ${o.nom}` })));
 	const optionsRoles = $derived(
 		ROLES.filter((r) => invOrganisation === 'APSUD' || r === 'saisie').map((r) => ({ valeur: r, libelle: LIBELLES_ROLE[r] }))
@@ -177,7 +183,6 @@
 		e.preventDefault();
 		invErreurs = {};
 		invErreurServeur = null;
-		codeCree = null;
 		// Toute messagerie est acceptée (Gmail, Yahoo, adresse d'organisation…), majuscules comprises.
 		if (!estEmailValide(invEmail)) invErreurs.email = MESSAGE_EMAIL_INVALIDE;
 		if (invNom.trim().length < 2) invErreurs.nom = 'Indiquez le nom de la personne ou l’intitulé du poste.';
@@ -186,7 +191,22 @@
 		const adresse = normaliserEmail(invEmail);
 		try {
 			const code = await depot.creerInvitation({ email: adresse, nom: invNom, fonction: invFonction, organisation: invOrganisation, role: invRole });
-			codeCree = { code, email: adresse, nom: invNom.trim() };
+			const cree_le = depot.maintenant();
+			invitationCreee = {
+				code,
+				email: adresse,
+				nom: invNom.trim(),
+				fonction: invFonction.trim(),
+				organisation: invOrganisation,
+				nomOrganisation: etat.organisations.find((o) => o.sigle === invOrganisation)?.nom,
+				role: invRole,
+				libelleRole: LIBELLES_ROLE[invRole as Role] ?? invRole,
+				cree_le,
+				expire_le: new Date(cree_le.getTime() + JOURS_VALIDITE_INVITATION * 86_400_000),
+				invitePar: u?.nom ?? 'La coordination APSUD',
+				demonstration: depot.source === 'demo'
+			};
+			retourAdmin = false;
 			invEmail = '';
 			invNom = '';
 			invFonction = '';
@@ -196,6 +216,16 @@
 		} finally {
 			invEnvoi = false;
 		}
+	}
+
+	/** Quitter la page de succès : l'Administration revient de la gauche, sur la section Inviter. */
+	async function quitterSucces(autre: boolean) {
+		invitationCreee = null;
+		retourAdmin = true;
+		await tick();
+		const cible = document.getElementById(autre ? 'inv-email' : 'invitations');
+		document.getElementById('invitations')?.scrollIntoView({ block: 'start' });
+		cible?.focus({ preventScroll: true });
 	}
 
 	/* ---------- Nouvelle ONG ou nouveau volet (super-administrateur, démonstration et réel) ---------- */
@@ -252,7 +282,8 @@
 			ongMessage =
 				depot.source === 'demo'
 					? `${sigleNormalise} a rejoint le consortium (volet ${code}). Son compte « Saisie ${sigleNormalise} » est disponible sur la page de connexion de démonstration.`
-					: `${sigleNormalise} a rejoint le consortium (volet ${code}). Elle apparaît dans « Organisations du consortium » et sur le tableau de bord. Invitez maintenant son point focal (section Inviter).`;
+					: `${sigleNormalise} a rejoint le consortium (volet ${code}). Elle apparaît dans « Organisations du consortium » et sur le tableau de bord. Invitez maintenant son point focal ci-dessous (« Inviter une organisation »).`;
+			invOrganisation = sigleNormalise;
 			ongSigle = '';
 			ongNom = '';
 			ongSecteur = '';
@@ -313,7 +344,11 @@
 
 <svelte:head><title>Administration · Suivi consortium APSUD</title></svelte:head>
 
-<div class="p-admin">
+<div class="p-admin-scene">
+{#if invitationCreee}
+	<SuccesInvitation invitation={invitationCreee} onretour={() => quitterSucces(false)} onautre={() => quitterSucces(true)} />
+{/if}
+<div class="p-admin" class:is-retour={retourAdmin} hidden={!!invitationCreee}>
 	<header class="p-admin__tete">
 		<h1 class="p-admin__titre">Administration</h1>
 		<p class="p-admin__intro">Comptes, droits, référentiels du projet et contrôle de l’import des fichiers Excel.</p>
@@ -336,6 +371,74 @@
 		{#if message}
 			<Alerte variante="succes" onfermer={() => (message = null)}>{message}</Alerte>
 		{/if}
+
+		<!-- Nouvelle ONG -->
+		<div class="p-admin__ancre" id="nouvelle-ong">
+			<Panneau titre="Ajouter une nouvelle ONG" sousTitre="Une organisation qui rejoint le consortium : elle est créée avec son volet et ses 10 rapports mensuels, et apparaît aussitôt partout (organisations, volets, tableau de bord). Réservé au super-administrateur." id="panneau-nouvelle-ong">
+				{#if ongErreurServeur}
+					<Alerte variante="erreur" titre="ONG non créée" onfermer={() => (ongErreurServeur = null)}>{ongErreurServeur}</Alerte>
+				{/if}
+				{#if ongMessage}
+					<Alerte variante="succes" onfermer={() => (ongMessage = null)}>{ongMessage}</Alerte>
+				{/if}
+				<form class="p-admin__ong" onsubmit={ajouterOng} novalidate>
+					<div class="p-admin__ong-sigle">
+						<Champ id="ong-sigle" libelle="Sigle" requis bind:valeur={ongSigle} erreur={ongErreurs.sigle} placeholder="Ex. CARE" />
+						{#if etatSigle && !ongErreurs.sigle}
+							<p class="p-admin__indicateur" class:is-ok={etatSigle.ok} aria-live="polite"><Icone nom={etatSigle.ok ? 'valider' : 'alerte'} taille="sm" /> {etatSigle.texte}</p>
+						{/if}
+					</div>
+					<Champ id="ong-nom" libelle="Nom complet" requis bind:valeur={ongNom} erreur={ongErreurs.nom} placeholder="Ex. CARE International" />
+					<Champ
+						id="ong-role"
+						libelle="Rôle dans le consortium"
+						type="select"
+						requis
+						bind:valeur={ongRole}
+						options={ROLES_CONSORTIUM.filter((r) => r.valeur !== 'chef_de_file').map((r) => ({ valeur: r.valeur, libelle: r.libelle }))}
+						aide={ROLES_CONSORTIUM.find((r) => r.valeur === ongRole)?.description}
+					/>
+					<ChampSecteur id="ong-secteur" libelle="Secteur du volet" secteurs={etat.secteurs} bind:code={ongSecteur} bind:autre={ongAutre} erreur={ongErreurs.secteur} aide={codeVoletPrevu ? `Code du volet : ${codeVoletPrevu}` : `${etat.secteurs.length} secteurs : cherchez par nom ou par mot-clé.`} />
+					<div class="p-admin__logo-champ">
+						<label for="ong-logo">Logo <span class="c-champ__facultatif">(facultatif)</span></label>
+						<div class="p-admin__logo-ligne">
+							<span class="p-admin__logo-apercu" aria-hidden="true">
+								{#if ongApercu}<img src={ongApercu} alt="" />{:else}<span>{sigleNormalise.slice(0, 5) || 'Logo'}</span>{/if}
+							</span>
+							<input id="ong-logo" bind:this={champLogo} type="file" accept="image/png,image/jpeg,image/webp" onchange={(e) => choisirLogo(e.currentTarget, (x) => (ongApercu = x), (x) => (ongLogo = x))} aria-describedby="ong-logo-aide" />
+						</div>
+						<p class="c-champ__aide" id="ong-logo-aide">PNG, JPEG ou WebP, 1 Mo au plus. Sans logo, le sigle s’affiche.</p>
+						{#if ongErreurs.logo}<p class="c-champ__erreur">{ongErreurs.logo}</p>{/if}
+					</div>
+					<div class="p-admin__invitation-actions">
+						<Bouton variante="primaire" type="submit" icone="plus" disabled={ongEnvoi}>{ongEnvoi ? 'Création…' : 'Ajouter l’ONG'}</Bouton>
+					</div>
+				</form>
+				<p class="p-admin__note">
+					<Icone nom="info" taille="sm" />
+					<span>Le cadre logique du nouveau volet est vide : il s’importe depuis le plan d’action Excel de l’ONG, comme pour les cinq volets d’origine. Le nom, le rôle et le logo se modifient ensuite dans « Organisations du consortium ».</span>
+				</p>
+			</Panneau>
+		</div>
+
+		<!-- Invitations -->
+		<div class="p-admin__ancre p-admin__ancre--focus" id="invitations" tabindex="-1">
+			<Panneau titre="Inviter une organisation" sousTitre="Invitez le point focal d’une organisation membre. Il crée son compte avec le code reçu (écran de connexion, onglet Inscription). Code valable 14 jours, pour cette adresse seulement." id="panneau-invitations">
+				{#if invErreurServeur}
+					<Alerte variante="erreur" titre="Invitation non créée" onfermer={() => (invErreurServeur = null)}>{invErreurServeur}</Alerte>
+				{/if}
+				<form class="p-admin__invitation" onsubmit={inviter} novalidate>
+					<ChampEmail id="inv-email" libelle="Adresse e-mail" requis bind:valeur={invEmail} erreur={invErreurs.email} autocomplete="off" aide="Toute messagerie : Gmail, Yahoo, adresse de l’organisation…" />
+					<Champ id="inv-nom" libelle="Nom" requis bind:valeur={invNom} erreur={invErreurs.nom} aide="La personne pourra le corriger en créant son compte." />
+					<Champ id="inv-fonction" libelle="Fonction" bind:valeur={invFonction} placeholder="Ex. Chargé de suivi-évaluation" />
+					<Champ id="inv-organisation" libelle="Organisation" type="select" requis bind:valeur={invOrganisation} options={optionsOrganisations} />
+					<Champ id="inv-role" libelle="Rôle" type="select" requis bind:valeur={invRole} options={optionsRoles} aide={DESCRIPTION_ROLE[invRole as Role]} />
+					<div class="p-admin__invitation-actions">
+						<Bouton variante="primaire" type="submit" icone="plus" disabled={invEnvoi}>{invEnvoi ? 'Création…' : 'Créer l’invitation'}</Bouton>
+					</div>
+				</form>
+			</Panneau>
+		</div>
 
 		<!-- Utilisateurs -->
 		<div class="p-admin__ancre" id="utilisateurs">
@@ -376,34 +479,6 @@
 				</p>
 			</Panneau>
 		</div>
-
-		{#if reel}
-			<!-- Invitations -->
-			<div class="p-admin__ancre" id="invitations">
-				<Panneau titre="Inviter une personne" sousTitre="La personne crée son compte avec ce code depuis l’écran de connexion (onglet Inscription). Code valable 14 jours, pour cette adresse seulement." id="panneau-invitations">
-					{#if invErreurServeur}
-						<Alerte variante="erreur" titre="Invitation non créée" onfermer={() => (invErreurServeur = null)}>{invErreurServeur}</Alerte>
-					{/if}
-					<form class="p-admin__invitation" onsubmit={inviter} novalidate>
-						<ChampEmail id="inv-email" libelle="Adresse e-mail" requis bind:valeur={invEmail} erreur={invErreurs.email} autocomplete="off" aide="Toute messagerie : Gmail, Yahoo, adresse de l’organisation…" />
-						<Champ id="inv-nom" libelle="Nom" requis bind:valeur={invNom} erreur={invErreurs.nom} aide="La personne pourra le corriger en créant son compte." />
-						<Champ id="inv-fonction" libelle="Fonction" bind:valeur={invFonction} placeholder="Ex. Chargé de suivi-évaluation" />
-						<Champ id="inv-organisation" libelle="Organisation" type="select" requis bind:valeur={invOrganisation} options={optionsOrganisations} />
-						<Champ id="inv-role" libelle="Rôle" type="select" requis bind:valeur={invRole} options={optionsRoles} aide={DESCRIPTION_ROLE[invRole as Role]} />
-						<div class="p-admin__invitation-actions">
-							<Bouton variante="primaire" type="submit" icone="plus" disabled={invEnvoi}>{invEnvoi ? 'Création…' : 'Créer l’invitation'}</Bouton>
-						</div>
-					</form>
-					{#if codeCree}
-						<div class="p-admin__code" role="status">
-							<p>Invitation créée pour <strong>{codeCree.nom}</strong> ({codeCree.email}). Transmettez-lui ce code, il ne sera plus affiché :</p>
-							<p class="p-admin__code-valeur">{codeCree.code}</p>
-							<p class="p-admin__note-code">Le code seul ne suffit pas : il ne fonctionne qu’avec cette adresse e-mail.</p>
-						</div>
-					{/if}
-				</Panneau>
-			</div>
-		{/if}
 
 		<!-- Matrice des droits -->
 		<div class="p-admin__ancre" id="droits">
@@ -523,55 +598,6 @@
 			</Panneau>
 		</div>
 
-		<!-- Nouvelle ONG -->
-		<div class="p-admin__ancre" id="nouvelle-ong">
-			<Panneau titre="Nouvelle ONG" sousTitre="Une organisation qui rejoint le consortium : elle est créée avec son volet et ses 10 rapports mensuels, et apparaît aussitôt partout (organisations, volets, tableau de bord). Réservé au super-administrateur." id="panneau-nouvelle-ong">
-				{#if ongErreurServeur}
-					<Alerte variante="erreur" titre="ONG non créée" onfermer={() => (ongErreurServeur = null)}>{ongErreurServeur}</Alerte>
-				{/if}
-				{#if ongMessage}
-					<Alerte variante="succes" onfermer={() => (ongMessage = null)}>{ongMessage}</Alerte>
-				{/if}
-				<form class="p-admin__ong" onsubmit={ajouterOng} novalidate>
-					<div class="p-admin__ong-sigle">
-						<Champ id="ong-sigle" libelle="Sigle" requis bind:valeur={ongSigle} erreur={ongErreurs.sigle} placeholder="Ex. CARE" />
-						{#if etatSigle && !ongErreurs.sigle}
-							<p class="p-admin__indicateur" class:is-ok={etatSigle.ok} aria-live="polite"><Icone nom={etatSigle.ok ? 'valider' : 'alerte'} taille="sm" /> {etatSigle.texte}</p>
-						{/if}
-					</div>
-					<Champ id="ong-nom" libelle="Nom complet" requis bind:valeur={ongNom} erreur={ongErreurs.nom} placeholder="Ex. CARE International" />
-					<Champ
-						id="ong-role"
-						libelle="Rôle dans le consortium"
-						type="select"
-						requis
-						bind:valeur={ongRole}
-						options={ROLES_CONSORTIUM.filter((r) => r.valeur !== 'chef_de_file').map((r) => ({ valeur: r.valeur, libelle: r.libelle }))}
-						aide={ROLES_CONSORTIUM.find((r) => r.valeur === ongRole)?.description}
-					/>
-					<ChampSecteur id="ong-secteur" libelle="Secteur du volet" secteurs={etat.secteurs} bind:code={ongSecteur} bind:autre={ongAutre} erreur={ongErreurs.secteur} aide={codeVoletPrevu ? `Code du volet : ${codeVoletPrevu}` : `${etat.secteurs.length} secteurs : cherchez par nom ou par mot-clé.`} />
-					<div class="p-admin__logo-champ">
-						<label for="ong-logo">Logo <span class="c-champ__facultatif">(facultatif)</span></label>
-						<div class="p-admin__logo-ligne">
-							<span class="p-admin__logo-apercu" aria-hidden="true">
-								{#if ongApercu}<img src={ongApercu} alt="" />{:else}<span>{sigleNormalise.slice(0, 5) || 'Logo'}</span>{/if}
-							</span>
-							<input id="ong-logo" bind:this={champLogo} type="file" accept="image/png,image/jpeg,image/webp" onchange={(e) => choisirLogo(e.currentTarget, (x) => (ongApercu = x), (x) => (ongLogo = x))} aria-describedby="ong-logo-aide" />
-						</div>
-						<p class="c-champ__aide" id="ong-logo-aide">PNG, JPEG ou WebP, 1 Mo au plus. Sans logo, le sigle s’affiche.</p>
-						{#if ongErreurs.logo}<p class="c-champ__erreur">{ongErreurs.logo}</p>{/if}
-					</div>
-					<div class="p-admin__invitation-actions">
-						<Bouton variante="primaire" type="submit" icone="plus" disabled={ongEnvoi}>{ongEnvoi ? 'Création…' : 'Ajouter l’ONG'}</Bouton>
-					</div>
-				</form>
-				<p class="p-admin__note">
-					<Icone nom="info" taille="sm" />
-					<span>Le cadre logique du nouveau volet est vide : il s’importe depuis le plan d’action Excel de l’ONG, comme pour les cinq volets d’origine. Le nom, le rôle et le logo se modifient ensuite dans « Organisations du consortium ».</span>
-				</p>
-			</Panneau>
-		</div>
-
 		<!-- Périodes -->
 		<div class="p-admin__ancre" id="periodes">
 			<Panneau titre="Périodes de rapportage" sousTitre="Un rapport par mois et par volet, selon le calendrier officiel d’APSUD : le 2 du mois suivant (le 9 pour les trimestriels 2 et 3), transmis au FH le 7 (le 14 pour les trimestriels)." id="panneau-periodes" sansMarge>
@@ -662,6 +688,7 @@
 	{/if}
 </div>
 
+</div>
 <Dialogue ouvert={confirmerReinit} titre="Réinitialiser les données de démonstration ?" onfermer={() => (confirmerReinit = false)}>
 	<p>Toutes les saisies faites pendant la démonstration seront remplacées par les données de départ, dans tous les onglets ouverts de ce navigateur.</p>
 	<p class="p-admin__rappel">Votre session reste ouverte. Cette action ne concerne que la maquette : aucune donnée réelle n’est touchée.</p>

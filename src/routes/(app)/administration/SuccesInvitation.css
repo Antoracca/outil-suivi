@@ -1,0 +1,215 @@
+@layer components {
+	/* Page de succès d'une invitation : glisse de la droite vers la gauche. */
+	.p-succes {
+		display: grid;
+		gap: var(--space-lg);
+		animation: p-succes-entree var(--dur-jauge) var(--ease-out) both;
+	}
+	.p-succes__haut {
+		justify-self: start;
+	}
+	.p-succes__tete {
+		display: flex;
+		align-items: flex-start;
+		gap: var(--space-base);
+		max-inline-size: var(--measure);
+	}
+	.p-succes__pastille {
+		display: grid;
+		flex: none;
+		place-items: center;
+		inline-size: 3rem;
+		block-size: 3rem;
+		border-radius: var(--rounded-goutte);
+		background: var(--color-primary);
+		color: var(--color-on-primary);
+	}
+	.p-succes__intitule {
+		display: grid;
+		gap: var(--space-xs);
+		min-inline-size: 0;
+	}
+	.p-succes__surtitre {
+		font-size: var(--fs-caption);
+		font-weight: var(--fw-label);
+		letter-spacing: var(--ls-label);
+		text-transform: uppercase;
+		color: var(--color-link);
+	}
+	.p-succes__titre {
+		font-size: var(--fs-display-md);
+		font-stretch: var(--fst-display);
+		letter-spacing: var(--ls-display-md);
+		line-height: var(--lh-display);
+		overflow-wrap: anywhere;
+	}
+	.p-succes__titre:focus {
+		outline: none;
+	}
+	.p-succes__titre:focus-visible {
+		outline: var(--focus-w) solid var(--color-ink);
+		outline-offset: var(--focus-gap);
+	}
+	.p-succes__intro {
+		color: var(--color-body);
+		overflow-wrap: anywhere;
+	}
+	.p-succes__intro strong {
+		color: var(--color-ink);
+	}
+
+	.p-succes__grille {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 26rem), 1fr));
+		gap: var(--space-lg);
+		align-items: start;
+	}
+
+	/* Récapitulatif des accès */
+	.p-succes__acces {
+		display: grid;
+		gap: 0;
+	}
+	.p-succes__acces > div {
+		display: grid;
+		grid-template-columns: minmax(8rem, 11rem) minmax(0, 1fr);
+		gap: var(--space-xxs) var(--space-base);
+		padding-block: var(--space-sm);
+		border-block-end: var(--hairline-w) solid var(--color-hairline);
+	}
+	.p-succes__acces > div:last-child {
+		border-block-end: 0;
+	}
+	.p-succes__acces dt {
+		font-size: var(--fs-caption);
+		font-weight: var(--fw-label);
+		color: var(--color-body);
+	}
+	.p-succes__acces dd {
+		display: grid;
+		gap: var(--space-xxs);
+		font-weight: var(--fw-medium);
+		color: var(--color-ink);
+	}
+	.p-succes__casse {
+		overflow-wrap: anywhere;
+	}
+	.p-succes__detail {
+		font-size: var(--fs-caption);
+		font-weight: var(--fw-regular);
+		color: var(--color-body);
+	}
+	.p-succes__code dd {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--space-xs) var(--space-base);
+	}
+	.p-succes__code-valeur {
+		padding: var(--space-xxs) var(--space-sm);
+		border-radius: var(--rounded-sm);
+		background: var(--color-wash-pousse-light);
+		font-size: var(--fs-display-sm);
+		font-weight: var(--fw-semibold);
+		font-variant-numeric: tabular-nums;
+		letter-spacing: var(--ls-label);
+		user-select: all;
+	}
+
+	/* Message prêt à envoyer : présenté comme un e-mail */
+	.p-succes__message {
+		display: grid;
+		border: var(--hairline-w) solid var(--color-hairline-strong);
+		border-radius: var(--rounded-md);
+		background: var(--color-canvas-soft);
+		font-size: var(--fs-body-sm);
+	}
+	.p-succes__objet {
+		padding: var(--space-sm) var(--space-base);
+		border-block-end: var(--hairline-w) solid var(--color-hairline);
+		font-weight: var(--fw-medium);
+		color: var(--color-ink);
+	}
+	.p-succes__objet span {
+		margin-inline-end: var(--space-xs);
+		font-size: var(--fs-caption);
+		font-weight: var(--fw-label);
+		color: var(--color-body);
+	}
+	.p-succes__corps {
+		max-block-size: 22rem;
+		overflow-y: auto;
+		padding: var(--space-base);
+		white-space: pre-wrap;
+		overflow-wrap: anywhere;
+		color: var(--color-body-strong);
+		user-select: text;
+	}
+	.p-succes__actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-xs);
+		margin-block-start: var(--space-base);
+	}
+	.p-succes__annonce {
+		display: flex;
+		align-items: center;
+		gap: var(--space-xxs);
+		min-block-size: 1.5rem;
+		margin-block-start: var(--space-xs);
+		font-size: var(--fs-caption);
+		font-weight: var(--fw-medium);
+		color: var(--color-ink);
+	}
+	.p-succes__auto {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--space-xxs) var(--space-xs);
+		padding-block-start: var(--space-sm);
+		border-block-start: var(--hairline-w) solid var(--color-hairline);
+	}
+	.p-succes__bientot {
+		font-size: var(--fs-caption);
+		color: var(--color-muted);
+	}
+	.p-succes__pied {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-xs);
+	}
+
+	@media (max-width: 30rem) {
+		.p-succes__acces > div {
+			grid-template-columns: minmax(0, 1fr);
+		}
+	}
+
+	@keyframes p-succes-entree {
+		from {
+			opacity: 0;
+			transform: translateX(min(100%, 48rem));
+		}
+		to {
+			opacity: 1;
+			transform: none;
+		}
+	}
+	/* Retour : l'Administration revient de la gauche. */
+	@keyframes p-admin-retour {
+		from {
+			opacity: 0;
+			transform: translateX(max(-100%, -48rem));
+		}
+		to {
+			opacity: 1;
+			transform: none;
+		}
+	}
+	.p-admin.is-retour {
+		animation: p-admin-retour var(--dur-jauge) var(--ease-out) both;
+	}
+	.p-admin-scene {
+		overflow-x: clip;
+	}
+}
