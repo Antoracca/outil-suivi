@@ -126,6 +126,27 @@ await test('Une ONG ne peut pas inviter ; la coordination invite une saisie mais
 	// Le code n'est jamais lisible, même par la coordination.
 	await refuse(db.query('select code_hache from public.invitations'), /permission denied/);
 });
+await test('Invitations : toute messagerie acceptée (Gmail, Yahoo, majuscules, alias), extension en chiffres refusée', async () => {
+	await en(admin);
+	const inviter = (email) => valeur(`select public.creer_invitation($1, 'Personne Test', '', 'GADY', 'saisie')`, [email]);
+	for (const email of ['jean.dupont@gmail.com', 'Awa.Kone@Yahoo.FR', 'contact+rapports@ong-gady.org', 'chef.projet@sous.domaine.org.cf', 'equipe@ong.com']) {
+		const code = await inviter(email);
+		if (!/^[A-Z2-9]{4}-[A-Z2-9]{4}$/.test(code)) throw new Error(`refusée à tort : ${email}`);
+	}
+	await enPostgres();
+	egal(await valeur(`select email from public.invitations where email like 'awa.kone@%'`), 'awa.kone@yahoo.fr', 'enregistrée en minuscules :');
+	await en(admin);
+	for (const email of ['nom@ong.90', 'sans-arobase.org', 'nom@ong', 'deux@@ong.org', 'nom avec espace@ong.org', 'nom@.org', 'nom@ong.c']) {
+		await refuse(inviter(email), /Adresse e-mail incomplète/);
+	}
+});
+await test('Invitations : la règle de l’écran (regles.ts) et celle de la base donnent les mêmes réponses', async () => {
+	const { estEmailValide } = await import('../../src/lib/donnees/regles.ts');
+	for (const email of ['jean.dupont@gmail.com', 'Awa.Kone@Yahoo.FR', ' contact+suivi@ong.org ', 'nom@ong.90', 'nom@ong', 'nom avec espace@ong.org', 'a@b.co', 'x@-ong.org']) {
+		const base = await valeur(`select public._email_valide($1)`, [email]);
+		egal(estEmailValide(email), base, `${email} :`);
+	}
+});
 await test('Amorçage du super-admin impossible depuis l’application', async () => {
 	await en(admin);
 	await refuse(db.query(`select public.amorcer_super_admin('x@y.test', 'X Y')`), /permission denied/);

@@ -12,7 +12,10 @@
 		peutSupprimer,
 		peutValider,
 		peutVoirArchives,
-		transitionsPossibles
+		transitionsPossibles,
+		estEmailValide,
+		normaliserEmail,
+		MESSAGE_EMAIL_INVALIDE
 	} from '#lib/donnees/regles.ts';
 	import { date, libelleMois, majuscule } from '#lib/format.ts';
 	import type { CodeSecteur, CodeVolet, Rapport, Role, Sigle, StatutRapport, Utilisateur, Volet } from '#lib/donnees/types.ts';
@@ -156,6 +159,7 @@
 	let invRole = $state<string>('saisie');
 	let invEnvoi = $state(false);
 	let invErreurs = $state<{ email?: string; nom?: string }>({});
+	let invErreurServeur = $state<string | null>(null);
 	let codeCree = $state<{ code: string; email: string; nom: string } | null>(null);
 	const optionsOrganisations = $derived(etat.organisations.map((o) => ({ valeur: o.sigle, libelle: `${o.sigle} · ${o.nom}` })));
 	const optionsRoles = $derived(
@@ -168,20 +172,23 @@
 	async function inviter(e: SubmitEvent) {
 		e.preventDefault();
 		invErreurs = {};
-		erreur = null;
+		invErreurServeur = null;
 		codeCree = null;
-		if (!/^S+@S+.S+$/.test(invEmail.trim())) invErreurs.email = 'Saisissez l’adresse e-mail professionnelle de la personne.';
+		// Toute messagerie est acceptée (Gmail, Yahoo, adresse d'organisation…), majuscules comprises.
+		if (!estEmailValide(invEmail)) invErreurs.email = MESSAGE_EMAIL_INVALIDE;
 		if (invNom.trim().length < 2) invErreurs.nom = 'Indiquez le nom de la personne ou l’intitulé du poste.';
 		if (Object.keys(invErreurs).length) return;
 		invEnvoi = true;
+		const adresse = normaliserEmail(invEmail);
 		try {
-			const code = await depot.creerInvitation({ email: invEmail, nom: invNom, fonction: invFonction, organisation: invOrganisation, role: invRole });
-			codeCree = { code, email: invEmail.trim().toLowerCase(), nom: invNom.trim() };
+			const code = await depot.creerInvitation({ email: adresse, nom: invNom, fonction: invFonction, organisation: invOrganisation, role: invRole });
+			codeCree = { code, email: adresse, nom: invNom.trim() };
 			invEmail = '';
 			invNom = '';
 			invFonction = '';
 		} catch (err) {
-			erreur = err instanceof Error ? err.message : String(err);
+			// Affiché dans le panneau, à côté du formulaire (et non en haut de la page, hors de vue).
+			invErreurServeur = err instanceof Error ? err.message : String(err);
 		} finally {
 			invEnvoi = false;
 		}
@@ -298,6 +305,9 @@
 			<!-- Invitations -->
 			<div class="p-admin__ancre" id="invitations">
 				<Panneau titre="Inviter une personne" sousTitre="La personne crée son compte avec ce code depuis l’écran de connexion (onglet Inscription). Code valable 14 jours, pour cette adresse seulement." id="panneau-invitations">
+					{#if invErreurServeur}
+						<Alerte variante="erreur" titre="Invitation non créée" onfermer={() => (invErreurServeur = null)}>{invErreurServeur}</Alerte>
+					{/if}
 					<form class="p-admin__invitation" onsubmit={inviter} novalidate>
 						<Champ id="inv-email" libelle="Adresse e-mail" type="email" inputmode="email" requis bind:valeur={invEmail} erreur={invErreurs.email} placeholder="prenom.nom@organisation.org" />
 						<Champ id="inv-nom" libelle="Nom" requis bind:valeur={invNom} erreur={invErreurs.nom} aide="La personne pourra le corriger en créant son compte." />

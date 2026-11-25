@@ -139,7 +139,30 @@ export const FORMATS_JUSTIFICATIF = '.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.odt,
 
 /** Une photo (refusée comme justificatif ; à regrouper dans un PDF). Même règle en SQL (migration 0012). */
 export function estPhoto(nom: string, type: string): boolean {
-	return type.toLowerCase().startsWith('image/') || /.(jpe?g|png|gif|webp|heic|heif|bmp|tiff?|svg)$/i.test(nom.trim());
+	return type.toLowerCase().startsWith('image/') || /\.(jpe?g|png|gif|webp|heic|heif|bmp|tiff?|svg)$/i.test(nom.trim());
 }
+
+/* ---------- Adresses e-mail (invitations, connexion, inscription) ---------- */
+
+/**
+ * Forme enregistrée d'une adresse : sans espaces autour, en minuscules
+ * (« Prenom.Nom@Yahoo.FR » et « prenom.nom@yahoo.fr » sont la même adresse).
+ */
+export function normaliserEmail(adresse: string): string {
+	return adresse.trim().toLowerCase();
+}
+
+/**
+ * Toute messagerie est acceptée : Gmail, Yahoo, Outlook, adresse d'une organisation…
+ * Il faut un seul « @ », une partie avant sans espace (les alias « nom+suivi@… » passent),
+ * un domaine fait de libellés séparés par des points, et une extension finale en lettres,
+ * de 2 caractères au moins (.com, .org, .fr, .cf…). « nom@ong.90 » est refusée.
+ * Même règle en SQL : public._email_valide (migration 0013).
+ */
+export function estEmailValide(adresse: string): boolean {
+	return /^[^\s@]+@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}$/.test(normaliserEmail(adresse));
+}
+
+export const MESSAGE_EMAIL_INVALIDE = 'Adresse e-mail incomplète : il faut un « @ » et une extension en lettres, par exemple prenom.nom@gmail.com ou contact@ong.org.';
 
 export const MESSAGE_PHOTO_REFUSEE = 'Les photos ne sont pas acceptées : joignez un document (PDF, Word, Excel…). Regroupez les photos dans un PDF si besoin.';

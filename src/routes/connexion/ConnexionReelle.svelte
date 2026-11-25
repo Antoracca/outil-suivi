@@ -10,7 +10,7 @@
 	import { depot, type InvitationValide } from '#lib/donnees/depot.svelte.ts';
 	import { serveurConfigure } from '#lib/donnees/reel/client.ts';
 	import { lireComptes, memoriserCompte, oublierCompte, type CompteMemorise } from '#lib/donnees/reel/comptes-memorises.ts';
-	import { LIBELLES_ROLE } from '#lib/donnees/regles.ts';
+	import { LIBELLES_ROLE, MESSAGE_EMAIL_INVALIDE, estEmailValide } from '#lib/donnees/regles.ts';
 	import type { Role } from '#lib/donnees/types.ts';
 	import './ConnexionReelle.css';
 
@@ -54,8 +54,6 @@
 		...[...new Set(comptes.map((c) => c.organisation))].filter((s) => !FONDATRICES.some((f) => f.sigle === s)).map((sigle) => ({ sigle, precision: '' }))
 	]);
 	const comptesDeOrg = $derived(orgChoisie ? comptes.filter((c) => c.organisation === orgChoisie) : []);
-
-	const EMAIL = /^\S+@\S+\.\S+$/;
 
 	// Session réelle déjà ouverte sur cet appareil : directement vers le tableau de bord.
 	$effect(() => {
@@ -118,7 +116,7 @@
 		erreurs = {};
 		message = null;
 		const adresse = (compteRapide?.email ?? email).trim().toLowerCase();
-		if (!EMAIL.test(adresse)) erreurs.email = 'Saisissez une adresse e-mail valide, par exemple prenom.nom@apsud.org.';
+		if (!estEmailValide(adresse)) erreurs.email = MESSAGE_EMAIL_INVALIDE;
 		if (!motDePasse) erreurs.motDePasse = 'Saisissez votre mot de passe.';
 		const mdp = motDePasse;
 		motDePasse = '';
@@ -141,7 +139,7 @@
 		e.preventDefault();
 		erreurs = {};
 		message = null;
-		if (!EMAIL.test(email.trim())) erreurs.email = 'Saisissez l’adresse e-mail qui a reçu l’invitation.';
+		if (!estEmailValide(email)) erreurs.email = MESSAGE_EMAIL_INVALIDE;
 		if (code.replace(/[\s-]/g, '').length < 8) erreurs.code = 'Saisissez le code complet reçu d’APSUD (8 caractères, ex. 7K4P-92QD).';
 		if (Object.keys(erreurs).length) return;
 		envoi = true;

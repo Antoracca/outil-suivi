@@ -340,7 +340,7 @@ class Depot {
 	}
 
 	async verifierInvitation(code: string, email: string): Promise<InvitationValide | null> {
-		const { data, error } = await serveur().rpc('verifier_invitation', { p_code: code, p_email: email });
+		const { data, error } = await serveur().rpc('verifier_invitation', { p_code: code, p_email: email.trim().toLowerCase() });
 		if (error) throw new ErreurRegle(traduireErreurAuth(error.message));
 		return (data as InvitationValide[] | null)?.[0] ?? null;
 	}
