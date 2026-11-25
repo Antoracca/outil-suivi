@@ -11,7 +11,6 @@
 	import Bouton from '#lib/composants/ui/Bouton.svelte';
 	import EtatVide from '#lib/composants/ui/EtatVide.svelte';
 	import EnTeteRapport from '#lib/composants/donnees/EnTeteRapport.svelte';
-	import PanneauJustificatifs from '#lib/composants/donnees/PanneauJustificatifs.svelte';
 	import CarteIndicateur from './CarteIndicateur.svelte';
 	import './indicateurs.css';
 
@@ -94,8 +93,4 @@
 			</div>
 		{/each}
 	</Panneau>
-
-	<div id="section-justificatifs" class="p-indicateurs__section">
-		<PanneauJustificatifs volet={code} {mois} {modifiable} portee="indicateurs" />
-	</div>
 </section>

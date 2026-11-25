@@ -14,7 +14,6 @@
 	import MarqueurStatut from '#lib/composants/ui/MarqueurStatut.svelte';
 	import Icone from '#lib/icones/Icone.svelte';
 	import EnTeteRapport from '#lib/composants/donnees/EnTeteRapport.svelte';
-	import PanneauJustificatifs from '#lib/composants/donnees/PanneauJustificatifs.svelte';
 	import BlocActivite from './BlocActivite.svelte';
 	import Section5W from './Section5W.svelte';
 	import './rapport.css';
@@ -46,7 +45,6 @@
 		return planifs.length ? [...liste.filter((a) => prevues.has(a.id)), ...liste.filter((a) => !prevues.has(a.id))] : liste;
 	});
 	const moisSuivant = $derived(etat.projet.mois[etat.projet.mois.indexOf(mois) + 1]);
-	const justificatifs = $derived(etat.justificatifs.filter((j) => j.volet === code && j.mois === mois && !j.archive_le).length);
 	const lignes5w = $derived(etat.lignes_5w.filter((l) => l.volet === code && l.mois === mois && !l.archive_le).length);
 
 	/* ---------- Actions de circuit ---------- */
@@ -105,7 +103,6 @@
 		{#if volet.secteur === 'WASH'}
 			<a href="#section-5w"><Icone nom="carte" taille="sm" /> 5W du cluster <span>{lignes5w}</span></a>
 		{/if}
-		<a href="#section-justificatifs"><Icone nom="justificatif" taille="sm" /> Justificatifs <span>{justificatifs}</span></a>
 		{#if moisSuivant}
 			<a href="/volets/{code}/planification/{moisSuivant}"><Icone nom="calendrier" taille="sm" /> Activités planifiées pour {libelleMois(moisSuivant, false)}</a>
 		{/if}
@@ -125,10 +122,6 @@
 			<Section5W volet={code} {mois} {modifiable} />
 		</div>
 	{/if}
-
-	<div id="section-justificatifs" class="p-rapport__section">
-		<PanneauJustificatifs volet={code} {mois} {modifiable} portee="activites" />
-	</div>
 
 	{#if transitions.length}
 		<div class="p-rapport__barre" role="region" aria-label="Actions sur le rapport">

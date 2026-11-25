@@ -20,13 +20,10 @@
 		color: var(--color-link);
 		font-weight: var(--fw-medium);
 	}
-	.p-indicateurs__section {
-		scroll-margin-block-start: calc(var(--context-bar-h) + var(--space-base));
-	}
+	/* En-tête de groupe (outcome, output) : NON collant. Le corps du panneau défile en largeur
+	   (overflow-x), il devient donc le conteneur du « sticky » : le décalage de la barre du haut
+	   s'appliquait à l'intérieur du panneau et l'en-tête recouvrait le titre de l'indicateur. */
 	.p-indicateurs__groupe-tete {
-		position: sticky;
-		inset-block-start: var(--context-bar-h);
-		z-index: 1;
 		padding: var(--space-xs) var(--space-md);
 		background: var(--color-canvas-soft);
 		border-block-end: var(--hairline-w) solid var(--color-hairline);
@@ -40,11 +37,5 @@
 	}
 	.p-indicateurs__vide {
 		padding: var(--space-md);
-	}
-	/* Téléphone : la barre de contexte fait deux lignes, l'en-tête collant deviendrait imprévisible. */
-	@media (max-width: 40em) {
-		.p-indicateurs__groupe-tete {
-			position: static;
-		}
 	}
 }
