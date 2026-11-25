@@ -6,7 +6,7 @@
  * l'heure locale, au même format que la démonstration (« 2027-01-12T09:30:00 »).
  */
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { VERSION_SCHEMA } from '../demo/graine';
+import { VERSION_SCHEMA } from '../version';
 import type {
 	Activite,
 	AvancementActivite,

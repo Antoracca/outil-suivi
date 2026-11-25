@@ -37,7 +37,8 @@ import type {
 import { CALENDRIER_FH } from '../calendrier';
 import { SECTEURS_REFERENCE } from '../referentiels/secteurs';
 
-export const VERSION_SCHEMA = 11;
+import { VERSION_SCHEMA } from '../version';
+export { VERSION_SCHEMA };
 export const AUJOURDHUI_DEMO = '2027-01-12T09:30:00';
 
 /* ---------- Hasard déterministe ---------- */

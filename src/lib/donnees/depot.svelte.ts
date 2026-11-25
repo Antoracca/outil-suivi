@@ -19,8 +19,8 @@
  */
 import { browser } from '$app/env';
 import type { RealtimeChannel, RealtimePostgresChangesPayload } from '@supabase/supabase-js';
-import { construireEtatDemo, AUJOURDHUI_DEMO, VERSION_SCHEMA } from './demo/graine';
-import { mode } from './mode.svelte';
+import { VERSION_SCHEMA } from './version';
+import { DEMO_DISPONIBLE, mode } from './mode.svelte';
 import { estErreurReseau, serveur, serveurConfigure, traduireErreurAuth } from './reel/client';
 import { COLLECTIONS, chargerEtatReel, etatVide, vers } from './reel/correspondance';
 import { ROLES_CONSORTIUM, codeSecteurPropose, texteRecherche, type RoleConsortium } from './referentiels/secteurs';
@@ -101,7 +101,7 @@ function uid(prefixe: string): string {
 }
 
 class Depot {
-	etat = $state<EtatDepot>(construireEtatDemo());
+	etat = $state<EtatDepot>(etatVide());
 	utilisateurId = $state<string | null>(null);
 	/** Source des données : démonstration (simulée) ou serveur réel. */
 	source = $state<'demo' | 'reel'>('demo');
@@ -122,6 +122,8 @@ class Depot {
 	#file: AppelDistant[] = [];
 	#envoiEnCours = false;
 	#horsLigneSimule = false;
+	/** Module des données de démonstration, chargé à la demande (jamais en production sans démo). */
+	#demo: typeof import('./demo/graine') | null = null;
 
 	constructor() {
 		if (!browser) return;
@@ -129,16 +131,19 @@ class Depot {
 		this.#canal.onmessage = (e: MessageEvent<MessageCanal>) => this.#recevoir(e.data);
 		window.addEventListener('online', () => this.#reseauChange(true));
 		window.addEventListener('offline', () => this.#reseauChange(false));
-		if (mode.demo) this.#chargerDemo();
+		if (mode.demo) void this.#chargerDemo();
 		else void this.#demarrerReel();
 	}
 
 	/* ---------- Sources ---------- */
 
-	#chargerDemo() {
+	async #chargerDemo() {
+		if (!DEMO_DISPONIBLE) return this.#demarrerReel();
 		this.source = 'demo';
+		this.pret = false;
+		this.#demo ??= await import('./demo/graine');
 		this.#decalage = this.#lireDecalage();
-		this.etat = construireEtatDemo();
+		this.etat = this.#demo.construireEtatDemo();
 		const brut = localStorage.getItem(CLE_ETAT);
 		if (brut) {
 			try {
@@ -161,7 +166,7 @@ class Depot {
 	async utiliserSource(source: 'demo' | 'reel') {
 		if (source === this.source && this.pret) return;
 		await this.#fermerReel();
-		if (source === 'demo') this.#chargerDemo();
+		if (source === 'demo') await this.#chargerDemo();
 		else await this.#demarrerReel();
 	}
 
@@ -393,7 +398,7 @@ class Depot {
 	#lireDecalage(): number {
 		const enr = localStorage.getItem(CLE_DECALAGE);
 		if (enr) return Number(enr);
-		const d = new Date(AUJOURDHUI_DEMO).getTime() - Date.now();
+		const d = new Date(this.#demo?.AUJOURDHUI_DEMO ?? Date.now()).getTime() - Date.now();
 		localStorage.setItem(CLE_DECALAGE, String(d));
 		return d;
 	}
@@ -554,8 +559,8 @@ class Depot {
 	}
 
 	reinitialiserDemo() {
-		if (this.source !== 'demo') throw new ErreurRegle('La réinitialisation ne concerne que la démonstration.');
-		this.etat = construireEtatDemo();
+		if (this.source !== 'demo' || !this.#demo) throw new ErreurRegle('La réinitialisation ne concerne que la démonstration.');
+		this.etat = this.#demo.construireEtatDemo();
 		localStorage.removeItem(CLE_DECALAGE);
 		this.#decalage = this.#lireDecalage();
 		this.enDirect = [];

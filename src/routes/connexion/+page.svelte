@@ -3,7 +3,7 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import { depot } from '#lib/donnees/depot.svelte.ts';
-	import { mode } from '#lib/donnees/mode.svelte.ts';
+	import { DEMO_DISPONIBLE, mode } from '#lib/donnees/mode.svelte.ts';
 	import { DESCRIPTION_ROLE, LIBELLES_ROLE } from '#lib/donnees/regles.ts';
 	import LogoApsud from '#lib/composants/structure/LogoApsud.svelte';
 	import LogoOrganisation from '#lib/composants/ui/LogoOrganisation.svelte';
@@ -53,9 +53,11 @@
 	</section>
 
 	<section class="p-connexion__acces" aria-label={mode.demo ? 'Comptes de démonstration' : 'Connexion'}>
-		<div class="p-connexion__bascule">
-			<Interrupteur libelle="Mode démonstration" actif={mode.demo} onbasculer={basculerMode} />
-		</div>
+		{#if DEMO_DISPONIBLE}
+			<div class="p-connexion__bascule">
+				<Interrupteur libelle="Mode démonstration" actif={mode.demo} onbasculer={basculerMode} />
+			</div>
+		{/if}
 
 		{#if mode.demo}
 			<div class="p-connexion__choix">
