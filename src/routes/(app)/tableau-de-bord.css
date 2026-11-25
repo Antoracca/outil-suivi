@@ -197,3 +197,51 @@
 		gap: var(--space-xs);
 	}
 }
+
+@layer components {
+	/* Avancement par volet : un groupe par volet, une ligne par indicateur d'outcome. */
+	.p-tdb__avancement {
+		min-inline-size: 52rem;
+	}
+	.p-tdb__avancement .p-tdb__indicateur {
+		display: table-cell;
+		min-inline-size: 16rem;
+	}
+	.p-tdb__avancement .p-tdb__indicateur > span {
+		display: block;
+	}
+	.p-tdb__volet-tete th {
+		padding-block: var(--space-xs);
+		background: var(--color-canvas-soft);
+		border-block-start: var(--hairline-w) solid var(--color-hairline-strong);
+	}
+	.p-tdb__volet-ligne {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-xs) var(--space-base);
+	}
+	.p-tdb__outcome th {
+		padding-block: var(--space-xxs);
+		font-size: var(--fs-caption);
+		color: var(--color-body);
+	}
+	.p-tdb__outcome th span {
+		margin-inline-end: var(--space-xs);
+		font-weight: var(--fw-semibold);
+		color: var(--color-ink);
+	}
+	.p-tdb__actuel {
+		font-weight: var(--fw-medium);
+		color: var(--color-ink);
+	}
+	.p-tdb__cumul {
+		font-weight: var(--fw-semibold);
+		color: var(--color-ink);
+	}
+	.p-tdb__avancement tbody tr.p-tdb__volet-tete:hover,
+	.p-tdb__avancement tbody tr.p-tdb__outcome:hover {
+		background: none;
+	}
+}

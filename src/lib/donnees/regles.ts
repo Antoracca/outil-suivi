@@ -131,3 +131,15 @@ export function destinataires(etat: EtatDepot, auteurId: string, voletCode: stri
 		.filter((u) => estCoordination(u) || (volet && u.organisation === volet.organisation))
 		.map((u) => u.id);
 }
+
+/* ---------- Justificatifs : documents seulement (demande d'APSUD du 2026-11-25) ---------- */
+
+/** Formats proposés par le sélecteur de fichier : documents, aucune photo. */
+export const FORMATS_JUSTIFICATIF = '.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.odt,.ods,.csv,.txt,.zip,application/pdf';
+
+/** Une photo (refusée comme justificatif ; à regrouper dans un PDF). Même règle en SQL (migration 0012). */
+export function estPhoto(nom: string, type: string): boolean {
+	return type.toLowerCase().startsWith('image/') || /.(jpe?g|png|gif|webp|heic|heif|bmp|tiff?|svg)$/i.test(nom.trim());
+}
+
+export const MESSAGE_PHOTO_REFUSEE = 'Les photos ne sont pas acceptées : joignez un document (PDF, Word, Excel…). Regroupez les photos dans un PDF si besoin.';

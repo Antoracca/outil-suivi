@@ -2,6 +2,7 @@
 	import { depot } from '#lib/donnees/depot.svelte.ts';
 	import { cumul, historique, valeurCourante } from '#lib/donnees/calculs.ts';
 	import { dateHeure, lireNombre, nombre, pourcent, taille } from '#lib/format.ts';
+	import { FORMATS_JUSTIFICATIF } from '#lib/donnees/regles.ts';
 	import type { Desagregation, Indicateur, Mois } from '#lib/donnees/types.ts';
 	import JaugeJalon from '#lib/composants/ui/JaugeJalon.svelte';
 	import Icone from '#lib/icones/Icone.svelte';
@@ -252,8 +253,9 @@
 						{#if modifiable && coche(moyen)}
 							<label class="c-carte-ind__televerser">
 								<Icone nom="televerser" taille="sm" />
-								<span>{deja.length ? 'Ajouter une autre pièce' : 'Téléverser la pièce'}</span>
-								<input type="file" class="u-visuellement-masque" accept="image/*,application/pdf,.doc,.docx,.xls,.xlsx" onchange={(e) => televerser(moyen, e.currentTarget)} />
+								<span>{deja.length ? 'Ajouter un autre document' : 'Téléverser le document'}</span>
+								<span class="c-carte-ind__formats">PDF, Word, Excel… (pas de photo)</span>
+								<input type="file" class="u-visuellement-masque" accept={FORMATS_JUSTIFICATIF} onchange={(e) => televerser(moyen, e.currentTarget)} />
 							</label>
 						{/if}
 					</li>

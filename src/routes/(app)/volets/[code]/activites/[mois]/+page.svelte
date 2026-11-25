@@ -107,7 +107,7 @@
 		{/if}
 		<a href="#section-justificatifs"><Icone nom="justificatif" taille="sm" /> Justificatifs <span>{justificatifs}</span></a>
 		{#if moisSuivant}
-			<a href="/volets/{code}/planification/{moisSuivant}"><Icone nom="calendrier" taille="sm" /> Planifier {libelleMois(moisSuivant)}</a>
+			<a href="/volets/{code}/planification/{moisSuivant}"><Icone nom="calendrier" taille="sm" /> Activités planifiées pour {libelleMois(moisSuivant, false)}</a>
 		{/if}
 		<a href="/volets/{code}/plan-action"><Icone nom="calendrier" taille="sm" /> Calendrier des tâches</a>
 	</nav>

@@ -2,6 +2,7 @@
 	import { depot } from '#lib/donnees/depot.svelte.ts';
 	import { date, taille } from '#lib/format.ts';
 	import type { CodeVolet, Justificatif, Mois } from '#lib/donnees/types.ts';
+	import { FORMATS_JUSTIFICATIF } from '#lib/donnees/regles.ts';
 	import Panneau from '#lib/composants/ui/Panneau.svelte';
 	import Bouton from '#lib/composants/ui/Bouton.svelte';
 	import Alerte from '#lib/composants/ui/Alerte.svelte';
@@ -106,8 +107,8 @@
 		{#if succes}<Alerte variante="succes" onfermer={() => (succes = null)}>{succes}</Alerte>{/if}
 		<div class="c-justifs__joindre">
 			<div class="c-justifs__champ-fichier">
-				<label for="fichier-justificatif-{portee}">Fichier</label>
-				<input id="fichier-justificatif-{portee}" bind:this={champFichier} type="file" accept="image/*,application/pdf,.doc,.docx,.xls,.xlsx" onchange={(e) => (fichier = e.currentTarget.files?.[0] ?? null)} />
+				<label for="fichier-justificatif-{portee}">Document <span class="c-justifs__formats">(PDF, Word, Excel… pas de photo)</span></label>
+				<input id="fichier-justificatif-{portee}" bind:this={champFichier} type="file" accept={FORMATS_JUSTIFICATIF} onchange={(e) => (fichier = e.currentTarget.files?.[0] ?? null)} />
 			</div>
 			<Champ
 				id="rattachement-justificatif-{portee}"

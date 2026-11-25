@@ -309,6 +309,18 @@ await test('Justificatifs : dépôt dans le dossier de son organisation seulemen
 	egal(supprimes.affectedRows ?? 0, 0, 'suppression sans effet :');
 });
 
+await test('Justificatifs : documents acceptés (PDF, Excel), photos refusées', async () => {
+	await en(idc);
+	const appel = (nom, type) => db.query(`select public.ajouter_justificatif($1, null, 'WASH-IDC', '2027-01', 'indicateur', $2, $3, $4, 1000, 'images', null)`, [ev(), IND_WASH, nom, type]);
+	await appel('fiches-depistage.pdf', 'application/pdf');
+	await appel('suivi.xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+	await refuse(appel('photo-forage.jpg', 'image/jpeg'), /photos ne sont pas acceptées/);
+	await refuse(appel('IMG_2041.HEIC', ''), /photos ne sont pas acceptées/);
+	await enPostgres();
+	const types = await valeur(`select allowed_mime_types::text from storage.buckets where id = 'justificatifs'`);
+	if (types.includes('image/')) throw new Error('le stockage accepte encore des images : ' + types);
+});
+
 /* ---------- Nouvelle ONG ---------- */
 
 await test('Nouvelle ONG : seul le super-admin l’ajoute, avec son volet et ses 10 rapports', async () => {

@@ -26,7 +26,9 @@ import { COLLECTIONS, chargerEtatReel, etatVide, vers } from './reel/corresponda
 import { cumul, rapport as trouverRapport, valeurCourante } from './calculs';
 import {
 	ErreurRegle,
+	MESSAGE_PHOTO_REFUSEE,
 	destinataires,
+	estPhoto,
 	peutArchiver,
 	peutEcrireVolet,
 	peutAjouterOrganisation,
@@ -751,6 +753,7 @@ class Depot {
 	ajouterJustificatif(volet: CodeVolet, mois: Mois, rattachement: Justificatif['rattachement'], fichier: { nom: string; type: string; taille: number }, moyen: string | null, contenu?: Blob) {
 		if (this.source === 'reel' && contenu && !this.enLigne) throw new ErreurRegle('Hors ligne : un fichier ne peut être envoyé qu’avec une connexion. Réessayez au retour du réseau.');
 		this.#exigerSaisie(volet, mois);
+		if (estPhoto(fichier.nom, fichier.type)) throw new ErreurRegle(MESSAGE_PHOTO_REFUSEE);
 		const id = uid('j');
 		const sur = fichier.nom.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^\w.-]+/g, '_').slice(-80);
 		const chemin = this.source === 'reel' && contenu ? `${this.volet(volet).organisation}/${mois}/${id.replace(':', '-')}-${sur}` : null;

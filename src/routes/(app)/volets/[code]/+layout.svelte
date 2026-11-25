@@ -4,7 +4,7 @@
 	import { contexte } from '#lib/donnees/contexte.svelte.ts';
 	import { budgetVolet } from '#lib/donnees/calculs.ts';
 	import { peutEcrireVolet, peutValider } from '#lib/donnees/regles.ts';
-	import { montant, pourcent } from '#lib/format.ts';
+	import { libelleMois, montant, pourcent } from '#lib/format.ts';
 	import type { CodeVolet } from '#lib/donnees/types.ts';
 	import LogoOrganisation from '#lib/composants/ui/LogoOrganisation.svelte';
 	import Icone from '#lib/icones/Icone.svelte';
@@ -36,12 +36,16 @@
 		return i > 0 ? listeMois[i - 1] : m;
 	});
 	const moisSuivant = $derived(listeMois[Math.min(listeMois.indexOf(moisRapport) + 1, listeMois.length - 1)] ?? moisRapport);
+	/** Demande APSUD : « Activités planifiées – mois prochain ». À l'écran, le nom du mois (plus précis) ; en entier pour les lecteurs d'écran. */
+	const estMoisProchain = $derived(moisSuivant !== moisRapport);
+	const precisionPlanif = $derived(`pour ${libelleMois(moisSuivant, false)}`);
+	const nomPlanif = $derived(`Activités planifiées pour ${libelleMois(moisSuivant)}${estMoisProchain ? ' (mois prochain)' : ''}`);
 
 	const onglets = $derived([
 		{ libelle: 'Synthèse', href: base, actif: chemin === base },
 		{ libelle: 'Indicateurs', href: `${base}/indicateurs/${moisRapport}`, actif: chemin.startsWith(`${base}/indicateurs`) || chemin.startsWith(`${base}/cadre-logique`) },
 		{ libelle: 'Activités', href: `${base}/activites/${moisRapport}`, actif: chemin.startsWith(`${base}/activites`) || chemin.startsWith(`${base}/plan-action`) },
-		{ libelle: 'Activités planifiées', href: `${base}/planification/${moisSuivant}`, actif: surPlanification }
+		{ libelle: 'Activités planifiées', precision: precisionPlanif, nomAccessible: nomPlanif, href: `${base}/planification/${moisSuivant}`, actif: surPlanification }
 	]);
 </script>
 

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { depot } from '#lib/donnees/depot.svelte.ts';
-	import { budgetVolet, cumul, echeance, indicateurPhare, indicateursAJour, joursRetard, moisARapporter, moisCourant, rapport, valeurCourante } from '#lib/donnees/calculs.ts';
+	import { budgetVolet, cumul, echeance, indicateursAJour, joursRetard, moisARapporter, moisCourant, rapport, valeurCourante } from '#lib/donnees/calculs.ts';
 	import { peutValider } from '#lib/donnees/regles.ts';
-	import { date, entier, libelleMois, majuscule, montant, moisCourt, pourcent } from '#lib/format.ts';
+	import { date, entier, libelleMois, majuscule, montant, moisCourt, nombre, pourcent } from '#lib/format.ts';
 	import Bouton from '#lib/composants/ui/Bouton.svelte';
 	import Panneau from '#lib/composants/ui/Panneau.svelte';
 	import Tuile from '#lib/composants/ui/Tuile.svelte';
@@ -40,14 +40,31 @@
 		return { total, renseignes, taux: total ? (renseignes / total) * 100 : 0 };
 	});
 
+	/**
+	 * Avancement par volet : tous les indicateurs d'outcome (le bloc « Partie APSUD » grisé
+	 * de la feuille « Suivi indicateurs » des Excel), avec Planifié / Précédent / Actuel / Cumul
+	 * du mois rapporté. Demande d'APSUD du 2026-11-25 : voir le détail sans ouvrir le volet.
+	 */
 	const avancement = $derived(
 		etat.volets.map((v) => {
-			const ind = indicateurPhare(etat, v.code);
-			const precedent = ind ? cumul(etat, ind, attendu, false).total : null;
-			const ceMois = ind ? (valeurCourante(etat, ind.id, attendu)?.valeurs.total ?? 0) : 0;
-			return { v, ind, precedent, ceMois, r: rapport(etat, v.code, attendu) };
+			const outcomes = etat.outcomes.filter((o) => o.volet === v.code);
+			const groupes = outcomes
+				.map((o) => ({
+					o,
+					lignes: etat.indicateurs
+						.filter((i) => i.volet === v.code && !i.archive_le && i.niveau === 'outcome' && i.parent_id === o.id)
+						.map((ind) => ({
+							ind,
+							precedent: cumul(etat, ind, attendu, false).total,
+							actuel: valeurCourante(etat, ind.id, attendu)?.valeurs.total ?? null,
+							cumul: cumul(etat, ind, attendu, true).total
+						}))
+				}))
+				.filter((g) => g.lignes.length);
+			return { v, groupes, plusieurs: groupes.length > 1, r: rapport(etat, v.code, attendu) };
 		})
 	);
+	const valeurInd = (ind: { type_valeur: string }, n: number | null) => (ind.type_valeur === 'pourcentage' ? pourcent(n) : nombre(n));
 
 	/** Action principale selon le rôle connecté (DESIGN.md, consortium-band). */
 	const action = $derived.by(() => {
@@ -101,42 +118,58 @@
 		/>
 	</div>
 
-	<Panneau titre="Avancement par volet" sousTitre="Indicateur principal de chaque volet : cumul avant {libelleMois(attendu, false)}, apport du mois et cible." id="avancement" sansMarge>
-		<table class="p-tdb__table">
-			<caption class="u-visuellement-masque">Avancement de l’indicateur principal de chaque volet</caption>
+	<Panneau titre="Avancement par volet" sousTitre="Indicateurs d’outcome de chaque volet, mois de {libelleMois(attendu, false)} : planifié, précédent (cumul avant le mois), actuel (réalisé du mois) et cumul." id="avancement" sansMarge>
+		<table class="p-tdb__table p-tdb__avancement">
+			<caption class="u-visuellement-masque">Indicateurs d’outcome de chaque volet : planifié, précédent, actuel et cumul pour {libelleMois(attendu)}</caption>
 			<thead>
 				<tr>
-					<th scope="col">Volet</th>
-					<th scope="col">Indicateur principal</th>
-					<th scope="col" class="p-tdb__col-jauge">Cumul et cible</th>
-					<th scope="col">Rapport de {libelleMois(attendu, false)}</th>
+					<th scope="col">Indicateur</th>
+					<th scope="col" class="u-nombre">Planifié</th>
+					<th scope="col" class="u-nombre">Précédent</th>
+					<th scope="col" class="u-nombre">Actuel</th>
+					<th scope="col" class="u-nombre">Cumul</th>
+					<th scope="col" class="p-tdb__col-jauge">Avancement</th>
 				</tr>
 			</thead>
-			<tbody>
-				{#each avancement as a (a.v.code)}
-					<tr>
-						<th scope="row">
-							<a class="p-tdb__lien-volet" href="/volets/{a.v.code}">
-								<EtiquetteVolet secteur={a.v.secteur} organisation={a.v.organisation} libelleSecteur={libelleSecteur(a.v.secteur)} />
-							</a>
+			{#each avancement as a (a.v.code)}
+				<tbody class="p-tdb__groupe-volet">
+					<tr class="p-tdb__volet-tete">
+						<th scope="colgroup" colspan="6">
+							<span class="p-tdb__volet-ligne">
+								<a class="p-tdb__lien-volet" href="/volets/{a.v.code}/indicateurs/{attendu}">
+									<EtiquetteVolet secteur={a.v.secteur} organisation={a.v.organisation} libelleSecteur={libelleSecteur(a.v.secteur)} />
+								</a>
+								<a class="p-tdb__lien-statut" href="/volets/{a.v.code}/activites/{attendu}">
+									<MarqueurStatut statut={a.r?.statut ?? 'non_commence'} retard={joursRetard(etat, a.r, maintenant)} />
+								</a>
+							</span>
 						</th>
-						<td class="p-tdb__indicateur">
-							{#if a.ind}
-								{#if a.ind.code_cbpf}<span class="u-code">{a.ind.code_cbpf}</span>{/if}
-								<span>{a.ind.libelle}</span>
-							{:else}<span class="u-attenue">Aucun indicateur chiffré</span>{/if}
-						</td>
-						<td class="p-tdb__col-jauge">
-							{#if a.ind}<JaugeJalon cumulPrecedent={a.precedent} ceMois={a.ceMois} cible={a.ind.cible.total} />{/if}
-						</td>
-						<td>
-							<a class="p-tdb__lien-statut" href="/volets/{a.v.code}/activites/{attendu}">
-								<MarqueurStatut statut={a.r?.statut ?? 'non_commence'} retard={joursRetard(etat, a.r, maintenant)} />
-							</a>
-						</td>
 					</tr>
-				{/each}
-			</tbody>
+					{#if !a.groupes.length}
+						<tr><td colspan="6" class="u-attenue">Aucun indicateur d’outcome dans ce volet.</td></tr>
+					{/if}
+					{#each a.groupes as g (g.o.id)}
+						{#if a.plusieurs}
+							<tr class="p-tdb__outcome"><th scope="colgroup" colspan="6"><span>Outcome {g.o.numero}</span> {g.o.libelle}</th></tr>
+						{/if}
+						{#each g.lignes as l (l.ind.id)}
+							<tr>
+								<th scope="row" class="p-tdb__indicateur">
+									{#if l.ind.code_cbpf}<span class="u-code">{l.ind.code_cbpf}</span>{/if}
+									<span>{l.ind.libelle}</span>
+								</th>
+								<td class="u-nombre">{valeurInd(l.ind, l.ind.cible.total)}</td>
+								<td class="u-nombre">{valeurInd(l.ind, l.precedent)}</td>
+								<td class="u-nombre p-tdb__actuel">{valeurInd(l.ind, l.actuel)}</td>
+								<td class="u-nombre p-tdb__cumul">{valeurInd(l.ind, l.cumul)}</td>
+								<td class="p-tdb__col-jauge">
+									<JaugeJalon cumulPrecedent={l.ind.type_valeur === 'pourcentage' ? null : l.precedent} ceMois={l.ind.type_valeur === 'pourcentage' ? (l.cumul ?? 0) : (l.actuel ?? 0)} cible={l.ind.cible.total} type={l.ind.type_valeur} />
+								</td>
+							</tr>
+						{/each}
+					{/each}
+				</tbody>
+			{/each}
 		</table>
 	</Panneau>
 

@@ -3,23 +3,41 @@
 		border-block-end: var(--hairline-w) solid var(--color-hairline-strong);
 		overflow-x: auto;
 		scrollbar-width: none;
+		container-type: inline-size;
 	}
+	/* L'écart se resserre sur téléphone pour que les quatre onglets tiennent sans défilement. */
 	.c-onglets ul {
 		display: flex;
-		gap: var(--space-lg);
+		gap: clamp(var(--space-sm), 3cqi, var(--space-lg));
 	}
+	.c-onglets li {
+		display: flex;
+	}
+	/*
+	 * Libellé, précision et compteur sur une ligne. Quand la place manque, la précision passe
+	 * sous le libellé, puis le libellé lui-même revient à la ligne : rien n'est coupé.
+	 */
 	.c-onglets__lien {
-		display: inline-flex;
-		align-items: center;
-		gap: var(--space-xs);
+		display: flex;
+		flex-wrap: wrap;
+		align-content: center;
+		align-items: baseline;
+		column-gap: var(--space-xs);
 		min-block-size: var(--tab-h);
 		padding-block: var(--space-xs);
 		border-block-end: var(--focus-w) solid transparent;
 		margin-block-end: calc(var(--hairline-w) * -1);
 		font-size: var(--fs-nav-link);
 		font-weight: var(--fw-medium);
+		line-height: var(--lh-heading);
 		color: var(--color-body);
 		text-decoration: none;
+	}
+	.c-onglets__precision {
+		font-size: var(--fs-badge);
+		font-weight: var(--fw-regular);
+		line-height: var(--lh-caption);
+		color: var(--color-muted);
 		white-space: nowrap;
 	}
 	.c-onglets__lien:hover {

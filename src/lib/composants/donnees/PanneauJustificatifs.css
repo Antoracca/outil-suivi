@@ -52,3 +52,10 @@
 		color: var(--color-muted);
 	}
 }
+
+@layer components {
+	.c-justifs__formats {
+		font-weight: var(--fw-regular);
+		color: var(--color-muted);
+	}
+}

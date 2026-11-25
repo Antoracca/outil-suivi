@@ -261,6 +261,7 @@
 	}
 	.c-carte-ind__televerser {
 		display: inline-flex;
+		flex-wrap: wrap;
 		align-items: center;
 		justify-self: start;
 		gap: var(--space-xxs);
@@ -375,5 +376,12 @@
 	.c-carte-ind__versions li.is-courante {
 		background: var(--color-surface-row-active);
 		color: var(--color-ink);
+	}
+}
+
+@layer components {
+	.c-carte-ind__formats {
+		font-weight: var(--fw-regular);
+		color: var(--color-muted);
 	}
 }
