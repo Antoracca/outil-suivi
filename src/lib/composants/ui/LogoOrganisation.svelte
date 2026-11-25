@@ -1,11 +1,12 @@
 <script lang="ts">
 	import type { Sigle } from '#lib/donnees/types.ts';
+	import { depot } from '#lib/donnees/depot.svelte.ts';
 	import './LogoOrganisation.css';
 
 	/**
-	 * Logo réel d'une organisation du consortium (fichiers fournis par APSUD, dans static/logos/).
-	 * Une ONG ajoutée plus tard, dont on n'a pas encore le logo, est représentée par son
-	 * sigle dans la même pastille, jusqu'à l'ajout de son fichier ici.
+	 * Logo d'une organisation : celui déposé par le super-administrateur (Administration ›
+	 * Organisations, mis à jour en temps réel chez tous), sinon le fichier fourni par APSUD
+	 * (static/logos/), sinon le sigle dans la même pastille.
 	 */
 	const FICHIERS: Record<string, string> = {
 		APSUD: '/logos/apsud.jpg',
@@ -22,7 +23,7 @@
 		alt?: string;
 	}
 	let { sigle, taille = 'md', alt = '' }: Props = $props();
-	const fichier = $derived(FICHIERS[sigle]);
+	const fichier = $derived(depot.etat.organisations.find((o) => o.sigle === sigle)?.logo_url || FICHIERS[sigle]);
 </script>
 
 <span class="c-logo-org c-logo-org--{taille}" class:c-logo-org--sigle={!fichier}>

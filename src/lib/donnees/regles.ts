@@ -163,6 +163,77 @@ export function estEmailValide(adresse: string): boolean {
 	return /^[^\s@]+@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}$/.test(normaliserEmail(adresse));
 }
 
-export const MESSAGE_EMAIL_INVALIDE = 'Adresse e-mail incomplète : il faut un « @ » et une extension en lettres, par exemple prenom.nom@gmail.com ou contact@ong.org.';
+/** Résultat de l'analyse en temps réel d'une adresse en cours de saisie. */
+export interface AnalyseEmail {
+	/**
+	 * vide : rien de saisi ; en_cours : incomplète mais sans faute ; erreur : faute à corriger ;
+	 * attention : forme valide mais faute de frappe probable (gmial.com) ; valide.
+	 */
+	etat: 'vide' | 'en_cours' | 'erreur' | 'attention' | 'valide';
+	message: string;
+	/** Adresse corrigée proposée (« Vouliez-vous dire … ? »), quand une correction sûre existe. */
+	suggestion?: string;
+}
+
+/** Fautes de frappe fréquentes sur les grandes messageries. */
+const DOMAINES_CORRIGES: Record<string, string> = {
+	'gmial.com': 'gmail.com', 'gmal.com': 'gmail.com', 'gmai.com': 'gmail.com', 'gamil.com': 'gmail.com', 'gnail.com': 'gmail.com',
+	'gmaill.com': 'gmail.com', 'gmail.co': 'gmail.com', 'gmail.cm': 'gmail.com', 'gmail.fr': 'gmail.com', 'gmail': 'gmail.com',
+	'yaho.com': 'yahoo.com', 'yahooo.com': 'yahoo.com', 'yahoo.co': 'yahoo.com', 'yaho.fr': 'yahoo.fr', 'yahou.fr': 'yahoo.fr', 'yahoo': 'yahoo.fr',
+	'hotmial.com': 'hotmail.com', 'hotmal.com': 'hotmail.com', 'hotmail.co': 'hotmail.com', 'hotmai.com': 'hotmail.com', 'hotmail': 'hotmail.com',
+	'outlok.com': 'outlook.com', 'outllok.com': 'outlook.com', 'outlook.co': 'outlook.com', 'outlook': 'outlook.com', 'icloud.co': 'icloud.com'
+};
+/** Extensions mal tapées. */
+const EXTENSIONS_CORRIGEES: Record<string, string> = { con: 'com', cmo: 'com', cpm: 'com', vom: 'com', xom: 'com', ocm: 'com', ogr: 'org', orh: 'org', rg: 'org', fe: 'fr' };
+
+/**
+ * Analyse une adresse pendant la saisie et explique la faute : espace, virgule à la place
+ * d'un point, « @ » absent ou en double, point mal placé, extension en chiffres, faute de
+ * frappe sur un domaine connu. Toujours cohérente avec estEmailValide.
+ */
+export function analyserEmail(saisie: string): AnalyseEmail {
+	const brut = saisie.trim();
+	if (!brut) return { etat: 'vide', message: '' };
+	const corrigeEspaces = brut.replace(/\s+/g, '');
+	if (/\s/.test(brut)) return { etat: 'erreur', message: 'Une adresse ne contient pas d’espace.', suggestion: proposer(corrigeEspaces) };
+	if (/[,;]/.test(brut)) return { etat: 'erreur', message: 'Une virgule ou un point-virgule s’est glissé : c’est un point qu’il faut.', suggestion: proposer(brut.replace(/[,;]/g, '.')) };
+	const arobases = (brut.match(/@/g) ?? []).length;
+	if (arobases === 0) return { etat: 'en_cours', message: 'Il manque le « @ » (ex. prenom.nom@gmail.com).' };
+	if (arobases > 1) return { etat: 'erreur', message: 'Une adresse ne contient qu’un seul « @ ».' };
+	const [local, domaineBrut] = brut.split('@');
+	const domaine = domaineBrut.toLowerCase();
+	if (!local) return { etat: 'erreur', message: 'Écrivez le nom avant le « @ ».' };
+	if (/[()<>[\]\\"]/.test(local)) return { etat: 'erreur', message: 'Caractère non autorisé avant le « @ ».' };
+	if (!domaine) return { etat: 'en_cours', message: 'Ajoutez le domaine après le « @ » (gmail.com, yahoo.fr, ong.org…).' };
+	if (DOMAINES_CORRIGES[domaine]) {
+		const suggestion = `${local}@${DOMAINES_CORRIGES[domaine]}`;
+		if (!domaine.includes('.')) return { etat: 'en_cours', message: 'Ajoutez l’extension après le domaine.', suggestion };
+		return { etat: estEmailValide(brut) ? 'attention' : 'erreur', message: `Faute de frappe probable dans « ${domaine} ».`, suggestion };
+	}
+	if (/[^a-z0-9.-]/.test(domaine)) return { etat: 'erreur', message: 'Le domaine ne contient que des lettres, des chiffres, des points et des tirets.' };
+	if (domaine.includes('..') || domaine.startsWith('.') || domaine.startsWith('-')) {
+		return { etat: 'erreur', message: 'Point en double ou mal placé après le « @ ».', suggestion: proposer(`${local}@${domaine.replace(/\.{2,}/g, '.').replace(/^[.-]+/, '')}`) };
+	}
+	if (!domaine.includes('.')) return { etat: 'en_cours', message: 'Ajoutez l’extension après le domaine : .com, .org, .fr…' };
+	if (domaine.endsWith('.')) return { etat: 'en_cours', message: 'Ajoutez l’extension après le point : com, org, fr…' };
+	const extension = domaine.split('.').pop()!;
+	if (EXTENSIONS_CORRIGEES[extension]) {
+		return { etat: 'attention', message: `L’extension « .${extension} » semble mal tapée.`, suggestion: `${local}@${domaine.slice(0, -extension.length)}${EXTENSIONS_CORRIGEES[extension]}` };
+	}
+	if (/[0-9]/.test(extension)) return { etat: 'erreur', message: `L’extension « .${extension} » doit être en lettres (.com, .org, .fr…).` };
+	if (extension.length < 2) return { etat: 'en_cours', message: 'L’extension compte au moins 2 lettres (.fr, .cf, .com…).' };
+	if (!estEmailValide(brut)) return { etat: 'erreur', message: MESSAGE_EMAIL_INVALIDE };
+	if (brut !== brut.toLowerCase()) return { etat: 'valide', message: `Adresse valide, enregistrée en minuscules : ${normaliserEmail(brut)}` };
+	return { etat: 'valide', message: 'Adresse valide.' };
+}
+
+/** Propose une correction seulement si elle donne une adresse valide (ou corrige encore un domaine connu). */
+function proposer(candidat: string): string | undefined {
+	const a = analyserEmail(candidat);
+	if (a.etat === 'valide') return candidat;
+	return a.suggestion;
+}
+
+export const MESSAGE_EMAIL_INVALIDE ='Adresse e-mail incomplète : il faut un « @ » et une extension en lettres, par exemple prenom.nom@gmail.com ou contact@ong.org.';
 
 export const MESSAGE_PHOTO_REFUSEE = 'Les photos ne sont pas acceptées : joignez un document (PDF, Word, Excel…). Regroupez les photos dans un PDF si besoin.';

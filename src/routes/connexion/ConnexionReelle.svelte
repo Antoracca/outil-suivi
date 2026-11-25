@@ -2,6 +2,7 @@
 	import { tick } from 'svelte';
 	import { goto } from '$app/navigation';
 	import Champ from '#lib/composants/ui/Champ.svelte';
+	import ChampEmail from '#lib/composants/ui/ChampEmail.svelte';
 	import Bouton from '#lib/composants/ui/Bouton.svelte';
 	import Alerte from '#lib/composants/ui/Alerte.svelte';
 	import Icone from '#lib/icones/Icone.svelte';
@@ -242,7 +243,7 @@
 							<span>Première connexion pour {orgChoisie} sur cet appareil : saisissez votre adresse et votre mot de passe. La prochaine fois, le mot de passe suffira.</span>
 						</p>
 					{/if}
-					<Champ id="reel-email" libelle="Adresse e-mail" type="email" inputmode="email" autocomplete="username" requis bind:valeur={email} erreur={erreurs.email} placeholder="prenom.nom@organisation.org" />
+					<ChampEmail id="reel-email" libelle="Adresse e-mail" autocomplete="username" requis bind:valeur={email} erreur={erreurs.email} />
 					<div class="p-reel__mdp">
 						<Champ id="reel-mdp" libelle="Mot de passe" type={voirMotDePasse ? 'text' : 'password'} autocomplete="current-password" requis bind:valeur={motDePasse} erreur={erreurs.motDePasse} />
 						<button type="button" class="p-reel__voir" aria-pressed={voirMotDePasse} onclick={() => (voirMotDePasse = !voirMotDePasse)}>
@@ -300,7 +301,7 @@
 			<form class="p-reel__formulaire" id="panneau-inscription" aria-labelledby="titre-inscription" onsubmit={verifierCode} novalidate>
 				<h2 class="p-reel__titre" id="titre-inscription">Créer mon compte</h2>
 				<p class="p-reel__texte">Les comptes sont créés uniquement sur invitation d’APSUD. Saisissez l’adresse invitée et le code reçu.</p>
-				<Champ id="reel-email-invite" libelle="Adresse e-mail invitée" type="email" inputmode="email" autocomplete="username" requis bind:valeur={email} erreur={erreurs.email} placeholder="prenom.nom@organisation.org" />
+				<ChampEmail id="reel-email-invite" libelle="Adresse e-mail invitée" autocomplete="username" requis bind:valeur={email} erreur={erreurs.email} />
 				<Champ id="reel-code" libelle="Code d’invitation" autocomplete="one-time-code" requis bind:valeur={code} erreur={erreurs.code} placeholder="Ex. 7K4P-92QD" />
 				<Bouton variante="primaire" type="submit" disabled={envoi}>{envoi ? 'Vérification…' : 'Vérifier le code'}</Bouton>
 				<p class="p-reel__aide">Pas de code ? Demandez à votre point focal APSUD de vous inviter.</p>

@@ -344,18 +344,51 @@ await test('Justificatifs : documents acceptés (PDF, Excel), photos refusées',
 
 /* ---------- Nouvelle ONG ---------- */
 
-await test('Nouvelle ONG : seul le super-admin l’ajoute, avec son volet et ses 10 rapports', async () => {
+await test('Nouvelle ONG : seul le super-admin l’ajoute, avec son rôle, son volet et ses 10 rapports', async () => {
 	await en(coord);
-	await refuse(db.query(`select public.ajouter_volet($1, 'NOUVELLE', 'ONG Nouvelle', 'WASH')`, [ev()]), /Seul le super-administrateur/);
+	await refuse(db.query(`select public.ajouter_volet($1, 'NOUVELLE', 'ONG Nouvelle', 'WASH', 'partenaire')`, [ev()]), /Seul le super-administrateur/);
 	await en(admin);
-	await refuse(db.query(`select public.ajouter_volet($1, 'ab-c', 'X', 'WASH')`, [ev()]), /Sigle invalide/);
-	await refuse(db.query(`select public.ajouter_volet($1, 'NOUVELLE', '', 'WASH')`, [ev()]), /nom complet/);
-	await db.query(`select public.ajouter_volet($1, 'nouvelle', 'ONG Nouvelle pour l’exemple', 'WASH')`, [ev()]);
+	await refuse(db.query(`select public.ajouter_volet($1, 'ab-c', 'X', 'WASH', 'partenaire')`, [ev()]), /Sigle invalide/);
+	await refuse(db.query(`select public.ajouter_volet($1, 'NOUVELLE', '', 'WASH', 'partenaire')`, [ev()]), /nom complet/);
+	await refuse(db.query(`select public.ajouter_volet($1, 'NOUVELLE', 'ONG Nouvelle', 'WASH', 'patron')`, [ev()]), /Rôle inconnu/);
+	await db.query(`select public.ajouter_volet($1, 'nouvelle', 'ONG Nouvelle pour l’exemple', 'WASH', 'partenaire_technique')`, [ev()]);
 	egal(Number(await valeur(`select count(*) from public.rapports where volet = 'WASH-NOUVELLE'`)), 10);
-	await refuse(db.query(`select public.ajouter_volet($1, 'NOUVELLE', null, 'WASH')`, [ev()]), /existe déjà/);
-	await db.query(`select public.ajouter_volet($1, 'NOUVELLE', null, 'SAN')`, [ev()]);
-	egal(Number(await valeur(`select count(*) from public.volets where organisation = 'NOUVELLE'`)), 2, 'second volet pour la même ONG :');
+	egal(await valeur(`select role_consortium from public.organisations where sigle = 'NOUVELLE'`), 'partenaire_technique', 'rôle enregistré :');
+	await refuse(db.query(`select public.ajouter_volet($1, 'NOUVELLE', null, 'WASH', null)`, [ev()]), /existe déjà/);
+	await db.query(`select public.ajouter_volet($1, 'NOUVELLE', null, 'EDU', null)`, [ev()]);
+	egal(Number(await valeur(`select count(*) from public.volets where organisation = 'NOUVELLE'`)), 2, 'second volet (secteur Éducation) pour la même ONG :');
 	await refuse(db.query(`select public.creer_invitation('saisie@nouvelle.test', 'Saisie Nouvelle', '', 'INCONNUE', 'saisie')`), /Organisation inconnue/);
+});
+await test('Secteurs : la base porte les secteurs du référentiel ; « Autre » ajouté par le super-admin seulement', async () => {
+	const { SECTEURS_REFERENCE } = await import('../../src/lib/donnees/referentiels/secteurs.ts');
+	for (const s of SECTEURS_REFERENCE) {
+		const r = await ligne(`select libelle, cluster_cbpf, mots_cles from public.secteurs where code = $1`, [s.code]);
+		egal([r?.libelle, r?.cluster_cbpf, r?.mots_cles], [s.libelle, s.cluster_cbpf, s.mots_cles], `${s.code} :`);
+	}
+	await en(coord);
+	await refuse(db.query(`select public.ajouter_secteur($1, 'APICUL', 'Apiculture')`, [ev()]), /Seul le super-administrateur/);
+	await en(admin);
+	await refuse(db.query(`select public.ajouter_secteur($1, 'a b', 'Apiculture')`, [ev()]), /Code de secteur invalide/);
+	await refuse(db.query(`select public.ajouter_secteur($1, 'EAU2', 'Eau, hygiène et assainissement')`, [ev()]), /déjà ce nom/);
+	await db.query(`select public.ajouter_secteur($1, 'APICUL', 'Apiculture et produits forestiers')`, [ev()]);
+	await refuse(db.query(`select public.ajouter_secteur($1, 'APICUL', 'Autre libellé')`, [ev()]), /existe déjà/);
+	await db.query(`select public.ajouter_volet($1, 'NOUVELLE', null, 'APICUL', null)`, [ev()]);
+	egal(Number(await valeur(`select count(*) from public.rapports where volet = 'APICUL-NOUVELLE'`)), 10, 'volet sur le nouveau secteur :');
+});
+await test('Organisations : nom, rôle et logo modifiés par le super-admin seulement ; logos publics, déposés par lui seul', async () => {
+	await en(coord);
+	await refuse(db.query(`select public.modifier_organisation($1, 'NOUVELLE', 'ONG Nouvelle', 'associe', null)`, [ev()]), /Seul le super-administrateur/);
+	await en(admin);
+	await refuse(db.query(`select public.modifier_organisation($1, 'NOUVELLE', 'ONG Nouvelle', 'associe', 'javascript:alert(1)')`, [ev()]), /Adresse de logo invalide/);
+	await db.query(`select public.modifier_organisation($1, 'nouvelle', 'ONG Nouvelle', 'associe', 'https://exemple.supabase.co/storage/v1/object/public/logos/NOUVELLE/logo.png')`, [ev()]);
+	const o = await ligne(`select role_consortium, logo_url from public.organisations where sigle = 'NOUVELLE'`);
+	egal(o.role_consortium, 'associe');
+	if (!o.logo_url.endsWith('/logos/NOUVELLE/logo.png')) throw new Error('logo non enregistré');
+	await db.query(`insert into storage.objects (bucket_id, name) values ('logos', 'NOUVELLE/logo.png')`);
+	await en(coord);
+	await refuse(db.query(`insert into storage.objects (bucket_id, name) values ('logos', 'ARS/logo.png')`), /row-level security/);
+	// Lecture ouverte (politique « to anon, authenticated ») : vérifiée ici avec un compte sans droit d'écriture.
+	egal(Number(await valeur(`select count(*) from storage.objects where bucket_id = 'logos'`)), 1, 'lecture des logos :');
 });
 await test('Nouvelle ONG : son compte de saisie écrit dans son volet, pas ailleurs', async () => {
 	const nouvelle = await compte('saisie@nouvelle.test', 'Saisie Nouvelle', 'NOUVELLE', 'saisie');
@@ -363,7 +396,7 @@ await test('Nouvelle ONG : son compte de saisie écrit dans son volet, pas aille
 	await db.query(`select public.definir_verrou_cadre($1, 'WASH-IDC', false)`, [ev()]);
 	await en(nouvelle);
 	await refuse(db.query(`select public.ajouter_tache($1, null, $2, 'Intrusion', null, null, null)`, [ev(), ACT_WASH]), /ne pouvez pas modifier/);
-	egal(Number(await valeur(`select count(*) from public.volets`)), 7, 'elle lit le consortium :');
+	egal(Number(await valeur(`select count(*) from public.volets`)), 8, 'elle lit le consortium :');
 });
 
 /* ---------- Calendrier officiel de soumission (PDF d'APSUD du 2026-11-24) ---------- */

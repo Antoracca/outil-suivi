@@ -1,0 +1,42 @@
+@layer components {
+	/* Indicateur en temps réel sous le champ : icône + texte (jamais la couleur seule). */
+	.c-champ-email__etat {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--space-xxs) var(--space-xs);
+		min-block-size: 1.25rem;
+		font-size: var(--fs-caption);
+		color: var(--color-muted);
+	}
+	.c-champ-email--valide .c-champ-email__etat {
+		color: var(--color-success);
+	}
+	.c-champ-email--valide .c-champ__saisie {
+		border-color: var(--color-success);
+	}
+	.c-champ-email--attention .c-champ-email__etat {
+		color: var(--color-warning);
+		font-weight: var(--fw-medium);
+	}
+	.c-champ-email--attention .c-champ__saisie {
+		border-color: var(--color-warning);
+	}
+	.c-champ-email--erreur .c-champ-email__etat {
+		color: var(--color-error);
+		font-weight: var(--fw-medium);
+	}
+	.c-champ-email__suggestion {
+		padding: 0;
+		border: 0;
+		background: none;
+		font: inherit;
+		font-weight: var(--fw-regular);
+		color: var(--color-link);
+		text-decoration: underline;
+		cursor: pointer;
+	}
+	.c-champ-email__suggestion strong {
+		font-weight: var(--fw-semibold);
+	}
+}

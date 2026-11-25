@@ -1,4 +1,5 @@
 import type { EcheanceRapport } from './calendrier';
+import type { RoleConsortium } from './referentiels/secteurs';
 /**
  * Types métier de la plateforme. Ils reflètent le modèle de docs/ARCHITECTURE.md §4.
  * En phase « maquette », ils sont servis par le dépôt simulé (depot.svelte.ts) ;
@@ -7,7 +8,8 @@ import type { EcheanceRapport } from './calendrier';
 
 /** Sigle d'organisation : les 5 du projet FH (APSUD, ARS, AFPE, GADY, IDC), puis celles ajoutées par le super-administrateur. */
 export type Sigle = string;
-export type CodeSecteur = 'WASH' | 'NUT' | 'SAN' | 'PE' | 'SECAL';
+/** Code de secteur : les 5 d'origine (WASH, NUT, SAN, PE, SECAL), ceux du référentiel et ceux ajoutés (« Autre »). */
+export type CodeSecteur = string;
 /** Code de volet « SECTEUR-SIGLE » : NUT-ARS, SAN-ARS, PE-AFPE, SECAL-GADY, WASH-IDC, puis les volets ajoutés. */
 export type CodeVolet = string;
 /** Trois rôles : super-administrateur et coordination (APSUD), saisie (chaque ONG). */
@@ -19,8 +21,10 @@ export type StatutRapport = 'non_commence' | 'brouillon' | 'soumis' | 'a_corrige
 export interface Organisation {
 	sigle: Sigle;
 	nom: string;
-	role_consortium: 'chef_de_file' | 'partenaire';
+	role_consortium: RoleConsortium;
 	ville: string | null;
+	/** Logo déposé par le super-administrateur (bucket public « logos ») ; sinon le fichier fourni ou le sigle. */
+	logo_url?: string | null;
 }
 
 export interface Utilisateur {
@@ -37,6 +41,8 @@ export interface Secteur {
 	libelle: string;
 	libelle_court: string;
 	cluster_cbpf: string;
+	/** Mots-clés de recherche (« faim », « eau », « nourriture »…). */
+	mots_cles: string[];
 }
 
 export interface Projet {
@@ -279,7 +285,9 @@ export type TypeEvenement =
 	| 'cadre_verrouille'
 	| 'cadre_deverrouille'
 	| 'volet_cree'
-	| 'planification_validee';
+	| 'planification_validee'
+	| 'secteur_cree'
+	| 'organisation_modifiee';
 
 /** Journal d'audit : en ajout seul. */
 export interface Evenement {

@@ -35,8 +35,9 @@ import type {
 	ValeurIndicateur
 } from '../types';
 import { CALENDRIER_FH } from '../calendrier';
+import { SECTEURS_REFERENCE } from '../referentiels/secteurs';
 
-export const VERSION_SCHEMA = 10;
+export const VERSION_SCHEMA = 11;
 export const AUJOURDHUI_DEMO = '2027-01-12T09:30:00';
 
 /* ---------- Hasard déterministe ---------- */
@@ -53,20 +54,15 @@ const arrondi = (n: number, pas: number) => Math.round(n / pas) * pas;
 
 /* ---------- Référentiels ---------- */
 const organisations = [
-	{ sigle: 'APSUD' as Sigle, nom: 'Action pour la Population et le Développement Durable', role_consortium: 'chef_de_file' as const, ville: 'Bimbo' },
-	{ sigle: 'ARS' as Sigle, nom: 'African Relief Service', role_consortium: 'partenaire' as const, ville: null },
-	{ sigle: 'AFPE' as Sigle, nom: 'Association des Femmes pour la Promotion de l’Entrepreneuriat', role_consortium: 'partenaire' as const, ville: null },
-	{ sigle: 'GADY' as Sigle, nom: 'GADY, ONG nationale (nom développé à confirmer)', role_consortium: 'partenaire' as const, ville: null },
-	{ sigle: 'IDC' as Sigle, nom: 'Initiative Développement Centrafrique', role_consortium: 'partenaire' as const, ville: null }
+	{ sigle: 'APSUD' as Sigle, nom: 'Action pour la Population et le Développement Durable', role_consortium: 'chef_de_file' as const, ville: 'Bimbo', logo_url: null },
+	{ sigle: 'ARS' as Sigle, nom: 'African Relief Service', role_consortium: 'partenaire' as const, ville: null, logo_url: null },
+	{ sigle: 'AFPE' as Sigle, nom: 'Association des Femmes pour la Promotion de l’Entrepreneuriat', role_consortium: 'partenaire' as const, ville: null, logo_url: null },
+	{ sigle: 'GADY' as Sigle, nom: 'GADY, ONG nationale (nom développé à confirmer)', role_consortium: 'partenaire' as const, ville: null, logo_url: null },
+	{ sigle: 'IDC' as Sigle, nom: 'Initiative Développement Centrafrique', role_consortium: 'partenaire' as const, ville: null, logo_url: null }
 ];
 
-const secteurs = [
-	{ code: 'WASH' as const, libelle: 'Eau, hygiène et assainissement', libelle_court: 'WASH', cluster_cbpf: 'WSH' },
-	{ code: 'NUT' as const, libelle: 'Nutrition', libelle_court: 'Nutrition', cluster_cbpf: 'NUT' },
-	{ code: 'SAN' as const, libelle: 'Santé', libelle_court: 'Santé', cluster_cbpf: 'HEA' },
-	{ code: 'PE' as const, libelle: 'Protection de l’enfance et VBG', libelle_court: 'Protection', cluster_cbpf: 'PRO' },
-	{ code: 'SECAL' as const, libelle: 'Sécurité alimentaire', libelle_court: 'Sécurité alimentaire', cluster_cbpf: 'FSA' }
-];
+/** Secteurs : référentiel complet (les 5 du projet, puis les clusters humanitaires). */
+const secteurs = SECTEURS_REFERENCE;
 
 /** Comptes de la démonstration : intitulés de rôle, aucun nom de personne. */
 export const utilisateursDemo: Utilisateur[] = [

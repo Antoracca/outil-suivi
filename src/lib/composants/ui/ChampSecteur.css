@@ -1,0 +1,60 @@
+@layer components {
+	.c-champ-secteur__boite {
+		position: relative;
+	}
+	.c-champ-secteur__liste {
+		position: absolute;
+		inset-inline: 0;
+		inset-block-start: calc(100% + var(--space-xxs));
+		z-index: var(--z-sticky);
+		max-block-size: min(22rem, 60vh);
+		overflow-y: auto;
+		margin: 0;
+		padding: var(--space-xxs);
+		list-style: none;
+		border: var(--hairline-w) solid var(--color-hairline-strong);
+		border-radius: var(--rounded-md);
+		background: var(--color-surface-card);
+		box-shadow: var(--shadow-floating);
+	}
+	.c-champ-secteur__option {
+		display: grid;
+		gap: 2px;
+		padding: var(--space-xs) var(--space-sm);
+		border-radius: var(--rounded-sm);
+		cursor: pointer;
+	}
+	.c-champ-secteur__option.is-actif {
+		background: var(--color-surface-row-active);
+		box-shadow: inset 0 0 0 var(--hairline-w) var(--color-ink);
+	}
+	.c-champ-secteur__option[aria-selected='true'] .c-champ-secteur__nom {
+		font-weight: var(--fw-semibold);
+	}
+	.c-champ-secteur__option--autre {
+		margin-block-start: var(--space-xxs);
+		border-block-start: var(--hairline-w) dashed var(--color-hairline-strong);
+	}
+	.c-champ-secteur__nom {
+		font-size: var(--fs-body-sm);
+		color: var(--color-ink);
+	}
+	.c-champ-secteur__nom mark {
+		background: var(--color-wash-pousse-light);
+		color: inherit;
+		font-weight: var(--fw-semibold);
+	}
+	.c-champ-secteur__detail {
+		font-size: var(--fs-caption);
+		color: var(--color-muted);
+	}
+	.c-champ-secteur__vide {
+		padding: var(--space-sm);
+		font-size: var(--fs-caption);
+		color: var(--color-muted);
+	}
+	.c-champ-secteur__choix {
+		font-size: var(--fs-caption);
+		color: var(--color-body);
+	}
+}

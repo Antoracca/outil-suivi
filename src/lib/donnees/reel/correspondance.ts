@@ -58,8 +58,8 @@ const desagregation = (r: Ligne, prefixe = ''): Desagregation => ({
 });
 
 export const vers = {
-	organisations: (r: Ligne): Organisation => ({ sigle: r.sigle, nom: r.nom, role_consortium: r.role_consortium, ville: r.ville }),
-	secteurs: (r: Ligne): Secteur => ({ code: r.code, libelle: r.libelle, libelle_court: r.libelle_court, cluster_cbpf: r.cluster_cbpf }),
+	organisations: (r: Ligne): Organisation => ({ sigle: r.sigle, nom: r.nom, role_consortium: r.role_consortium, ville: r.ville, logo_url: r.logo_url ?? null }),
+	secteurs: (r: Ligne): Secteur => ({ code: r.code, libelle: r.libelle, libelle_court: r.libelle_court, cluster_cbpf: r.cluster_cbpf, mots_cles: r.mots_cles ?? [] }),
 	profils: (r: Ligne): Utilisateur => ({ id: r.id, nom: r.nom, fonction: r.fonction ?? '', organisation: r.organisation, role: r.role, initiales: initiales(r.nom) }),
 	volets: (r: Ligne): Volet => ({ code: r.code, organisation: r.organisation, secteur: r.secteur, cadre_verrouille: r.cadre_verrouille }),
 	outcomes: (r: Ligne): Outcome => ({ id: r.id, volet: r.volet, numero: r.numero, libelle: r.libelle }),
@@ -219,6 +219,7 @@ export const vers = {
 /** Table de la base → collection de l'état et clé d'identité, pour le temps réel. */
 export const COLLECTIONS = {
 	organisations: { cle: 'sigle', etat: 'organisations' },
+	secteurs: { cle: 'code', etat: 'secteurs' },
 	outcomes: { cle: 'id', etat: 'outcomes' },
 	outputs: { cle: 'id', etat: 'outputs' },
 	volets: { cle: 'code', etat: 'volets' },

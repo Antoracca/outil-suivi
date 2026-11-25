@@ -41,7 +41,9 @@
 		element_restaure: 'archivage',
 		element_supprime: 'archivage',
 		volet_cree: 'structure',
-		planification_validee: 'saisies'
+		planification_validee: 'saisies',
+		secteur_cree: 'structure',
+		organisation_modifiee: 'structure'
 	};
 	const PARTS: { cle: keyof Desagregation; libelle: string }[] = [
 		{ cle: 'femmes', libelle: 'Femmes' },

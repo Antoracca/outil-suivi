@@ -244,3 +244,81 @@
 		color: var(--color-body);
 	}
 }
+
+@layer components {
+	/* Nouvelle ONG : formulaire en grille, indicateurs en temps réel, logo avec aperçu. */
+	.p-admin__ong {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+		gap: var(--space-base) var(--space-lg);
+		align-items: start;
+	}
+	.p-admin__ong-sigle {
+		display: grid;
+		gap: var(--space-xxs);
+	}
+	.p-admin__indicateur {
+		display: flex;
+		align-items: center;
+		gap: var(--space-xxs);
+		font-size: var(--fs-caption);
+		font-weight: var(--fw-medium);
+		color: var(--color-error);
+	}
+	.p-admin__indicateur.is-ok {
+		color: var(--color-success);
+	}
+	.p-admin__logo-champ {
+		display: grid;
+		gap: var(--space-xxs);
+	}
+	.p-admin__logo-champ > label {
+		font-size: var(--fs-body-sm);
+		font-weight: var(--fw-medium);
+		color: var(--color-ink);
+	}
+	.p-admin__logo-ligne {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--space-sm);
+	}
+	.p-admin__logo-ligne input {
+		flex: 1 1 12rem;
+		min-inline-size: 0;
+		min-block-size: var(--input-h);
+		padding: var(--space-xs);
+		border: var(--hairline-w) dashed var(--color-border-control);
+		border-radius: var(--rounded-md);
+		background: var(--color-canvas-soft);
+		font-size: var(--fs-caption);
+	}
+	.p-admin__logo-apercu {
+		display: grid;
+		place-items: center;
+		flex: none;
+		inline-size: 4.5rem;
+		block-size: 4.5rem;
+		overflow: hidden;
+		border: var(--hairline-w) solid var(--color-hairline-strong);
+		border-radius: var(--rounded-md);
+		background: var(--color-surface-card);
+		font-size: var(--fs-caption);
+		font-weight: var(--fw-semibold);
+		color: var(--color-muted);
+	}
+	.p-admin__logo-apercu img {
+		inline-size: 100%;
+		block-size: 100%;
+		object-fit: contain;
+	}
+	.p-admin__org {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-xs);
+	}
+	.p-admin__org-form {
+		display: grid;
+		gap: var(--space-base);
+	}
+}

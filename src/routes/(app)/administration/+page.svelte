@@ -27,6 +27,10 @@
 	import Dialogue from '#lib/composants/ui/Dialogue.svelte';
 	import Avatar from '#lib/composants/ui/Avatar.svelte';
 	import Champ from '#lib/composants/ui/Champ.svelte';
+	import ChampEmail from '#lib/composants/ui/ChampEmail.svelte';
+	import ChampSecteur from '#lib/composants/ui/ChampSecteur.svelte';
+	import LogoOrganisation from '#lib/composants/ui/LogoOrganisation.svelte';
+	import { ROLES_CONSORTIUM, codeSecteurPropose, libelleRoleConsortium, type RoleConsortium } from '#lib/donnees/referentiels/secteurs.ts';
 	import EtiquetteVolet from '#lib/composants/ui/EtiquetteVolet.svelte';
 	import Icone from '#lib/icones/Icone.svelte';
 	import './administration.css';
@@ -197,32 +201,104 @@
 	/* ---------- Nouvelle ONG ou nouveau volet (super-administrateur, démonstration et réel) ---------- */
 	let ongSigle = $state('');
 	let ongNom = $state('');
-	let ongSecteur = $state<string>('WASH');
-	let ongErreurs = $state<{ sigle?: string; nom?: string }>({});
+	let ongSecteur = $state<string>('');
+	let ongAutre = $state('');
+	let ongRole = $state<RoleConsortium>('partenaire');
+	let ongLogo = $state<File | null>(null);
+	let ongApercu = $state<string | null>(null);
+	let ongEnvoi = $state(false);
+	let ongErreurs = $state<{ sigle?: string; nom?: string; secteur?: string; logo?: string }>({});
+	let ongErreurServeur = $state<string | null>(null);
+	let ongMessage = $state<string | null>(null);
+	let champLogo: HTMLInputElement | undefined = $state();
 	const sigleNormalise = $derived(ongSigle.trim().toUpperCase());
 	const ongExistante = $derived(etat.organisations.find((o) => o.sigle === sigleNormalise) ?? null);
-	const optionsSecteurs = $derived(etat.secteurs.map((x) => ({ valeur: x.code, libelle: `${x.libelle} (${x.code})` })));
+	/** Indicateur en temps réel du sigle : ce qui sera enregistré, et ce qui ne va pas. */
+	const etatSigle = $derived.by(() => {
+		if (!ongSigle.trim()) return null;
+		if (/[\s-]/.test(ongSigle.trim())) return { ok: false, texte: 'Pas d’espace ni de tiret dans un sigle.' };
+		if (/[^A-Za-z0-9]/.test(ongSigle.trim())) return { ok: false, texte: 'Lettres et chiffres seulement (pas d’accent ni de ponctuation).' };
+		if (sigleNormalise.length < 2) return { ok: false, texte: 'Au moins 2 caractères.' };
+		if (sigleNormalise.length > 12) return { ok: false, texte: '12 caractères au plus.' };
+		if (ongExistante) return { ok: false, texte: `${sigleNormalise} est déjà membre (${ongExistante.nom}) : modifiez-la dans « Organisations du consortium ».` };
+		return { ok: true, texte: `Sera enregistré : ${sigleNormalise}` };
+	});
+	const codeVoletPrevu = $derived(sigleNormalise && (ongSecteur || ongAutre) ? `${ongSecteur || codeSecteurPropose(ongAutre, etat.secteurs.map((s) => s.code))}-${sigleNormalise}` : null);
 
-	function ajouterOng(e: SubmitEvent) {
+	function choisirLogo(champ: HTMLInputElement, apercu: (url: string | null) => void, garder: (f: File | null) => void) {
+		const f = champ.files?.[0] ?? null;
+		garder(f);
+		apercu(f ? URL.createObjectURL(f) : null);
+	}
+
+	async function ajouterOng(e: SubmitEvent) {
 		e.preventDefault();
 		ongErreurs = {};
-		erreur = null;
-		message = null;
-		if (!/^[A-Z0-9]{2,12}$/.test(sigleNormalise)) ongErreurs.sigle = '2 à 12 lettres ou chiffres, sans espace ni tiret (ex. MSF, CARE).';
-		if (!ongExistante && ongNom.trim().length < 3) ongErreurs.nom = 'Indiquez le nom complet de la nouvelle ONG.';
+		ongErreurServeur = null;
+		ongMessage = null;
+		if (!etatSigle?.ok) ongErreurs.sigle = etatSigle?.texte ?? 'Indiquez le sigle de l’ONG (ex. MSF, CARE).';
+		if (ongNom.trim().length < 3) ongErreurs.nom = 'Indiquez le nom complet de la nouvelle ONG.';
+		if (!ongSecteur && ongAutre.trim().length < 3) ongErreurs.secteur = 'Choisissez un secteur dans la liste, ou tapez-en un nouveau puis « Autre ».';
+		if (ongLogo && !['image/png', 'image/jpeg', 'image/webp'].includes(ongLogo.type)) ongErreurs.logo = 'Logo : image PNG, JPEG ou WebP.';
 		if (Object.keys(ongErreurs).length) return;
-		const dejaMembre = !!ongExistante; // lu avant l'ajout, qui rend l'ONG « existante »
+		ongEnvoi = true;
 		try {
-			const code = depot.ajouterVolet(sigleNormalise, ongNom, ongSecteur as CodeSecteur);
-			message = dejaMembre
-				? `Volet ${code} ajouté à ${sigleNormalise}.`
-				: depot.source === 'demo'
-					? `${sigleNormalise} a rejoint le consortium avec le volet ${code}. Son compte « Saisie ${sigleNormalise} » est disponible sur la page de connexion de démonstration.`
-					: `${sigleNormalise} a rejoint le consortium avec le volet ${code}. Invitez maintenant son point focal (section Inviter).`;
+			const secteur = ongSecteur || depot.ajouterSecteur(ongAutre);
+			const code = depot.ajouterVolet(sigleNormalise, ongNom, secteur, ongRole);
+			if (ongLogo) {
+				const url = await depot.televerserLogo(sigleNormalise, ongLogo);
+				depot.modifierOrganisation(sigleNormalise, { nom: ongNom, role_consortium: ongRole, logo_url: url });
+			}
+			ongMessage =
+				depot.source === 'demo'
+					? `${sigleNormalise} a rejoint le consortium (volet ${code}). Son compte « Saisie ${sigleNormalise} » est disponible sur la page de connexion de démonstration.`
+					: `${sigleNormalise} a rejoint le consortium (volet ${code}). Elle apparaît dans « Organisations du consortium » et sur le tableau de bord. Invitez maintenant son point focal (section Inviter).`;
 			ongSigle = '';
 			ongNom = '';
+			ongSecteur = '';
+			ongAutre = '';
+			ongRole = 'partenaire';
+			ongLogo = null;
+			ongApercu = null;
+			if (champLogo) champLogo.value = '';
 		} catch (err) {
-			erreur = err instanceof Error ? err.message : String(err);
+			ongErreurServeur = err instanceof Error ? err.message : String(err);
+		} finally {
+			ongEnvoi = false;
+		}
+	}
+
+	/* ---------- Modifier une organisation : nom, rôle, logo (super-administrateur) ---------- */
+	let orgEditee = $state<Sigle | null>(null);
+	let orgNom = $state('');
+	let orgRole = $state<RoleConsortium>('partenaire');
+	let orgLogo = $state<File | null>(null);
+	let orgApercu = $state<string | null>(null);
+	let orgErreur = $state<string | null>(null);
+	let orgEnvoi = $state(false);
+	function editerOrganisation(sigle: Sigle) {
+		const o = etat.organisations.find((x) => x.sigle === sigle)!;
+		orgEditee = sigle;
+		orgNom = o.nom;
+		orgRole = o.role_consortium;
+		orgLogo = null;
+		orgApercu = null;
+		orgErreur = null;
+	}
+	async function enregistrerOrganisation() {
+		if (!orgEditee) return;
+		orgErreur = null;
+		orgEnvoi = true;
+		try {
+			const o = etat.organisations.find((x) => x.sigle === orgEditee)!;
+			const logo = orgLogo ? await depot.televerserLogo(orgEditee, orgLogo) : (o.logo_url ?? null);
+			depot.modifierOrganisation(orgEditee, { nom: orgNom, role_consortium: orgRole, logo_url: logo });
+			message = `${orgEditee} mise à jour${orgLogo ? ' : nouveau logo visible partout' : ''}.`;
+			orgEditee = null;
+		} catch (err) {
+			orgErreur = err instanceof Error ? err.message : String(err);
+		} finally {
+			orgEnvoi = false;
 		}
 	}
 
@@ -309,7 +385,7 @@
 						<Alerte variante="erreur" titre="Invitation non créée" onfermer={() => (invErreurServeur = null)}>{invErreurServeur}</Alerte>
 					{/if}
 					<form class="p-admin__invitation" onsubmit={inviter} novalidate>
-						<Champ id="inv-email" libelle="Adresse e-mail" type="email" inputmode="email" requis bind:valeur={invEmail} erreur={invErreurs.email} placeholder="prenom.nom@organisation.org" />
+						<ChampEmail id="inv-email" libelle="Adresse e-mail" requis bind:valeur={invEmail} erreur={invErreurs.email} autocomplete="off" aide="Toute messagerie : Gmail, Yahoo, adresse de l’organisation…" />
 						<Champ id="inv-nom" libelle="Nom" requis bind:valeur={invNom} erreur={invErreurs.nom} aide="La personne pourra le corriger en créant son compte." />
 						<Champ id="inv-fonction" libelle="Fonction" bind:valeur={invFonction} placeholder="Ex. Chargé de suivi-évaluation" />
 						<Champ id="inv-organisation" libelle="Organisation" type="select" requis bind:valeur={invOrganisation} options={optionsOrganisations} />
@@ -389,16 +465,20 @@
 								<th scope="col">Rôle</th>
 								<th scope="col">Volets</th>
 								<th scope="col" class="u-nombre">Comptes</th>
+								{#if peutAjouterOrganisation(u)}<th scope="col"><span class="u-visuellement-masque">Actions</span></th>{/if}
 							</tr>
 						</thead>
 						<tbody>
 							{#each etat.organisations as o (o.sigle)}
 								<tr>
-									<th scope="row">{o.sigle}</th>
+									<th scope="row"><span class="p-admin__org"><LogoOrganisation sigle={o.sigle} taille="sm" /> {o.sigle}</span></th>
 									<td>{o.nom}{#if o.ville}<span class="p-admin__detail">{o.ville}</span>{/if}</td>
-									<td>{o.role_consortium === 'chef_de_file' ? 'Chef de file' : 'Partenaire'}</td>
+									<td>{libelleRoleConsortium(o.role_consortium)}</td>
 									<td>{voletsDe(o.sigle).join(', ') || '–'}</td>
 									<td class="u-nombre">{comptesDe(o.sigle)}</td>
+									{#if peutAjouterOrganisation(u)}
+										<td><Bouton variante="texte" taille="sm" icone="modifier" onclick={() => editerOrganisation(o.sigle)}>Modifier<span class="u-visuellement-masque"> {o.sigle}</span></Bouton></td>
+									{/if}
 								</tr>
 							{/each}
 						</tbody>
@@ -445,20 +525,49 @@
 
 		<!-- Nouvelle ONG -->
 		<div class="p-admin__ancre" id="nouvelle-ong">
-			<Panneau titre="Nouvelle ONG ou nouveau volet" sousTitre="Pour une 6e ONG (ou plus) qui rejoint le consortium, ou un nouveau secteur pour une ONG déjà membre. Réservé au super-administrateur." id="panneau-nouvelle-ong">
-				<form class="p-admin__invitation" onsubmit={ajouterOng} novalidate>
-					<Champ id="ong-sigle" libelle="Sigle" requis bind:valeur={ongSigle} erreur={ongErreurs.sigle} placeholder="Ex. CARE" aide={ongExistante ? `ONG déjà membre : ${ongExistante.nom}. Un nouveau volet lui sera ajouté.` : 'Lettres majuscules ou chiffres, sans espace.'} />
-					{#if !ongExistante}
-						<Champ id="ong-nom" libelle="Nom complet" requis bind:valeur={ongNom} erreur={ongErreurs.nom} placeholder="Ex. CARE International" />
-					{/if}
-					<Champ id="ong-secteur" libelle="Secteur du volet" type="select" requis bind:valeur={ongSecteur} options={optionsSecteurs} aide={sigleNormalise ? `Code du volet : ${ongSecteur}-${sigleNormalise}` : undefined} />
+			<Panneau titre="Nouvelle ONG" sousTitre="Une organisation qui rejoint le consortium : elle est créée avec son volet et ses 10 rapports mensuels, et apparaît aussitôt partout (organisations, volets, tableau de bord). Réservé au super-administrateur." id="panneau-nouvelle-ong">
+				{#if ongErreurServeur}
+					<Alerte variante="erreur" titre="ONG non créée" onfermer={() => (ongErreurServeur = null)}>{ongErreurServeur}</Alerte>
+				{/if}
+				{#if ongMessage}
+					<Alerte variante="succes" onfermer={() => (ongMessage = null)}>{ongMessage}</Alerte>
+				{/if}
+				<form class="p-admin__ong" onsubmit={ajouterOng} novalidate>
+					<div class="p-admin__ong-sigle">
+						<Champ id="ong-sigle" libelle="Sigle" requis bind:valeur={ongSigle} erreur={ongErreurs.sigle} placeholder="Ex. CARE" />
+						{#if etatSigle && !ongErreurs.sigle}
+							<p class="p-admin__indicateur" class:is-ok={etatSigle.ok} aria-live="polite"><Icone nom={etatSigle.ok ? 'valider' : 'alerte'} taille="sm" /> {etatSigle.texte}</p>
+						{/if}
+					</div>
+					<Champ id="ong-nom" libelle="Nom complet" requis bind:valeur={ongNom} erreur={ongErreurs.nom} placeholder="Ex. CARE International" />
+					<Champ
+						id="ong-role"
+						libelle="Rôle dans le consortium"
+						type="select"
+						requis
+						bind:valeur={ongRole}
+						options={ROLES_CONSORTIUM.filter((r) => r.valeur !== 'chef_de_file').map((r) => ({ valeur: r.valeur, libelle: r.libelle }))}
+						aide={ROLES_CONSORTIUM.find((r) => r.valeur === ongRole)?.description}
+					/>
+					<ChampSecteur id="ong-secteur" libelle="Secteur du volet" secteurs={etat.secteurs} bind:code={ongSecteur} bind:autre={ongAutre} erreur={ongErreurs.secteur} aide={codeVoletPrevu ? `Code du volet : ${codeVoletPrevu}` : `${etat.secteurs.length} secteurs : cherchez par nom ou par mot-clé.`} />
+					<div class="p-admin__logo-champ">
+						<label for="ong-logo">Logo <span class="c-champ__facultatif">(facultatif)</span></label>
+						<div class="p-admin__logo-ligne">
+							<span class="p-admin__logo-apercu" aria-hidden="true">
+								{#if ongApercu}<img src={ongApercu} alt="" />{:else}<span>{sigleNormalise.slice(0, 5) || 'Logo'}</span>{/if}
+							</span>
+							<input id="ong-logo" bind:this={champLogo} type="file" accept="image/png,image/jpeg,image/webp" onchange={(e) => choisirLogo(e.currentTarget, (x) => (ongApercu = x), (x) => (ongLogo = x))} aria-describedby="ong-logo-aide" />
+						</div>
+						<p class="c-champ__aide" id="ong-logo-aide">PNG, JPEG ou WebP, 1 Mo au plus. Sans logo, le sigle s’affiche.</p>
+						{#if ongErreurs.logo}<p class="c-champ__erreur">{ongErreurs.logo}</p>{/if}
+					</div>
 					<div class="p-admin__invitation-actions">
-						<Bouton variante="primaire" type="submit" icone="plus">{ongExistante ? 'Ajouter le volet' : 'Ajouter l’ONG'}</Bouton>
+						<Bouton variante="primaire" type="submit" icone="plus" disabled={ongEnvoi}>{ongEnvoi ? 'Création…' : 'Ajouter l’ONG'}</Bouton>
 					</div>
 				</form>
 				<p class="p-admin__note">
 					<Icone nom="info" taille="sm" />
-					<span>Le volet est créé avec ses 10 rapports mensuels et un cadre logique vide : celui-ci s’importe depuis le plan d’action Excel de l’ONG, comme pour les cinq volets d’origine. Son logo s’ajoute dans static/logos/ ; d’ici là, son sigle s’affiche.</span>
+					<span>Le cadre logique du nouveau volet est vide : il s’importe depuis le plan d’action Excel de l’ONG, comme pour les cinq volets d’origine. Le nom, le rôle et le logo se modifient ensuite dans « Organisations du consortium ».</span>
 				</p>
 			</Panneau>
 		</div>
@@ -559,5 +668,27 @@
 	{#snippet actions()}
 		<Bouton variante="secondaire" onclick={() => (confirmerReinit = false)}>Annuler</Bouton>
 		<Bouton variante="primaire" icone="synchro" onclick={reinitialiser}>Réinitialiser</Bouton>
+	{/snippet}
+</Dialogue>
+
+<Dialogue ouvert={!!orgEditee} titre="Modifier {orgEditee ?? ''}" onfermer={() => (orgEditee = null)}>
+	{#if orgErreur}<Alerte variante="erreur">{orgErreur}</Alerte>{/if}
+	<div class="p-admin__org-form">
+		<Champ id="org-nom" libelle="Nom complet" requis bind:valeur={orgNom} />
+		<Champ id="org-role" libelle="Rôle dans le consortium" type="select" requis bind:valeur={orgRole} options={ROLES_CONSORTIUM.map((r) => ({ valeur: r.valeur, libelle: r.libelle }))} aide={ROLES_CONSORTIUM.find((r) => r.valeur === orgRole)?.description} />
+		<div class="p-admin__logo-champ">
+			<label for="org-logo">Logo</label>
+			<div class="p-admin__logo-ligne">
+				<span class="p-admin__logo-apercu" aria-hidden="true">
+					{#if orgApercu}<img src={orgApercu} alt="" />{:else if orgEditee}<LogoOrganisation sigle={orgEditee} taille="lg" />{/if}
+				</span>
+				<input id="org-logo" type="file" accept="image/png,image/jpeg,image/webp" onchange={(e) => choisirLogo(e.currentTarget, (x) => (orgApercu = x), (x) => (orgLogo = x))} aria-describedby="org-logo-aide" />
+			</div>
+			<p class="c-champ__aide" id="org-logo-aide">PNG, JPEG ou WebP, 1 Mo au plus. Le nouveau logo s’affiche aussitôt partout, chez tous les membres.</p>
+		</div>
+	</div>
+	{#snippet actions()}
+		<Bouton variante="secondaire" onclick={() => (orgEditee = null)}>Annuler</Bouton>
+		<Bouton variante="primaire" icone="valider" disabled={orgEnvoi} onclick={enregistrerOrganisation}>{orgEnvoi ? 'Enregistrement…' : 'Enregistrer'}</Bouton>
 	{/snippet}
 </Dialogue>

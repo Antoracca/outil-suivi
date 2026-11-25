@@ -23,6 +23,7 @@ import { construireEtatDemo, AUJOURDHUI_DEMO, VERSION_SCHEMA } from './demo/grai
 import { mode } from './mode.svelte';
 import { estErreurReseau, serveur, serveurConfigure, traduireErreurAuth } from './reel/client';
 import { COLLECTIONS, chargerEtatReel, etatVide, vers } from './reel/correspondance';
+import { ROLES_CONSORTIUM, codeSecteurPropose, texteRecherche, type RoleConsortium } from './referentiels/secteurs';
 import { cumul, rapport as trouverRapport, valeurCourante } from './calculs';
 import {
 	ErreurRegle,
@@ -52,6 +53,7 @@ import type {
 	Ligne5W,
 	Mois,
 	Planification,
+	Sigle,
 	SemaineTache,
 	StatutRapport,
 	Tache,
@@ -837,18 +839,76 @@ class Depot {
 	 * sont créés ; son cadre logique s'importe ensuite depuis le plan d'action Excel de l'ONG.
 	 * Démonstration : la nouvelle ONG reçoit un compte de saisie, choisissable à la connexion.
 	 */
-	ajouterVolet(sigleSaisi: string, nom: string, secteur: CodeSecteur): CodeVolet {
+	/** Secteur « Autre » (absent du référentiel) : super-administrateur. Renvoie le code créé. */
+	ajouterSecteur(libelleSaisi: string): CodeSecteur {
+		const u = this.#exigerUtilisateur();
+		if (!peutAjouterOrganisation(u)) throw new ErreurRegle('Seul le super-administrateur ajoute un secteur.');
+		const libelle = libelleSaisi.trim().replace(/\s+/g, ' ');
+		if (libelle.length < 3) throw new ErreurRegle('Indiquez le nom du secteur.');
+		if (this.etat.secteurs.some((s) => texteRecherche(s.libelle) === texteRecherche(libelle))) throw new ErreurRegle('Un secteur porte déjà ce nom : choisissez-le dans la liste.');
+		const code = codeSecteurPropose(libelle, this.etat.secteurs.map((s) => s.code));
+		this.etat.secteurs.push({ code, libelle, libelle_court: libelle.slice(0, 40), cluster_cbpf: 'AUTRE', mots_cles: [] });
+		const ev = this.#journaliser('secteur_cree', null, null, { type: 'secteur', id: code, libelle }, 'a ajouté le secteur');
+		this.#valider(ev, `Secteur « ${libelle} » ajouté.`, { fn: 'ajouter_secteur', args: { p_code: code, p_libelle: libelle } });
+		return code;
+	}
+
+	/** Nom, rôle et logo d'une organisation : super-administrateur. */
+	modifierOrganisation(sigle: Sigle, champs: { nom: string; role_consortium: RoleConsortium; logo_url: string | null }) {
+		const u = this.#exigerUtilisateur();
+		if (!peutAjouterOrganisation(u)) throw new ErreurRegle('Seul le super-administrateur modifie une organisation.');
+		const org = this.etat.organisations.find((o) => o.sigle === sigle);
+		if (!org) throw new ErreurRegle('Organisation inconnue.');
+		if (champs.nom.trim().length < 2) throw new ErreurRegle('Indiquez le nom complet de l’organisation.');
+		if (!ROLES_CONSORTIUM.some((r) => r.valeur === champs.role_consortium)) throw new ErreurRegle('Rôle inconnu.');
+		org.nom = champs.nom.trim();
+		org.role_consortium = champs.role_consortium;
+		org.logo_url = champs.logo_url;
+		const ev = this.#journaliser('organisation_modifiee', null, null, { type: 'organisation', id: sigle, libelle: `${sigle} (${org.nom})` }, 'a modifié l’organisation');
+		// En démonstration, le logo est une image intégrée (data:) : rien n'est envoyé au serveur.
+		this.#valider(ev, 'Organisation mise à jour.', { fn: 'modifier_organisation', args: { p_sigle: sigle, p_nom: org.nom, p_role: org.role_consortium, p_logo_url: org.logo_url } });
+	}
+
+	/**
+	 * Dépose le logo d'une organisation et renvoie son adresse. Serveur réel : bucket public
+	 * « logos » (PNG, JPEG ou WebP, 1 Mo au plus). Démonstration : image intégrée (300 Ko au plus).
+	 */
+	async televerserLogo(sigle: Sigle, fichier: File): Promise<string> {
+		const u = this.#exigerUtilisateur();
+		if (!peutAjouterOrganisation(u)) throw new ErreurRegle('Seul le super-administrateur change un logo.');
+		if (!['image/png', 'image/jpeg', 'image/webp'].includes(fichier.type)) throw new ErreurRegle('Logo : image PNG, JPEG ou WebP.');
+		if (this.source === 'demo') {
+			if (fichier.size > 300 * 1024) throw new ErreurRegle('En démonstration, le logo ne doit pas dépasser 300 Ko.');
+			return await new Promise<string>((resolve, reject) => {
+				const lecteur = new FileReader();
+				lecteur.onload = () => resolve(String(lecteur.result));
+				lecteur.onerror = () => reject(new ErreurRegle('Lecture du logo impossible.'));
+				lecteur.readAsDataURL(fichier);
+			});
+		}
+		if (fichier.size > 1024 * 1024) throw new ErreurRegle('Le logo ne doit pas dépasser 1 Mo.');
+		if (!this.enLigne) throw new ErreurRegle('Hors ligne : le logo s’envoie avec une connexion.');
+		const extension = fichier.type === 'image/png' ? 'png' : fichier.type === 'image/webp' ? 'webp' : 'jpg';
+		const chemin = `${sigle}/logo-${Date.now()}.${extension}`;
+		const sb = serveur();
+		const { error } = await sb.storage.from('logos').upload(chemin, fichier, { contentType: fichier.type, upsert: false });
+		if (error) throw new ErreurRegle(`Le logo n’a pas pu être envoyé : ${error.message}`);
+		return sb.storage.from('logos').getPublicUrl(chemin).data.publicUrl;
+	}
+
+	ajouterVolet(sigleSaisi: string, nom: string, secteur: CodeSecteur, role: RoleConsortium = 'partenaire'): CodeVolet {
 		const u = this.#exigerUtilisateur();
 		if (!peutAjouterOrganisation(u)) throw new ErreurRegle('Seul le super-administrateur ajoute une ONG ou un volet.');
 		const sigle = sigleSaisi.trim().toUpperCase();
 		if (!/^[A-Z0-9]{2,12}$/.test(sigle)) throw new ErreurRegle('Sigle invalide : 2 à 12 lettres majuscules ou chiffres, sans espace ni tiret (ex. MSF, CARE).');
 		const sect = this.etat.secteurs.find((s) => s.code === secteur);
 		if (!sect) throw new ErreurRegle('Choisissez le secteur du volet.');
+		if (!ROLES_CONSORTIUM.some((r) => r.valeur === role)) throw new ErreurRegle('Rôle inconnu.');
 		let org = this.etat.organisations.find((o) => o.sigle === sigle);
 		const nouvelle = !org;
 		if (!org) {
 			if (nom.trim().length < 3) throw new ErreurRegle('Indiquez le nom complet de la nouvelle ONG.');
-			org = { sigle, nom: nom.trim(), role_consortium: 'partenaire', ville: null };
+			org = { sigle, nom: nom.trim(), role_consortium: role, ville: null, logo_url: null };
 			this.etat.organisations.push(org);
 		}
 		const code = `${secteur}-${sigle}`;
@@ -863,7 +923,7 @@ class Depot {
 		const ev = this.#journaliser('volet_cree', code, null, { type: 'volet', id: code, libelle: `${code} (${org.nom})` }, nouvelle ? 'a ajouté une nouvelle ONG et son volet' : 'a ajouté le volet');
 		this.#valider(ev, nouvelle ? `${sigle} a rejoint le consortium (volet ${code}).` : `Volet ${code} ajouté.`, {
 			fn: 'ajouter_volet',
-			args: { p_sigle: sigle, p_nom: org.nom, p_secteur: secteur }
+			args: { p_sigle: sigle, p_nom: org.nom, p_secteur: secteur, p_role: org.role_consortium }
 		});
 		return code;
 	}
