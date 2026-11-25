@@ -104,18 +104,21 @@
 		background: var(--color-surface-strong);
 		color: var(--color-ink);
 	}
+	/* Nombre de notifications et d'annonces non lues, visible sans ouvrir la cloche. */
 	.c-contexte__pastille {
 		position: absolute;
-		inset-block-start: 4px;
-		inset-inline-end: 2px;
-		min-inline-size: 1.125rem;
-		padding: 0 4px;
+		inset-block-start: 1px;
+		inset-inline-end: -2px;
+		min-inline-size: 1.375rem;
+		padding: 0 var(--space-xxs);
 		border-radius: var(--rounded-pill);
 		background: var(--color-primary);
+		box-shadow: 0 0 0 2px var(--color-canvas);
 		color: var(--color-on-primary);
-		font-size: 0.6875rem;
+		font-size: var(--fs-badge);
 		font-weight: var(--fw-semibold);
-		line-height: 1.125rem;
+		font-variant-numeric: tabular-nums;
+		line-height: 1.375rem;
 		text-align: center;
 	}
 	.c-contexte__compte {

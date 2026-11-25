@@ -16,7 +16,10 @@ export default defineConfig({
 				runes: ({ filename }) =>
 					filename.split(/[/\\]/).includes('node_modules') ? undefined : true
 			},
-			adapter: adapter({ fallback: 'index.html' })
+			adapter: adapter({ fallback: 'index.html' }),
+			// Nouvelle version en ligne : détectée toutes les 2 minutes (et au retour sur l'onglet),
+			// la navigation suivante recharge la page (src/routes/+layout.svelte).
+			version: { pollInterval: 120_000 }
 		})
 	]
 });

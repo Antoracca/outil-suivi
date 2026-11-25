@@ -15,13 +15,20 @@
 	}
 	.c-arrivee__repere {
 		display: flex;
-		align-items: baseline;
+		align-items: center;
 		gap: var(--space-xs);
 		font-size: var(--fs-caption);
 	}
+	/* Repère carré, vert clair posé sur le blanc (demande du développeur : carré, pas ovale). */
 	.c-arrivee__type {
+		display: inline-flex;
+		align-items: center;
+		padding: var(--space-xxs) var(--space-xs);
+		border: var(--hairline-w) solid var(--color-jauge-cumul);
+		border-radius: var(--rounded-xs);
+		background: var(--color-surface-row-active);
 		font-weight: var(--fw-semibold);
-		color: var(--color-ink);
+		color: var(--color-link);
 	}
 	.c-arrivee__compte {
 		font-variant-numeric: tabular-nums;
