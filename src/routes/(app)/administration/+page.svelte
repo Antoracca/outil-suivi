@@ -35,6 +35,7 @@
 	import EtiquetteVolet from '#lib/composants/ui/EtiquetteVolet.svelte';
 	import { JOURS_VALIDITE_INVITATION, type Invitation } from '#lib/donnees/invitations.ts';
 	import SuccesInvitation from './SuccesInvitation.svelte';
+	import SectionUtilisation from './SectionUtilisation.svelte';
 	import Icone from '#lib/icones/Icone.svelte';
 	import './administration.css';
 
@@ -53,6 +54,7 @@
 		{ id: 'utilisateurs', libelle: 'Utilisateurs' },
 		{ id: 'droits', libelle: 'Matrice des droits' },
 		{ id: 'organisations', libelle: 'Organisations et volets' },
+		{ id: 'utilisation', libelle: 'Utilisation de l’outil' },
 		{ id: 'periodes', libelle: 'Périodes' },
 		{ id: 'anomalies', libelle: 'Anomalies d’import' },
 		{ id: 'demonstration', libelle: 'Démonstration' }
@@ -598,6 +600,11 @@
 			</Panneau>
 		</div>
 
+		<!-- Utilisation de l'outil (mesure d'utilisation, avec consentement) -->
+		<div class="p-admin__ancre" id="utilisation">
+			<SectionUtilisation />
+		</div>
+
 		<!-- Périodes -->
 		<div class="p-admin__ancre" id="periodes">
 			<Panneau titre="Périodes de rapportage" sousTitre="Un rapport par mois et par volet, selon le calendrier officiel d’APSUD : le 2 du mois suivant (le 9 pour les trimestriels 2 et 3), transmis au FH le 7 (le 14 pour les trimestriels)." id="panneau-periodes" sansMarge>
@@ -678,7 +685,7 @@
 			<Panneau titre="Démonstration" id="panneau-demonstration">
 				<div class="p-admin__demo">
 					<p>
-						Cette maquette garde ses données dans ce navigateur. La réinitialisation remet les données de départ (valeurs, tâches, dépenses, statuts, journal) et l’horloge de démonstration au 12 janvier 2027.
+						Cette maquette garde ses données dans ce navigateur. La réinitialisation efface tout ce qui a été saisi pendant la démonstration et remet le cadre logique tiré des fichiers Excel, sans aucune donnée fictive.
 					</p>
 					<Bouton variante="secondaire" icone="synchro" onclick={() => (confirmerReinit = true)}>Réinitialiser les données de démonstration</Bouton>
 				</div>

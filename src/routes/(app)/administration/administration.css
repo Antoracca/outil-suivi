@@ -329,3 +329,43 @@
 		outline: none;
 	}
 }
+
+@layer components {
+	/* Utilisation de l'outil */
+	.p-admin__usage-chiffres {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr));
+		gap: var(--space-sm);
+	}
+	.p-admin__usage-chiffres > div {
+		padding: var(--space-sm) var(--space-base);
+		border: var(--hairline-w) solid var(--color-hairline);
+		border-radius: var(--rounded-md);
+	}
+	.p-admin__usage-chiffres dt {
+		font-size: var(--fs-caption);
+		color: var(--color-body);
+	}
+	.p-admin__usage-chiffres dd {
+		font-size: var(--fs-display-sm);
+		font-weight: var(--fw-semibold);
+		font-variant-numeric: tabular-nums;
+		color: var(--color-ink);
+	}
+	.p-admin__usage-listes {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+		gap: var(--space-lg);
+		margin-block-start: var(--space-base);
+		font-size: var(--fs-body-sm);
+	}
+	.p-admin__usage-listes ol {
+		display: grid;
+		gap: var(--space-xxs);
+		padding-inline-start: var(--space-base);
+	}
+	.p-admin__usage-titre {
+		margin-block-end: var(--space-xs);
+		font-size: var(--fs-title-sm);
+	}
+}

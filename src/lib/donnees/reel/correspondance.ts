@@ -19,6 +19,8 @@ import type {
 	Justificatif,
 	Ligne5W,
 	Notification,
+	Annonce,
+	AnnonceLue,
 	Organisation,
 	Outcome,
 	Output,
@@ -214,7 +216,9 @@ export const vers = {
 		avant: r.avant,
 		apres: r.apres
 	}),
-	notifications: (r: Ligne): Notification => ({ id: r.id, evenement_id: r.evenement_id, destinataire: r.destinataire, lue: r.lue })
+	notifications: (r: Ligne): Notification => ({ id: r.id, evenement_id: r.evenement_id, destinataire: r.destinataire, lue: r.lue }),
+	annonces: (r: Ligne): Annonce => ({ id: r.id, titre: r.titre, texte: r.texte, organisation: r.organisation, cree_le: heureLocale(r.cree_le)!, archive_le: heureLocale(r.archive_le) }),
+	annonces_lues: (r: Ligne): AnnonceLue => ({ id: r.id, annonce_id: r.annonce_id, utilisateur: r.utilisateur, lue_le: heureLocale(r.lue_le)! })
 };
 
 /** Table de la base → collection de l'état et clé d'identité, pour le temps réel. */
@@ -236,6 +240,8 @@ export const COLLECTIONS = {
 	rapports: { cle: 'id', etat: 'rapports' },
 	journal: { cle: 'id', etat: 'journal' },
 	notifications: { cle: 'id', etat: 'notifications' },
+	annonces: { cle: 'id', etat: 'annonces' },
+	annonces_lues: { cle: 'id', etat: 'annonces_lues' },
 	profils: { cle: 'id', etat: 'utilisateurs' }
 } as const;
 
@@ -258,7 +264,7 @@ export const LIMITE_JOURNAL = 1000;
 /** Charge tout l'état du consortium visible par le compte connecté. */
 export async function chargerEtatReel(sb: SupabaseClient): Promise<EtatDepot> {
 	const lecture = (table: string, ordre?: string) => tout(sb, table, ordre);
-	const [organisations, secteurs, projets, periodes, profils, volets, outcomes, outputs, activites, indicateurs, taches, semaines, valeurs, avancements, depenses, justificatifs, lignes5w, planifications, rapports, notifications] =
+	const [organisations, secteurs, projets, periodes, profils, volets, outcomes, outputs, activites, indicateurs, taches, semaines, valeurs, avancements, depenses, justificatifs, lignes5w, planifications, rapports, notifications, annonces, annoncesLues] =
 		await Promise.all([
 			lecture('organisations'),
 			lecture('secteurs'),
@@ -279,7 +285,9 @@ export async function chargerEtatReel(sb: SupabaseClient): Promise<EtatDepot> {
 			lecture('lignes_5w', 'date'),
 			lecture('planifications'),
 			lecture('rapports'),
-			lecture('notifications')
+			lecture('notifications'),
+			lecture('annonces', 'cree_le'),
+			lecture('annonces_lues')
 		]);
 	const { data: journal, error } = await sb.from('journal').select('*').order('date', { ascending: false }).range(0, LIMITE_JOURNAL - 1);
 	if (error) throw new Error(`Lecture du fil d’activité impossible : ${error.message}`);
@@ -327,7 +335,9 @@ export async function chargerEtatReel(sb: SupabaseClient): Promise<EtatDepot> {
 		planifications: planifications.map(vers.planifications),
 		rapports: rapports.map(vers.rapports),
 		journal: (journal ?? []).map(vers.journal),
-		notifications: notifications.map(vers.notifications)
+		notifications: notifications.map(vers.notifications),
+		annonces: annonces.map(vers.annonces),
+		annonces_lues: annoncesLues.map(vers.annonces_lues)
 	};
 }
 
@@ -354,6 +364,8 @@ export function etatVide(): EtatDepot {
 		planifications: [],
 		rapports: [],
 		journal: [],
-		notifications: []
+		notifications: [],
+		annonces: [],
+		annonces_lues: []
 	};
 }

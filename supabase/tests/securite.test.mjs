@@ -479,6 +479,49 @@ await test('Push : une notification pour un appareil abonné se crée normalemen
 	egal(Number(await valeur(`select count(*) from public.notifications where destinataire = $1 and push_envoye_le is not null`, [idc])), 0, 'rien de poussé sans serveur :');
 });
 
+/* ---------- Annonces et mesure d'utilisation (migration 0016) ---------- */
+
+await test('Annonces : les 5 organisations annoncées, lues une fois pour toutes, chacun ses lectures', async () => {
+	await enPostgres();
+	egal(Number(await valeur(`select count(*) from public.annonces where id in ('arrivee-apsud', 'arrivee-ars', 'arrivee-afpe', 'arrivee-gady', 'arrivee-idc')`)), 5, 'annonces des 5 organisations :');
+	const texteArs = await valeur(`select texte from public.annonces where id = 'arrivee-ars'`);
+	if (!/Nutrition et Santé/.test(texteArs)) throw new Error(`texte ARS inattendu : ${texteArs}`);
+	await en(null);
+	await refuse(db.query('select * from public.annonces'), /permission denied/);
+	await en(idc);
+	egal(Number(await valeur('select count(*) from public.annonces')) >= 5, true, 'lisibles par un compte :');
+	await db.query(`select public.marquer_annonce_lue('arrivee-ars')`);
+	await db.query(`select public.marquer_annonce_lue('arrivee-ars')`);
+	egal(Number(await valeur('select count(*) from public.annonces_lues')), 1, 'une seule lecture :');
+	await refuse(db.query(`select public.marquer_annonce_lue('inconnue')`), /Annonce inconnue/);
+	await refuse(db.query(`insert into public.annonces_lues (id, annonce_id, utilisateur) values ('x', 'arrivee-apsud', $1)`, [idc]), /permission denied/);
+	await en(coord);
+	egal(Number(await valeur('select count(*) from public.annonces_lues')), 0, 'les lectures des autres ne se voient pas :');
+});
+await test('Annonces : une nouvelle organisation est annoncée automatiquement', async () => {
+	await enPostgres();
+	await db.query(`insert into public.organisations (sigle, nom, role_consortium) values ('TESTA', 'Organisation de test', 'observateur')`);
+	egal(await valeur(`select titre from public.annonces where id = 'arrivee-testa'`), 'Nouvelle ONG dans le consortium');
+});
+await test('Mesure d’utilisation : refusée sans consentement, acceptée avec, de nouveau refusée après retrait', async () => {
+	const lot = JSON.stringify([{ type: 'page', page: '/' }, { type: 'clic', page: '/', cible: 'Ouvrir', donnees: { element: 'button' } }]);
+	await en(idc);
+	await refuse(db.query(`select public.enregistrer_analytique('s1', $1::jsonb)`, [lot]), /pas de consentement/);
+	await db.query(`select public.enregistrer_consentement(true)`);
+	egal(Number(await valeur(`select public.enregistrer_analytique('s1', $1::jsonb)`, [lot])), 2, 'événements reçus :');
+	await refuse(db.query(`select public.enregistrer_analytique('s1', $1::jsonb)`, [JSON.stringify([{ type: 'inconnu', page: '/' }])]), /check/);
+	egal(Number(await valeur('select count(*) from public.analytique_evenements')), 0, 'un compte ne relit pas les mesures :');
+	await refuse(db.query('select public.resume_analytique()'), /Réservé au super-administrateur/);
+	await db.query(`select public.enregistrer_consentement(false)`);
+	await refuse(db.query(`select public.enregistrer_analytique('s1', $1::jsonb)`, [lot]), /pas de consentement/);
+	await en(admin);
+	egal(Number(await valeur('select count(*) from public.analytique_evenements')), 2, 'le super-admin lit les mesures :');
+	const r = await valeur('select public.resume_analytique()');
+	egal(r.evenements, 2, 'synthèse :');
+	await en(null);
+	await refuse(db.query(`select public.enregistrer_consentement(true)`), /permission denied/);
+});
+
 /* ---------- Comptes ---------- */
 
 await test('Comptes : seul le super-admin désactive, et jamais lui-même', async () => {

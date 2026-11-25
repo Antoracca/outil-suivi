@@ -25,12 +25,12 @@ const { rows } = await db.query(`
 const sql = new Map(rows.map((r) => [r.nom, r]));
 
 // Le dépôt, plus les alertes push (abonnement de l'appareil).
-const source = ['src/lib/donnees/depot.svelte.ts', 'src/lib/donnees/push.svelte.ts'].map((f) => readFileSync(resolve(ici, '..', '..', f), 'utf8')).join('\n');
+const source = ['src/lib/donnees/depot.svelte.ts', 'src/lib/donnees/push.svelte.ts', 'src/lib/analytique/collecte.svelte.ts'].map((f) => readFileSync(resolve(ici, '..', '..', f), 'utf8')).join('\n');
 const appels = [];
 // fn: 'nom', args: { cle: …, cle2: … }   (l'identifiant d'événement p_evenement est ajouté par #valider)
 for (const m of source.matchAll(/fn: '([a-z_0-9]+)',\s*args: \{([^}]*)\}/g)) {
 	const cles = [...m[2].matchAll(/(p_[a-z_0-9]+)\s*:/g)].map((x) => x[1]);
-	appels.push({ fn: m[1], cles, viaValider: !['marquer_lu'].includes(m[1]) });
+	appels.push({ fn: m[1], cles, viaValider: !['marquer_lu', 'marquer_annonce_lue'].includes(m[1]) });
 }
 for (const m of source.matchAll(/rpc\('([a-z_0-9]+)',\s*\{([^}]*)\}/g)) {
 	appels.push({ fn: m[1], cles: [...m[2].matchAll(/(p_[a-z_0-9]+)\s*:/g)].map((x) => x[1]), viaValider: false });

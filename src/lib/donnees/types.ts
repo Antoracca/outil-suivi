@@ -311,6 +311,24 @@ export interface Notification {
 	lue: boolean;
 }
 
+/** Annonce destinée à tous les comptes, même créés plus tard (ex. : arrivée d'une ONG). */
+export interface Annonce {
+	id: string;
+	titre: string;
+	texte: string;
+	organisation: Sigle | null;
+	cree_le: string;
+	archive_le: string | null;
+}
+
+/** Lecture d'une annonce par un compte (une fois pour toutes). */
+export interface AnnonceLue {
+	id: string;
+	annonce_id: string;
+	utilisateur: string;
+	lue_le: string;
+}
+
 export interface EtatDepot {
 	version_schema: number;
 	aujourdhui: string;
@@ -330,6 +348,8 @@ export interface EtatDepot {
 	justificatifs: Justificatif[];
 	lignes_5w: Ligne5W[];
 	planifications: Planification[];
+	annonces: Annonce[];
+	annonces_lues: AnnonceLue[];
 	rapports: Rapport[];
 	journal: Evenement[];
 	notifications: Notification[];

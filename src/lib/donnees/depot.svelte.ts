@@ -42,6 +42,7 @@ import {
 } from './regles';
 import type {
 	Activite,
+	Annonce,
 	CodeSecteur,
 	CodeVolet,
 	Depense,
@@ -398,14 +399,13 @@ class Depot {
 	/* ---------- Horloge de démonstration ---------- */
 
 	#lireDecalage(): number {
-		const enr = localStorage.getItem(CLE_DECALAGE);
-		if (enr) return Number(enr);
-		const d = new Date(this.#demo?.AUJOURDHUI_DEMO ?? Date.now()).getTime() - Date.now();
-		localStorage.setItem(CLE_DECALAGE, String(d));
-		return d;
+		// Démonstration sans données fictives : l'horloge est la vraie date du jour
+		// (l'ancien décalage vers le 12 janvier 2027, s'il est encore enregistré, est oublié).
+		localStorage.removeItem(CLE_DECALAGE);
+		return 0;
 	}
 
-	/** « Maintenant » de la démonstration : part du 12 janvier 2027 et avance normalement. */
+	/** « Maintenant » : la vraie date du jour (démonstration comme réel). */
 	maintenant(): Date {
 		return new Date(Date.now() + this.#decalage);
 	}
@@ -926,6 +926,11 @@ class Depot {
 			if (nom.trim().length < 3) throw new ErreurRegle('Indiquez le nom complet de la nouvelle ONG.');
 			org = { sigle, nom: nom.trim(), role_consortium: role, ville: null, logo_url: null };
 			this.etat.organisations.push(org);
+			// Annonce à tous les comptes (en réel : déclencheur de la migration 0016).
+			if (this.source === 'demo' && !this.etat.annonces.some((a) => a.id === `arrivee-${sigle.toLowerCase()}`)) {
+				const libelleRole = ROLES_CONSORTIUM.find((r) => r.valeur === role)?.libelle.toLowerCase() ?? 'membre';
+				this.etat.annonces.push({ id: `arrivee-${sigle.toLowerCase()}`, titre: 'Nouvelle ONG dans le consortium', texte: `${sigle} (${nom.trim()}) a rejoint le consortium, ${libelleRole}.`, organisation: sigle, cree_le: this.#horodatage(), archive_le: null });
+			}
 		}
 		const code = `${secteur}-${sigle}`;
 		if (this.etat.volets.some((v) => v.code === code)) throw new ErreurRegle(`Le volet ${code} existe déjà.`);
@@ -1039,6 +1044,22 @@ class Depot {
 		this.#sauver();
 		if (this.source === 'demo') this.#canal?.postMessage({ type: 'lu' } satisfies MessageCanal);
 		if (this.source === 'reel') this.#envoyer({ id: uid('lu'), fn: 'marquer_lu', args: { p_evenement_id: null }, libelle: 'Notifications marquées comme lues' });
+	}
+
+	/** Annonces que le compte connecté n'a pas encore marquées comme lues (plus ancienne d'abord). */
+	annoncesNonLues(): Annonce[] {
+		const lues = new Set(this.etat.annonces_lues.filter((l) => l.utilisateur === this.utilisateurId).map((l) => l.annonce_id));
+		return this.etat.annonces.filter((a) => !a.archive_le && !lues.has(a.id)).sort((a, b) => a.cree_le.localeCompare(b.cree_le));
+	}
+
+	/** Marque une annonce comme lue, une fois pour toutes (même après actualisation). */
+	marquerAnnonceLue(annonceId: string) {
+		const u = this.utilisateurId;
+		if (!u || this.etat.annonces_lues.some((l) => l.annonce_id === annonceId && l.utilisateur === u)) return;
+		this.etat.annonces_lues.push({ id: `${annonceId}:${u}`, annonce_id: annonceId, utilisateur: u, lue_le: this.#horodatage() });
+		this.#sauver();
+		if (this.source === 'demo') this.#canal?.postMessage({ type: 'lu' } satisfies MessageCanal);
+		if (this.source === 'reel') this.#envoyer({ id: uid('lu'), fn: 'marquer_annonce_lue', args: { p_annonce: annonceId }, libelle: 'Annonce marquée comme lue' });
 	}
 
 	marquerLue(evenementId: string) {

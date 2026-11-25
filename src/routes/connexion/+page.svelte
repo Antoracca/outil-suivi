@@ -64,7 +64,7 @@
 				<div class="p-connexion__avertissement">
 					<Icone nom="info" taille="sm" />
 					<p>
-						<strong>Démonstration.</strong> Comptes et montants fictifs ; activités, indicateurs et cibles tirés des 5 plans d’action. Ouvrez deux onglets avec deux comptes pour voir le temps réel.
+						<strong>Démonstration.</strong> Seuls les comptes sont fictifs ; aucune donnée inventée : activités, indicateurs et cibles tirés des 5 plans d’action. Ouvrez deux onglets avec deux comptes pour voir le temps réel.
 					</p>
 				</div>
 				<h2 class="p-connexion__sous-titre">Choisissez un compte de démonstration</h2>
