@@ -70,7 +70,7 @@
 			class:is-hors-ligne={!depot.enLigne}
 			type="button"
 			onclick={() => depot.basculerReseau()}
-			title="Démonstration : cliquez pour simuler une coupure réseau"
+			title={depot.source === 'demo' ? 'Démonstration : cliquez pour simuler une coupure réseau' : 'État de la connexion (cliquez pour simuler une coupure, utile en formation)'}
 		>
 			<Icone nom={depot.enLigne ? 'en-ligne' : 'hors-ligne'} taille="sm" />
 			<span>{depot.enLigne ? 'En ligne' : `Hors ligne${depot.fileAttente.length ? ` · ${depot.fileAttente.length} en attente` : ''}`}</span>
@@ -107,9 +107,11 @@
 				{#if menuOuvert}
 					<div class="c-contexte__menu" id="menu-compte">
 						<p class="c-contexte__menu-info">{u.fonction}</p>
-						<a class="c-contexte__menu-lien" href="/connexion" onclick={() => (menuOuvert = false)}>
-							<Icone nom="equipe" taille="sm" /> Changer de compte de démonstration
-						</a>
+						{#if depot.source === 'demo'}
+							<a class="c-contexte__menu-lien" href="/connexion" onclick={() => (menuOuvert = false)}>
+								<Icone nom="equipe" taille="sm" /> Changer de compte de démonstration
+							</a>
+						{/if}
 						<button class="c-contexte__menu-lien" type="button" onclick={() => { depot.deconnecter(); menuOuvert = false; goto('/connexion'); }}>
 							<Icone nom="deconnexion" taille="sm" /> Se déconnecter
 						</button>

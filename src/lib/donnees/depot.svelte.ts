@@ -20,6 +20,7 @@
 import { browser } from '$app/env';
 import type { RealtimeChannel, RealtimePostgresChangesPayload } from '@supabase/supabase-js';
 import { VERSION_SCHEMA } from './version';
+import { ordonnerVolets } from './ordre';
 import { DEMO_DISPONIBLE, mode } from './mode.svelte';
 import { estErreurReseau, serveur, serveurConfigure, traduireErreurAuth } from './reel/client';
 import { COLLECTIONS, chargerEtatReel, etatVide, vers } from './reel/correspondance';
@@ -71,7 +72,7 @@ export type Archivable = 'activite' | 'tache' | 'indicateur' | 'depense' | 'just
 /** Champs saisis pour une ligne 5W (le reste est déduit : volet, auteur, date). */
 export type ChampsLigne5W = Omit<Ligne5W, 'id' | 'volet' | 'activite_id' | 'mois' | 'auteur' | 'date' | 'archive_le'>;
 
-type MessageCanal = { type: 'maj'; evenement: Evenement } | { type: 'reinitialisation' };
+type MessageCanal = { type: 'maj'; evenement: Evenement } | { type: 'reinitialisation' } | { type: 'lu' };
 
 export interface MajEnDirect {
 	evenement: Evenement;
@@ -148,7 +149,7 @@ class Depot {
 		if (brut) {
 			try {
 				const lu = JSON.parse(brut) as EtatDepot;
-				if (lu.version_schema === VERSION_SCHEMA) this.etat = lu;
+				if (lu.version_schema === VERSION_SCHEMA) this.etat = { ...lu, volets: ordonnerVolets(lu.volets) };
 				else this.#sauver();
 			} catch {
 				this.#sauver();
@@ -257,6 +258,7 @@ class Depot {
 			if (p.table === 'journal') liste.unshift(valeur);
 			else liste.push(valeur);
 		} else liste[i] = valeur;
+		if (p.table === 'volets' && nouveau) this.etat.volets = ordonnerVolets(this.etat.volets);
 		if (p.table === 'journal' && nouveau) {
 			const ev = valeur as unknown as Evenement;
 			if (ev.auteur !== this.utilisateurId) {
@@ -524,6 +526,8 @@ class Depot {
 		if (this.source !== 'demo') return;
 		const brut = localStorage.getItem(CLE_ETAT);
 		if (brut) this.etat = JSON.parse(brut);
+		// Notifications lues dans un autre onglet : l'état relu suffit (sinon cet onglet réécrirait sa copie).
+		if (message.type === 'lu') return;
 		if (message.type === 'reinitialisation') {
 			this.annonce = 'La démonstration a été réinitialisée.';
 			return;
@@ -925,7 +929,7 @@ class Depot {
 		}
 		const code = `${secteur}-${sigle}`;
 		if (this.etat.volets.some((v) => v.code === code)) throw new ErreurRegle(`Le volet ${code} existe déjà.`);
-		this.etat.volets.push({ code, organisation: sigle, secteur, cadre_verrouille: false });
+		this.etat.volets = ordonnerVolets([...this.etat.volets, { code, organisation: sigle, secteur, cadre_verrouille: false }]);
 		for (const mois of this.etat.projet.mois) {
 			this.etat.rapports.push({ id: `${code}:${mois}`, volet: code, mois, statut: 'non_commence', soumis_par: null, soumis_le: null, decision_par: null, decision_le: null, motif: null });
 		}
@@ -1033,13 +1037,30 @@ class Depot {
 	marquerToutLu() {
 		for (const n of this.etat.notifications) if (n.destinataire === this.utilisateurId) n.lue = true;
 		this.#sauver();
+		if (this.source === 'demo') this.#canal?.postMessage({ type: 'lu' } satisfies MessageCanal);
 		if (this.source === 'reel') this.#envoyer({ id: uid('lu'), fn: 'marquer_lu', args: { p_evenement_id: null }, libelle: 'Notifications marquées comme lues' });
 	}
 
 	marquerLue(evenementId: string) {
-		for (const n of this.etat.notifications) if (n.destinataire === this.utilisateurId && n.evenement_id === evenementId) n.lue = true;
+		this.marquerLues([evenementId]);
+	}
+
+	/** Marque comme lues les notifications de ces événements (seulement celles encore non lues). */
+	marquerLues(evenementIds: string[]) {
+		const ids = new Set(evenementIds);
+		const touches = new Set<string>();
+		for (const n of this.etat.notifications) {
+			if (n.destinataire === this.utilisateurId && !n.lue && ids.has(n.evenement_id)) {
+				n.lue = true;
+				touches.add(n.evenement_id);
+			}
+		}
+		if (!touches.size) return;
 		this.#sauver();
-		if (this.source === 'reel') this.#envoyer({ id: uid('lu'), fn: 'marquer_lu', args: { p_evenement_id: evenementId }, libelle: 'Notification marquée comme lue' });
+		if (this.source === 'demo') this.#canal?.postMessage({ type: 'lu' } satisfies MessageCanal);
+		if (this.source === 'reel') {
+			for (const id of touches) this.#envoyer({ id: uid('lu'), fn: 'marquer_lu', args: { p_evenement_id: id }, libelle: 'Notification marquée comme lue' });
+		}
 	}
 
 	/* ---------- Raccourcis de calcul liés à l'état ---------- */

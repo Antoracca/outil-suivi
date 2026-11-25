@@ -10,6 +10,7 @@
 	import LogoOrganisation from '#lib/composants/ui/LogoOrganisation.svelte';
 	import { depot, type InvitationValide } from '#lib/donnees/depot.svelte.ts';
 	import { serveurConfigure } from '#lib/donnees/reel/client.ts';
+	import { DEMO_DISPONIBLE } from '#lib/donnees/mode.svelte.ts';
 	import { lireComptes, memoriserCompte, oublierCompte, type CompteMemorise } from '#lib/donnees/reel/comptes-memorises.ts';
 	import { LIBELLES_ROLE, MESSAGE_EMAIL_INVALIDE, estEmailValide } from '#lib/donnees/regles.ts';
 	import type { Role } from '#lib/donnees/types.ts';
@@ -197,7 +198,7 @@
 
 	{#if !serveurConfigure}
 		<Alerte variante="info" titre="Serveur réel non configuré">
-			Ce déploiement n’est pas encore relié au serveur du consortium. Activez le mode démonstration pour parcourir l’outil.
+			Ce déploiement n’est pas encore relié au serveur du consortium.{#if DEMO_DISPONIBLE} Activez le mode démonstration pour parcourir l’outil.{:else} Contactez l’équipe technique d’APSUD.{/if}
 		</Alerte>
 	{:else if !depot.pret}
 		<p class="p-reel__texte" role="status">Ouverture de votre session…</p>

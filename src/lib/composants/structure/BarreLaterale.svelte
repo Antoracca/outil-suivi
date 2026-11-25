@@ -3,6 +3,7 @@
 	import { depot } from '#lib/donnees/depot.svelte.ts';
 	import { contexte } from '#lib/donnees/contexte.svelte.ts';
 	import { peutAdministrer, peutValider, peutVoirArchives } from '#lib/donnees/regles.ts';
+	import { nonLuesDe } from '#lib/donnees/notifications.ts';
 	import Icone from '#lib/icones/Icone.svelte';
 	import LogoOrganisation from '#lib/composants/ui/LogoOrganisation.svelte';
 	import type { NomIcone } from '#lib/icones/icones.ts';
@@ -26,6 +27,8 @@
 
 	const actif = (href: string) => (href === '/' ? chemin === '/' : chemin.startsWith(href));
 	const secteur = (code: string) => depot.etat.secteurs.find((s) => s.code === code)!;
+	const nonLues = $derived(nonLuesDe(depot.etat, depot.utilisateurId));
+	const nouveautes = (code: string) => nonLues.filter((x) => x.ev.volet === code).length;
 </script>
 
 <nav class="c-nav" class:c-nav--repliee={contexte.navRepliee} aria-label="Navigation principale">
@@ -72,7 +75,9 @@
 						<span class="c-nav__volet-org">{v.organisation}</span>
 						<span class="c-nav__volet-secteur">{secteur(v.secteur).libelle_court}</span>
 					</span>
-					{#if u && u.role === 'saisie' && u.organisation === v.organisation}
+					{#if nouveautes(v.code)}
+						<span class="c-nav__compteur c-nav__compteur--nouveau" title="{nouveautes(v.code)} nouveauté(s) non lue(s)">{nouveautes(v.code)}<span class="u-visuellement-masque"> nouveauté{nouveautes(v.code) > 1 ? 's' : ''} non lue{nouveautes(v.code) > 1 ? 's' : ''}</span></span>
+					{:else if u && u.role === 'saisie' && u.organisation === v.organisation}
 						<span class="c-nav__mien" title="Votre organisation">●<span class="u-visuellement-masque"> (votre organisation)</span></span>
 					{/if}
 				</a>

@@ -215,7 +215,7 @@
 		</Panneau>
 	</div>
 
-	<Panneau titre="Budget par volet" sousTitre="Montants de démonstration : les fichiers Excel ne contiennent que des valeurs de remplissage." id="budget" sansMarge>
+	<Panneau titre="Budget par volet" sousTitre={depot.source === 'demo' ? 'Montants de démonstration : les fichiers Excel ne contiennent que des valeurs de remplissage.' : 'Budgets planifiés à importer : en attente du fichier des budgets d’APSUD.'} id="budget" sansMarge>
 		<table class="p-tdb__table">
 			<caption class="u-visuellement-masque">Budget planifié et exécuté par volet</caption>
 			<thead>

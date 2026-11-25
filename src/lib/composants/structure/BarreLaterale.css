@@ -203,3 +203,11 @@
 		display: none;
 	}
 }
+
+@layer components {
+	/* Nouveautés non lues d'un volet : pastille Forêt, plus visible que le compteur de validation. */
+	.c-nav__compteur--nouveau {
+		background: var(--color-primary);
+		color: var(--color-on-primary);
+	}
+}

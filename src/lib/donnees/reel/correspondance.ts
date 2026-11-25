@@ -7,6 +7,7 @@
  */
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { VERSION_SCHEMA } from '../version';
+import { ordonnerVolets } from '../ordre';
 import type {
 	Activite,
 	AvancementActivite,
@@ -312,7 +313,7 @@ export async function chargerEtatReel(sb: SupabaseClient): Promise<EtatDepot> {
 				.filter((x) => x.numero_rapport && x.type_rapport)
 				.map((x) => ({ mois: x.mois, numero: x.numero_rapport, type: x.type_rapport, libelle: x.libelle_rapport ?? '', partenaire: x.echeance, fh: x.echeance_fh ?? x.echeance }))
 		},
-		volets: volets.map(vers.volets),
+		volets: ordonnerVolets(volets.map(vers.volets)),
 		outcomes: outcomes.map(vers.outcomes),
 		outputs: outputs.map(vers.outputs),
 		activites: activites.map(vers.activites),

@@ -3,6 +3,7 @@
 	import { dateHeure, libelleMois, nombre, relatif } from '#lib/format.ts';
 	import type { Desagregation, Evenement } from '#lib/donnees/types.ts';
 	import Avatar from '#lib/composants/ui/Avatar.svelte';
+	import { lienEvenement } from '#lib/donnees/notifications.ts';
 	import './LigneActivite.css';
 
 	/** Une ligne du fil d'activité : qui, quoi, sur quoi, quand. */
@@ -15,14 +16,6 @@
 	const auteur = $derived(depot.etat.utilisateurs.find((u) => u.id === ev.auteur));
 	const maintenant = $derived(depot.maintenant());
 
-	function lien(e: Evenement): string | null {
-		if (!e.volet) return null;
-		if (e.cible.type === 'rapport' && e.mois) return `/volets/${e.volet}/activites/${e.mois}`;
-		if (e.type === 'valeur_modifiee' && e.mois) return `/volets/${e.volet}/indicateurs/${e.mois}#${encodeURIComponent(e.cible.id)}`;
-		if (e.type === 'planification_validee' && e.mois) return `/volets/${e.volet}/planification/${e.mois}`;
-		if (e.cible.type === 'tache' || e.type === 'semaine_cochee') return `/volets/${e.volet}/plan-action`;
-		return `/volets/${e.volet}`;
-	}
 
 	function ecart(avant: unknown, apres: unknown): string | null {
 		const a = avant as Desagregation | null;
@@ -31,7 +24,7 @@
 		return `${a ? nombre(a.total) : 'vide'} → ${nombre(b.total)}`;
 	}
 	const detail = $derived(ev.type === 'valeur_modifiee' ? ecart(ev.avant, ev.apres) : null);
-	const href = $derived(lien(ev));
+	const href = $derived(lienEvenement(ev));
 </script>
 
 <article class="c-ligne-activite" class:is-non-lue={nonLue} class:c-ligne-activite--compacte={compacte}>

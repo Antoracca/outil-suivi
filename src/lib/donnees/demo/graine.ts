@@ -36,6 +36,7 @@ import type {
 } from '../types';
 import { CALENDRIER_FH } from '../calendrier';
 import { SECTEURS_REFERENCE } from '../referentiels/secteurs';
+import { ordonnerVolets } from '../ordre';
 
 import { VERSION_SCHEMA } from '../version';
 export { VERSION_SCHEMA };
@@ -489,12 +490,12 @@ export function construireEtatDemo(): EtatDepot {
 		utilisateurs: utilisateursDemo,
 		secteurs,
 		projet: { ...structure.projet, echeances: CALENDRIER_FH },
-		volets: structure.volets.map((v) => ({
+		volets: ordonnerVolets(structure.volets.map((v) => ({
 			code: v.code as CodeVolet,
 			organisation: v.organisation as Sigle,
 			secteur: v.secteur as EtatDepot['volets'][number]['secteur'],
 			cadre_verrouille: v.code === 'NUT-ARS'
-		})),
+		}))),
 		outcomes,
 		outputs,
 		activites,

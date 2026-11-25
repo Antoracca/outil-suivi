@@ -4,6 +4,7 @@
 	import BarreLaterale from './BarreLaterale.svelte';
 	import BarreContexte from './BarreContexte.svelte';
 	import TiroirNotifications from './TiroirNotifications.svelte';
+	import NotificationsSurgissantes from './NotificationsSurgissantes.svelte';
 	import BandeauHorsLigne from './BandeauHorsLigne.svelte';
 	import BarreBasse from './BarreBasse.svelte';
 	import './CadreApplication.css';
@@ -27,5 +28,6 @@
 </div>
 <BarreBasse />
 <TiroirNotifications />
+<NotificationsSurgissantes />
 <!-- Annonces aux lecteurs d'écran : enregistrements, mises à jour en direct. -->
 <p class="u-visuellement-masque" role="status" aria-live="polite">{depot.annonce}</p>

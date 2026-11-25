@@ -92,3 +92,46 @@
 		color: var(--color-muted);
 	}
 }
+
+@layer components {
+	.c-tiroir__alertes {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--space-xs) var(--space-sm);
+		margin: 0 var(--space-md) var(--space-sm);
+		padding: var(--space-sm) var(--space-base);
+		border-radius: var(--rounded-md);
+		background: var(--color-wash-pousse-light);
+		font-size: var(--fs-caption);
+		color: var(--color-ink);
+	}
+	.c-tiroir__alertes p {
+		flex: 1 1 12rem;
+	}
+	.c-tiroir__item {
+		display: grid;
+	}
+	.c-tiroir__lu {
+		display: inline-flex;
+		align-items: center;
+		justify-self: end;
+		gap: var(--space-xxs);
+		min-block-size: 2rem;
+		margin-block-start: calc(-1 * var(--space-xs));
+		padding: 0 var(--space-sm);
+		border: 0;
+		background: none;
+		font-size: var(--fs-caption);
+		font-weight: var(--fw-medium);
+		color: var(--color-link);
+		cursor: pointer;
+	}
+	.c-tiroir__lu:hover {
+		text-decoration: underline;
+	}
+	.c-tiroir__lu:focus-visible {
+		outline: var(--focus-w) solid var(--color-ink);
+		outline-offset: var(--focus-gap);
+	}
+}
