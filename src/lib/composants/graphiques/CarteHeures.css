@@ -1,0 +1,37 @@
+@layer components {
+	.c-heures {
+		display: grid;
+		gap: var(--space-xs);
+		margin: 0;
+	}
+	.c-heures__grille {
+		display: grid;
+		grid-template-columns: repeat(24, minmax(0, 1fr));
+		gap: 2px;
+	}
+	.c-heures__case {
+		aspect-ratio: 1;
+		max-block-size: 2rem;
+		border-radius: var(--rounded-xs);
+		background: color-mix(in oklab, var(--color-jauge-mois) var(--_p), var(--color-jauge-fond));
+	}
+	.c-heures__axe {
+		display: flex;
+		justify-content: space-between;
+		font-size: var(--fs-caption);
+		color: var(--color-muted);
+	}
+	.c-heures__legende {
+		display: flex;
+		align-items: center;
+		gap: var(--space-xs);
+		font-size: var(--fs-caption);
+		color: var(--color-muted);
+	}
+	.c-heures__degrade {
+		inline-size: 4rem;
+		block-size: var(--space-xs);
+		border-radius: var(--rounded-xs);
+		background: linear-gradient(to right, var(--color-jauge-fond), var(--color-jauge-mois));
+	}
+}

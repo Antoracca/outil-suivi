@@ -522,6 +522,17 @@ await test('Mesure d’utilisation : refusée sans consentement, acceptée avec,
 	await refuse(db.query(`select public.enregistrer_consentement(true)`), /permission denied/);
 });
 
+await test('Mesure avancée : vitesse d’affichage et difficultés acceptées ; le super-admin seul lit les consentements de tous', async () => {
+	await en(idc);
+	await db.query(`select public.enregistrer_consentement(true)`);
+	const lot = JSON.stringify([{ type: 'performance', page: '/', cible: 'navigation', donnees: { ms: 420 } }, { type: 'friction', page: '/', cible: 'Enregistrer', donnees: { raison: 'clics_repetes' } }]);
+	egal(Number(await valeur(`select public.enregistrer_analytique('s2', $1::jsonb)`, [lot])), 2, 'mesures avancées reçues :');
+	egal(Number(await valeur('select count(*) from public.consentements')), 1, 'un compte ne voit que son consentement :');
+	await en(admin);
+	egal(Number(await valeur('select count(*) from public.consentements')) >= 1, true, 'le super-admin voit tous les consentements :');
+	egal(Number(await valeur(`select count(*) from public.analytique_evenements where type in ('performance', 'friction')`)), 2, 'lues par le super-admin :');
+});
+
 /* ---------- Comptes ---------- */
 
 await test('Comptes : seul le super-admin désactive, et jamais lui-même', async () => {

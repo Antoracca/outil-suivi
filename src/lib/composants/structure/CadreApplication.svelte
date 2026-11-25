@@ -2,7 +2,8 @@
 	import type { Snippet } from 'svelte';
 	import { depot } from '#lib/donnees/depot.svelte.ts';
 	import { alertes } from '#lib/donnees/push.svelte.ts';
-	import { afterNavigate } from '$app/navigation';
+	import { afterNavigate, beforeNavigate } from '$app/navigation';
+	import { untrack } from 'svelte';
 	import { collecte } from '#lib/analytique/collecte.svelte.ts';
 	import ConsentementAnalytique from './ConsentementAnalytique.svelte';
 	import BarreLaterale from './BarreLaterale.svelte';
@@ -29,10 +30,30 @@
 	// Mesure d'utilisation : choix relu à chaque connexion, demande à l'arrivée (3 fois au plus).
 	$effect(() => {
 		if (!depot.pret || !depot.utilisateurId) return;
-		void collecte.demarrer(depot.utilisateurId, depot.source).catch(() => undefined);
+		const u = depot.utilisateur;
+		void collecte.demarrer(depot.utilisateurId, depot.source, u?.organisation ?? '', u?.role ?? '').catch(() => undefined);
 	});
+	beforeNavigate(() => collecte.debutNavigation());
 	afterNavigate(({ to }) => {
 		if (to?.url) collecte.page(to.url.pathname);
+	});
+
+	// Actions métier du compte (valeur saisie, rapport soumis, justificatif ajouté…) : chaque
+	// nouvel événement du fil dont il est l'auteur devient une mesure « action ».
+	let dernierEvenement: string | null = null;
+	$effect(() => {
+		if (!depot.pret || !depot.utilisateurId) return;
+		const ev = depot.etat.journal[0];
+		untrack(() => {
+			// Premier passage : on retient l'état actuel du fil, sans le compter.
+			if (dernierEvenement === null) {
+				dernierEvenement = ev?.id ?? '';
+				return;
+			}
+			if (!ev || ev.id === dernierEvenement) return;
+			dernierEvenement = ev.id;
+			if (ev.auteur === depot.utilisateurId) collecte.action(ev.type, { volet: ev.volet, mois: ev.mois });
+		});
 	});
 </script>
 

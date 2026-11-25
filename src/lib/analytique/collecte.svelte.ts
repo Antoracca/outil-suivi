@@ -18,9 +18,14 @@
 import { browser } from '$app/env';
 import { serveur } from '#lib/donnees/reel/client.ts';
 
-export type TypeMesure = 'page' | 'clic' | 'duree' | 'appareil' | 'erreur' | 'recherche' | 'action';
+export type TypeMesure = 'page' | 'clic' | 'duree' | 'appareil' | 'erreur' | 'recherche' | 'action' | 'performance' | 'friction';
 export interface Mesure {
 	type: TypeMesure;
+	/** Démonstration seulement (en réel, la base les déduit du compte connecté). */
+	utilisateur?: string;
+	organisation?: string;
+	role?: string;
+	session?: string;
 	page: string;
 	cible?: string;
 	donnees?: Record<string, string | number | boolean | null>;
@@ -63,17 +68,25 @@ class Collecte {
 	#entreeLe = 0;
 	#session = '';
 	#ecoute = false;
+	#organisation = '';
+	#role = '';
+	#debutNavigation = 0;
+	#clicsRecents: { cible: string; t: number }[] = [];
+	#erreursRecentes = new Map<string, number>();
 
 	get actif(): boolean {
 		return this.choix === true;
 	}
 
 	/** À chaque connexion : relit le choix, décide d'afficher la demande, démarre si accord. */
-	async demarrer(utilisateur: string, source: 'demo' | 'reel') {
+	async demarrer(utilisateur: string, source: 'demo' | 'reel', organisation = '', role = '') {
 		if (!browser || this.#utilisateur === utilisateur) return;
 		this.#arreter();
 		this.#utilisateur = utilisateur;
 		this.#source = source;
+		this.#organisation = organisation;
+		this.#role = role;
+		this.#session = crypto.randomUUID();
 		this.pret = false;
 		this.choix = await this.#lireChoix();
 		// Pas encore de choix : la demande s'affiche, et ne se ferme que par un choix.
@@ -99,6 +112,11 @@ class Collecte {
 		else this.#arreter(false);
 	}
 
+	/** Début d'une navigation (pour mesurer le temps d'affichage de l'écran suivant). */
+	debutNavigation() {
+		this.#debutNavigation = performance.now();
+	}
+
 	/** Page ouverte (appelée à chaque navigation). */
 	page(chemin: string) {
 		if (!this.actif) return;
@@ -106,6 +124,11 @@ class Collecte {
 		this.#pageCourante = chemin;
 		this.#entreeLe = Date.now();
 		this.#ajouter({ type: 'page', page: chemin });
+		if (this.#debutNavigation) {
+			const ms = Math.round(performance.now() - this.#debutNavigation);
+			this.#debutNavigation = 0;
+			if (ms > 0 && ms < 120_000) this.#ajouter({ type: 'performance', page: chemin, cible: 'navigation', donnees: { ms } });
+		}
 	}
 
 	/** Action métier nommée (ex. « rapport_soumis ») : à appeler depuis les écrans. */
@@ -136,6 +159,11 @@ class Collecte {
 				ecran_accueil: window.matchMedia('(display-mode: standalone)').matches
 			}
 		});
+		// Premier affichage : temps de chargement complet de la page (connexion lente, appareil).
+		const nav = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined;
+		if (nav && nav.domContentLoadedEventEnd > 0) {
+			this.#ajouter({ type: 'performance', page: location.pathname, cible: 'chargement', donnees: { ms: Math.round(nav.domContentLoadedEventEnd), octets: nav.transferSize || null } });
+		}
 		this.page(location.pathname);
 		if (!this.#ecoute) {
 			this.#ecoute = true;
@@ -171,10 +199,18 @@ class Collecte {
 		if (!this.actif) return;
 		const el = (e.target as HTMLElement | null)?.closest<HTMLElement>('button, a, [role="button"], summary, label');
 		if (!el || el.closest('input, textarea, select, [contenteditable="true"]')) return;
-		const libelle = (el.getAttribute('data-mesure') ?? el.getAttribute('aria-label') ?? el.textContent ?? '').replace(/[●•]/g, '').replace(/\s+/g, ' ').trim().slice(0, 80);
+		const libelle = (el.getAttribute('data-mesure') ?? el.getAttribute('aria-label') ?? el.textContent ?? '').replace(/[●•]/g, '').replace(/\s+/g, ' ').trim().slice(0, 80)
+			// Nombres retirés (compteurs, numéros) : un même bouton garde un seul libellé.
+			.replace(/\d+([.,:/]\d+)*/g, '#');
 		if (!libelle) return;
 		const href = el instanceof HTMLAnchorElement && el.origin === location.origin ? el.pathname : null;
 		this.#ajouter({ type: 'clic', page: location.pathname, cible: libelle, donnees: { element: el.tagName.toLowerCase(), vers: href } });
+		// Difficulté : le même bouton cliqué 3 fois en moins de 2 secondes (réponse lente, action peu claire).
+		const t = Date.now();
+		this.#clicsRecents = [...this.#clicsRecents.filter((c) => t - c.t < 2000), { cible: libelle, t }];
+		if (this.#clicsRecents.filter((c) => c.cible === libelle).length === 3) {
+			this.#ajouter({ type: 'friction', page: location.pathname, cible: libelle, donnees: { raison: 'clics_repetes' } });
+		}
 	};
 
 	#surVisibilite = () => {
@@ -186,11 +222,18 @@ class Collecte {
 	};
 
 	#surErreur = (e: ErrorEvent) => {
-		this.#ajouter({ type: 'erreur', page: location.pathname, cible: String(e.message).slice(0, 160) });
+		// Une même erreur n'est comptée qu'une fois par minute (pas de rafale).
+		const message = String(e.message).slice(0, 160);
+		const derniere = this.#erreursRecentes.get(message) ?? 0;
+		if (Date.now() - derniere < 60_000) return;
+		this.#erreursRecentes.set(message, Date.now());
+		this.#ajouter({ type: 'erreur', page: location.pathname, cible: message });
 	};
 
 	#ajouter(m: Omit<Mesure, 'date'>) {
-		this.#file.push({ ...m, date: new Date().toISOString() });
+		const base = { ...m, date: new Date().toISOString() };
+		// Démonstration : on garde aussi qui et quelle session (en réel, la base les connaît).
+		this.#file.push(this.#source === 'demo' ? { ...base, utilisateur: this.#utilisateur ?? undefined, organisation: this.#organisation, role: this.#role, session: this.#session } : base);
 		if (this.#file.length >= 100) void this.#envoyer();
 	}
 

@@ -77,7 +77,7 @@
 			<span>{depot.enLigne ? 'En ligne' : `Hors ligne${depot.fileAttente.length ? ` · ${depot.fileAttente.length} en attente` : ''}`}</span>
 		</button>
 
-		<button class="c-contexte__cloche" type="button" onclick={() => (contexte.tiroirOuvert = true)} aria-label={nonLues ? `Notifications : ${nonLues} non lues` : 'Notifications'}>
+		<button class="c-contexte__cloche" type="button" data-mesure="Cloche des notifications" onclick={() => (contexte.tiroirOuvert = true)} aria-label={nonLues ? `Notifications : ${nonLues} non lues` : 'Notifications'}>
 			<Icone nom="notification" />
 			{#if nonLues}<span class="c-contexte__pastille" aria-hidden="true">{nonLues > 99 ? '99+' : nonLues}</span>{/if}
 		</button>

@@ -1,0 +1,101 @@
+@layer components {
+	.c-barres-jour {
+		display: grid;
+		gap: var(--space-xs);
+		margin: 0;
+	}
+	.c-barres-jour__zone {
+		position: relative;
+		padding-block-start: var(--space-base);
+		border-block-end: var(--hairline-w) solid var(--color-hairline-strong);
+	}
+	.c-barres-jour__max {
+		position: absolute;
+		inset-block-start: 0;
+		inset-inline-start: 0;
+		font-size: var(--fs-caption);
+		font-variant-numeric: tabular-nums;
+		color: var(--color-muted);
+	}
+	.c-barres-jour__barres {
+		display: flex;
+		align-items: flex-end;
+		gap: 2px;
+		block-size: 9rem;
+		border-block-start: var(--hairline-w) dashed var(--color-hairline);
+	}
+	.c-barres-jour__col {
+		position: relative;
+		display: flex;
+		flex: 1;
+		align-items: flex-end;
+		block-size: 100%;
+		min-inline-size: 0;
+	}
+	.c-barres-jour__barre {
+		inline-size: 100%;
+		max-inline-size: 1.25rem;
+		margin-inline: auto;
+		min-block-size: 2px;
+		border-radius: var(--rounded-xs) var(--rounded-xs) 0 0;
+		background: var(--color-jauge-mois);
+		transition: background-color var(--dur-fast) linear;
+	}
+	.c-barres-jour__barre.is-vide {
+		background: var(--color-jauge-fond);
+	}
+	.c-barres-jour__col:hover .c-barres-jour__barre {
+		background: var(--color-primary);
+	}
+	.c-barres-jour__bulle {
+		position: absolute;
+		inset-block-end: calc(100% + var(--space-xxs));
+		inset-inline-start: 50%;
+		z-index: var(--z-sticky);
+		display: none;
+		gap: 2px;
+		padding: var(--space-xs) var(--space-sm);
+		border: var(--hairline-w) solid var(--color-hairline-strong);
+		border-radius: var(--rounded-md);
+		background: var(--color-surface-card);
+		box-shadow: var(--shadow-floating);
+		font-size: var(--fs-caption);
+		color: var(--color-body);
+		white-space: nowrap;
+		transform: translateX(-50%);
+		pointer-events: none;
+	}
+	.c-barres-jour__bulle strong {
+		color: var(--color-ink);
+	}
+	.c-barres-jour__col:hover .c-barres-jour__bulle {
+		display: grid;
+	}
+	.c-barres-jour__axe {
+		display: flex;
+		justify-content: space-between;
+		font-size: var(--fs-caption);
+		color: var(--color-muted);
+	}
+	.c-barres-jour__tableau summary {
+		inline-size: fit-content;
+		font-size: var(--fs-caption);
+		font-weight: var(--fw-medium);
+		color: var(--color-link);
+		cursor: pointer;
+	}
+	.c-barres-jour__tableau table {
+		inline-size: 100%;
+		margin-block-start: var(--space-xs);
+		font-size: var(--fs-caption);
+	}
+	.c-barres-jour__tableau th,
+	.c-barres-jour__tableau td {
+		padding: var(--space-xxs) var(--space-xs);
+		text-align: start;
+		border-block-end: var(--hairline-w) solid var(--color-hairline);
+	}
+	.c-barres-jour__tableau .u-nombre {
+		text-align: end;
+	}
+}

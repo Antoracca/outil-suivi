@@ -1,0 +1,265 @@
+@layer components {
+	.p-usage {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		gap: var(--space-lg);
+	}
+	.p-usage__tete {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-end;
+		justify-content: space-between;
+		gap: var(--space-base) var(--space-lg);
+	}
+	.p-usage__tete > div:first-child {
+		display: grid;
+		gap: var(--space-xs);
+		max-inline-size: var(--measure);
+	}
+	.p-usage__fil {
+		font-size: var(--fs-caption);
+		color: var(--color-muted);
+	}
+	.p-usage__fil a {
+		color: var(--color-link);
+	}
+	.p-usage__titre {
+		font-size: var(--fs-display-lg);
+		font-stretch: var(--fst-display);
+		letter-spacing: var(--ls-display-lg);
+		line-height: var(--lh-display);
+	}
+	.p-usage__intro {
+		color: var(--color-body);
+	}
+	.p-usage__outils {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--space-xs);
+	}
+	/* Choix de la période : boutons groupés, l'actif en Forêt. */
+	.p-usage__periodes {
+		display: inline-flex;
+		padding: 2px;
+		border: var(--hairline-w) solid var(--color-hairline-strong);
+		border-radius: var(--rounded-md);
+		background: var(--color-surface-card);
+	}
+	.p-usage__periodes button {
+		min-block-size: 2rem;
+		padding: 0 var(--space-sm);
+		border: 0;
+		border-radius: var(--rounded-sm);
+		background: none;
+		font-size: var(--fs-caption);
+		font-weight: var(--fw-medium);
+		color: var(--color-body);
+		cursor: pointer;
+	}
+	.p-usage__periodes button.is-actif {
+		background: var(--color-primary);
+		color: var(--color-on-primary);
+	}
+	.p-usage__periodes button:focus-visible {
+		outline: var(--focus-w) solid var(--color-ink);
+		outline-offset: var(--focus-gap);
+	}
+	.p-usage__note {
+		display: flex;
+		align-items: center;
+		gap: var(--space-xs);
+		font-size: var(--fs-caption);
+		color: var(--color-body);
+	}
+	.p-usage__tuiles {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+		gap: var(--space-base);
+	}
+	.p-usage__duo {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 26rem), 1fr));
+		gap: var(--space-lg);
+		align-items: start;
+	}
+
+	/* Constats automatiques */
+	.p-usage__constats {
+		display: grid;
+		gap: 0;
+	}
+	.p-usage__constat {
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr);
+		gap: var(--space-sm);
+		padding-block: var(--space-sm);
+	}
+	.p-usage__constat + .p-usage__constat {
+		border-block-start: var(--hairline-w) solid var(--color-hairline);
+	}
+	.p-usage__constat-icone {
+		display: grid;
+		place-items: center;
+		inline-size: 1.75rem;
+		block-size: 1.75rem;
+		border-radius: var(--rounded-sm);
+	}
+	.p-usage__constat--alerte .p-usage__constat-icone {
+		background: var(--color-error-soft);
+		color: var(--color-error);
+	}
+	.p-usage__constat--attention .p-usage__constat-icone {
+		background: var(--color-warning-soft);
+		color: var(--color-warning);
+	}
+	.p-usage__constat--info .p-usage__constat-icone {
+		background: var(--color-surface-strong);
+		color: var(--color-body);
+	}
+	.p-usage__constat--positif .p-usage__constat-icone {
+		background: var(--color-success-soft);
+		color: var(--color-success);
+	}
+	.p-usage__constat-titre {
+		font-size: var(--fs-body-sm);
+		font-weight: var(--fw-semibold);
+		color: var(--color-ink);
+	}
+	.p-usage__constat-niveau {
+		margin-inline-end: var(--space-xs);
+		padding: 1px var(--space-xs);
+		border-radius: var(--rounded-xs);
+		background: var(--color-surface-strong);
+		font-size: var(--fs-badge);
+		font-weight: var(--fw-label);
+		color: var(--color-body);
+	}
+	.p-usage__constat-detail,
+	.p-usage__constat-piste {
+		font-size: var(--fs-caption);
+		color: var(--color-body);
+	}
+	.p-usage__constat-piste strong {
+		color: var(--color-ink);
+	}
+
+	/* Tableaux */
+	.p-usage__defilement {
+		overflow-x: auto;
+	}
+	.p-usage__table {
+		inline-size: 100%;
+		font-size: var(--fs-table);
+		font-stretch: var(--fst-table);
+	}
+	.p-usage__table th,
+	.p-usage__table td {
+		padding: var(--space-sm) var(--space-md);
+		text-align: start;
+		vertical-align: middle;
+		border-block-end: var(--hairline-w) solid var(--color-hairline);
+	}
+	.p-usage__table thead th {
+		padding-block: var(--space-xs);
+		background: var(--color-canvas-soft);
+		font-size: var(--fs-table-head);
+		font-weight: var(--fw-label);
+		color: var(--color-body);
+	}
+	.p-usage__table tbody th {
+		font-weight: var(--fw-medium);
+		color: var(--color-ink);
+	}
+	.p-usage__table .u-nombre {
+		text-align: end;
+		font-variant-numeric: tabular-nums;
+	}
+	.p-usage__lent {
+		font-weight: var(--fw-semibold);
+		color: var(--color-warning);
+	}
+	.p-usage__org {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-xs);
+	}
+	/* Petite jauge horizontale (une seule teinte) */
+	.p-usage__jauge {
+		display: inline-block;
+		inline-size: 6rem;
+		block-size: var(--space-xs);
+		vertical-align: middle;
+		border-radius: var(--rounded-xs);
+		background: var(--color-jauge-fond);
+		overflow: hidden;
+	}
+	.p-usage__jauge > span {
+		display: block;
+		block-size: 100%;
+		border-radius: inherit;
+		background: var(--color-jauge-mois);
+	}
+	.p-usage__valeur,
+	.p-usage__nb {
+		font-variant-numeric: tabular-nums;
+		color: var(--color-ink);
+	}
+
+	/* Listes classées */
+	.p-usage__liste {
+		display: grid;
+		gap: 0;
+		font-size: var(--fs-body-sm);
+		color: var(--color-body);
+	}
+	.p-usage__liste li {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--space-xxs) var(--space-xs);
+		padding-block: var(--space-xs);
+		border-block-end: var(--hairline-w) solid var(--color-hairline);
+	}
+	.p-usage__liste li:last-child {
+		border-block-end: 0;
+	}
+	.p-usage__liste strong {
+		color: var(--color-ink);
+	}
+	.p-usage__liste .p-usage__nb {
+		margin-inline-start: auto;
+		font-weight: var(--fw-semibold);
+	}
+	.p-usage__difficulte {
+		color: var(--color-body);
+	}
+	.p-usage__repartitions {
+		display: grid;
+		gap: var(--space-base);
+	}
+	.p-usage__sous-titre {
+		margin-block-end: var(--space-xs);
+		font-size: var(--fs-title-sm);
+	}
+	.p-usage__barre-ligne {
+		display: grid;
+		grid-template-columns: 7rem minmax(0, 1fr) 3rem;
+		align-items: center;
+		gap: var(--space-xs);
+		padding-block: var(--space-xxs);
+		font-size: var(--fs-body-sm);
+		color: var(--color-body);
+	}
+	.p-usage__barre-ligne .p-usage__jauge {
+		inline-size: 100%;
+	}
+	.p-usage__barre-ligne .p-usage__nb {
+		text-align: end;
+	}
+	.p-usage__vide {
+		padding: var(--space-base);
+		font-size: var(--fs-body-sm);
+		color: var(--color-muted);
+	}
+}

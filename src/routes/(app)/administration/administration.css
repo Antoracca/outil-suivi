@@ -369,3 +369,19 @@
 		font-size: var(--fs-title-sm);
 	}
 }
+
+@layer components {
+	.p-admin__usage-acces {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-base);
+		font-size: var(--fs-body-sm);
+		color: var(--color-body);
+	}
+	.p-admin__usage-acces p {
+		flex: 1 1 22rem;
+		max-inline-size: var(--measure);
+	}
+}
