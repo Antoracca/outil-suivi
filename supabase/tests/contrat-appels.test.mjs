@@ -24,7 +24,8 @@ const { rows } = await db.query(`
 	where n.nspname = 'public'`);
 const sql = new Map(rows.map((r) => [r.nom, r]));
 
-const source = readFileSync(resolve(ici, '..', '..', 'src/lib/donnees/depot.svelte.ts'), 'utf8');
+// Le dépôt, plus les alertes push (abonnement de l'appareil).
+const source = ['src/lib/donnees/depot.svelte.ts', 'src/lib/donnees/push.svelte.ts'].map((f) => readFileSync(resolve(ici, '..', '..', f), 'utf8')).join('\n');
 const appels = [];
 // fn: 'nom', args: { cle: …, cle2: … }   (l'identifiant d'événement p_evenement est ajouté par #valider)
 for (const m of source.matchAll(/fn: '([a-z_0-9]+)',\s*args: \{([^}]*)\}/g)) {

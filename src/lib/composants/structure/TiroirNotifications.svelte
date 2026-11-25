@@ -6,6 +6,7 @@
 	import Bouton from '#lib/composants/ui/Bouton.svelte';
 	import LigneActivite from '#lib/composants/donnees/LigneActivite.svelte';
 	import EtatVide from '#lib/composants/ui/EtatVide.svelte';
+	import { alertes } from '#lib/donnees/push.svelte.ts';
 	import './TiroirNotifications.css';
 
 	let el: HTMLDialogElement | undefined = $state();
@@ -25,14 +26,8 @@
 			.sort((a, b) => b.ev!.date.localeCompare(a.ev!.date))
 	);
 	const affichees = $derived(filtre === 'non_lues' ? miennes.filter((x) => !x.n.lue) : miennes.slice(0, 60));
-	/* Alertes du navigateur (onglet en arrière-plan) : à autoriser une fois par appareil. */
-	const alertesPossibles = typeof Notification !== 'undefined';
-	let permission = $state<NotificationPermission>(alertesPossibles ? Notification.permission : 'denied');
-	async function activerAlertes() {
-		if (!alertesPossibles) return;
-		permission = await Notification.requestPermission();
-		if (permission === 'granted') new Notification('Alertes activées', { body: 'Vous serez prévenu ici même quand l’onglet de la plateforme est en arrière-plan.', icon: '/logo-apsud.jpg' });
-	}
+	/* Alertes sur l'appareil : push du serveur (mode réel, même plateforme fermée) ou alertes locales. */
+	const reel = $derived(depot.source === 'reel');
 
 	const parJour = $derived.by(() => {
 		const groupes = new Map<string, typeof affichees>();
@@ -58,15 +53,21 @@
 		</div>
 		<Bouton variante="texte" taille="sm" onclick={() => depot.marquerToutLu()}>Tout marquer comme lu</Bouton>
 	</div>
-	{#if alertesPossibles && permission !== 'granted'}
-		<div class="c-tiroir__alertes">
+	{#if alertes.etat !== 'indisponible'}
+		<div class="c-tiroir__alertes" class:is-actives={alertes.etat === 'activees_push'}>
 			<Icone nom="notification" taille="sm" />
-			{#if permission === 'denied'}
-				<p>Alertes bloquées par le navigateur. Pour les recevoir, autorisez les notifications pour ce site (icône à gauche de l’adresse).</p>
+			{#if alertes.etat === 'bloquees'}
+				<p>Alertes bloquées par le navigateur. Pour les recevoir, autorisez les notifications pour ce site (icône à gauche de l’adresse), puis rouvrez la cloche.</p>
+			{:else if alertes.etat === 'activees_push'}
+				<p><strong>Alertes activées sur cet appareil</strong>, même quand la plateforme est fermée.</p>
+				<Bouton variante="texte" taille="sm" onclick={() => alertes.desactiver()}>Désactiver</Bouton>
+			{:else if alertes.etat === 'activees_local' && !(reel && alertes.pushPossible)}
+				<p>Alertes activées pendant que la plateforme est ouverte{reel ? '' : ' (démonstration)'}.</p>
 			{:else}
-				<p>Recevez une alerte sur cet appareil quand l’onglet est en arrière-plan.</p>
-				<Bouton variante="secondaire" taille="sm" onclick={activerAlertes}>Activer</Bouton>
+				<p>Recevez une alerte sur cet appareil{reel && alertes.pushPossible ? ', même quand la plateforme est fermée' : ' quand l’onglet est en arrière-plan'}.</p>
+				<Bouton variante="secondaire" taille="sm" onclick={() => alertes.activer(reel)}>Activer</Bouton>
 			{/if}
+			{#if alertes.erreur}<p class="c-tiroir__alertes-erreur">{alertes.erreur}</p>{/if}
 		</div>
 	{/if}
 	<div class="c-tiroir__corps">

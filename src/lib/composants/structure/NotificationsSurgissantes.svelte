@@ -6,6 +6,7 @@
 	import { lienEvenement, nonLuesDe, titreEvenement, type NonLue } from '#lib/donnees/notifications.ts';
 	import type { Evenement } from '#lib/donnees/types.ts';
 	import LogoOrganisation from '#lib/composants/ui/LogoOrganisation.svelte';
+	import { alertes } from '#lib/donnees/push.svelte.ts';
 	import Icone from '#lib/icones/Icone.svelte';
 	import './NotificationsSurgissantes.css';
 
@@ -91,6 +92,8 @@
 
 	/** Alerte du système (onglet caché ou fenêtre réduite), si l'utilisateur l'a autorisée. */
 	function alerterNavigateur(ev: Evenement) {
+		// Push du serveur actif : c'est lui qui alerte (pas de doublon).
+		if (alertes.etat === 'activees_push') return;
 		if (typeof Notification === 'undefined' || Notification.permission !== 'granted' || document.visibilityState === 'visible') return;
 		try {
 			const n = new Notification(`${titreEvenement(ev)}${ev.volet ? ` · ${ev.volet}` : ''}`, { body: texte(ev), tag: ev.id, icon: '/logo-apsud.jpg' });

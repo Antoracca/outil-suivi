@@ -135,3 +135,13 @@
 		outline-offset: var(--focus-gap);
 	}
 }
+
+@layer components {
+	.c-tiroir__alertes.is-actives {
+		background: var(--color-canvas-soft);
+	}
+	.c-tiroir__alertes-erreur {
+		flex-basis: 100%;
+		color: var(--color-error);
+	}
+}

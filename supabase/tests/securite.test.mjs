@@ -441,6 +441,44 @@ await test('Planification M+1 : refusée hors de son volet, pour une activité d
 	await refuse(db.query(`insert into public.planifications (id, activite_id, volet, mois, prevue, valide_par) values ('x', $1, 'WASH-IDC', '2027-03', true, $2)`, [ACT_WASH, idc]), /permission denied/);
 });
 
+/* ---------- Alertes push (migration 0015) ---------- */
+
+await test('Push : sans compte, abonnement refusé ; un compte abonne son appareil sans pouvoir lire les abonnements', async () => {
+	await en(null);
+	await refuse(db.query(`select public.enregistrer_abonnement_push('https://push.exemple/a', 'cle', 'auth')`), /permission denied/);
+	await en(idc);
+	await refuse(db.query(`select public.enregistrer_abonnement_push('http://push.exemple/a', 'cle', 'auth')`), /Adresse d’abonnement invalide/);
+	await db.query(`select public.enregistrer_abonnement_push('https://push.exemple/idc', 'cle', 'auth', 'Chrome sur Android')`);
+	await refuse(db.query('select * from public.abonnements_push'), /permission denied/);
+	await refuse(db.query(`insert into public.abonnements_push (utilisateur, endpoint, p256dh, auth) values ($1, 'https://x', 'a', 'b')`, [idc]), /permission denied/);
+	await refuse(db.query('select * from public.parametres_serveur'), /permission denied/);
+	await enPostgres();
+	egal(await valeur(`select utilisateur::text from public.abonnements_push where endpoint = 'https://push.exemple/idc'`), idc, 'rattaché au compte :');
+});
+await test('Push : le même appareil passe au compte qui s’y connecte ; chacun ne retire que le sien', async () => {
+	await en(coord);
+	await db.query(`select public.enregistrer_abonnement_push('https://push.exemple/idc', 'cle2', 'auth2')`);
+	await en(idc);
+	await db.query(`select public.retirer_abonnement_push('https://push.exemple/idc')`);
+	await enPostgres();
+	egal(await valeur(`select utilisateur::text from public.abonnements_push where endpoint = 'https://push.exemple/idc'`), coord, 'toujours à la coordination :');
+	await en(coord);
+	await db.query(`select public.retirer_abonnement_push('https://push.exemple/idc')`);
+	await enPostgres();
+	egal(Number(await valeur(`select count(*) from public.abonnements_push`)), 0, 'retiré :');
+});
+await test('Push : une notification pour un appareil abonné se crée normalement (sans pg_net, aucun appel)', async () => {
+	await en(idc);
+	await db.query(`select public.enregistrer_abonnement_push('https://push.exemple/idc2', 'cle', 'auth')`);
+	const avant = Number(await valeur(`select count(*) from public.notifications where destinataire = $1`, [idc]));
+	await en(coord);
+	await db.query(`select public.planifier_mois($1, 'WASH-IDC', '2027-01', '{}')`, [ev()]);
+	await enPostgres();
+	const apres = Number(await valeur(`select count(*) from public.notifications where destinataire = $1`, [idc]));
+	egal(apres, avant + 1, 'notification créée :');
+	egal(Number(await valeur(`select count(*) from public.notifications where destinataire = $1 and push_envoye_le is not null`, [idc])), 0, 'rien de poussé sans serveur :');
+});
+
 /* ---------- Comptes ---------- */
 
 await test('Comptes : seul le super-admin désactive, et jamais lui-même', async () => {

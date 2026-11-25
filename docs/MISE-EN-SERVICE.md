@@ -105,6 +105,22 @@ npx supabase db push        --db-url "…même adresse…"
 - Le mot de passe ne s'écrit dans aucun fichier du projet : il se tape dans la commande, ou on utilise `npx supabase login` puis `npx supabase link --project-ref npcqqivoorfwkfaznsbc` sur le poste du développeur.
 - Le schéma avait été collé dans l'éditeur SQL avant l'arrivée de la CLI : l'historique a été aligné par `migration repair --status applied` après vérification que la base en ligne était identique aux 7 migrations (22 tables, 45 fonctions du projet, 22 politiques, 19 déclencheurs d'audit, 14 tables en temps réel). La seule fonction en plus, `rls_auto_enable()`, est ajoutée par Supabase lui-même.
 
+## Alertes push (notifications même plateforme fermée), 2026-11-25
+
+Circuit : une notification est créée en base → déclencheur `notifications_push` (migration 0015, extension `pg_net`) → fonction Edge `envoyer-push` (`supabase/functions/envoyer-push/`) → alerte Web Push sur chaque appareil abonné du destinataire → le service worker `static/sw.js` l'affiche ; un clic ouvre l'élément concerné.
+
+Mise en service, à faire une fois, dans un terminal, depuis `plateforme-consortium/` :
+
+1. Se connecter au CLI Supabase (ouvre le navigateur) : `node node_modules/supabase/dist/supabase.js login`
+2. Générer les clés et déployer : `node scripts/push/configurer-push.mjs` (demande l'adresse https de la plateforme). La clé privée part directement dans les secrets de la fonction Edge (`VAPID_CLE_PRIVEE`, avec `VAPID_CLE_PUBLIQUE` et `VAPID_SUJET`) : elle n'est ni affichée ni écrite dans le projet. La clé publique est écrite dans `src/lib/donnees/reel/cle-push-publique.ts` (publique par nature, à committer).
+3. Appliquer la migration 0015 : `node scripts/supabase/pousser.mjs` (mot de passe de la base, masqué).
+4. Mettre le code en ligne (commit de la clé publique, push).
+5. Sur chaque appareil : cloche › « Activer » (le navigateur demande l'autorisation).
+
+Sécurité : aucun secret dans la base ni dans le dépôt. La fonction Edge est déployée sans vérification de jeton, mais n'envoie que pour une notification de moins de 10 minutes pas encore poussée (`push_envoye_le`), qu'elle marque aussitôt : un appel forgé ne peut déclencher qu'une alerte qui serait partie de toute façon. Les abonnements (`abonnements_push`) ne sont lisibles par aucun compte ; chacun abonne ou retire son appareil par deux fonctions SQL. Redéployer la fonction après une modification : `node scripts/push/configurer-push.mjs --redeployer`.
+
+Limites : iPhone et iPad reçoivent le push seulement si la plateforme est ajoutée à l'écran d'accueil (iOS 16.4 ou plus) ; un appareil dont l'utilisateur a bloqué les notifications ne reçoit rien (la cloche l'indique).
+
 ## Reste à faire (prochaines étapes, toujours gratuites)
 
 - **Automatisations GitHub Actions** : sollicitation quotidienne de la base (contre la mise en pause) et sauvegarde `pg_dump` hebdomadaire, avec un test de restauration (PLAN.md, phase 2, point 5).

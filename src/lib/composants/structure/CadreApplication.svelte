@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import { depot } from '#lib/donnees/depot.svelte.ts';
+	import { alertes } from '#lib/donnees/push.svelte.ts';
 	import BarreLaterale from './BarreLaterale.svelte';
 	import BarreContexte from './BarreContexte.svelte';
 	import TiroirNotifications from './TiroirNotifications.svelte';
@@ -14,6 +15,13 @@
 		children: Snippet;
 	}
 	let { children }: Props = $props();
+
+	// Alertes de l'appareil : état relu à chaque connexion ; en mode réel, l'abonnement
+	// existant est rattaché au compte connecté (changement de compte sur le même appareil).
+	$effect(() => {
+		if (!depot.pret || !depot.utilisateurId) return;
+		void alertes.actualiser(depot.source === 'reel').catch(() => undefined);
+	});
 </script>
 
 <a class="c-cadre__evitement" href="#contenu">Aller au contenu</a>
