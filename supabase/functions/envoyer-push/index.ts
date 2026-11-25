@@ -7,13 +7,15 @@
  * seule une notification récente (10 min) et pas encore poussée est envoyée, puis marquée.
  *
  * Secrets de la fonction (jamais dans le dépôt) : VAPID_CLE_PUBLIQUE, VAPID_CLE_PRIVEE,
- * VAPID_SUJET (adresse https de la plateforme). SUPABASE_URL et SUPABASE_SERVICE_ROLE_KEY
- * sont fournis par Supabase à la fonction ; la clé service_role ne quitte pas le serveur.
+ * VAPID_SUJET (adresse https de la plateforme). Accès à la base : connexion Postgres directe
+ * par SUPABASE_DB_URL, fournie par Supabase à la fonction (ne quitte pas le serveur). On
+ * n'utilise pas l'API avec la clé service_role : avec le nouveau système de clés du projet,
+ * elle était traitée comme un visiteur (« permission denied for table notifications »).
  *
  * Titres et liens : mêmes règles que src/lib/donnees/notifications.ts (à garder alignés).
  */
 import webpush from 'npm:web-push@3.6.7';
-import { createClient } from 'npm:@supabase/supabase-js@2.49.4';
+import postgres from 'npm:postgres@3.4.5';
 
 const TITRES: Record<string, string> = {
 	activite_creee: 'Nouvelle activité',
@@ -33,7 +35,7 @@ const TITRES: Record<string, string> = {
 interface Evenement {
 	id: string;
 	type: string;
-	date: string;
+	date: Date;
 	volet: string | null;
 	mois: string | null;
 	cible_type: string;
@@ -42,6 +44,7 @@ interface Evenement {
 	resume: string;
 	organisation: string;
 	auteur: string;
+	auteur_nom: string | null;
 }
 
 function lien(e: Evenement): string {
@@ -72,46 +75,52 @@ Deno.serve(async (req) => {
 	if (!publique || !privee) return reponse(503, { erreur: 'Clés VAPID non configurées' });
 	webpush.setVapidDetails(sujet, publique, privee);
 
-	const sb = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!, { auth: { persistSession: false } });
+	const url = Deno.env.get('SUPABASE_DB_URL');
+	if (!url) return reponse(503, { erreur: 'Connexion à la base indisponible' });
+	const sql = postgres(url, { prepare: false, max: 1, idle_timeout: 5 });
+	try {
+		// Réservation atomique : seule une notification pas encore poussée passe (pas de double envoi).
+		const [reservee] = await sql<{ id: string; evenement_id: string; destinataire: string }[]>`
+			update public.notifications set push_envoye_le = now()
+			where id = ${notificationId} and push_envoye_le is null
+			returning id, evenement_id, destinataire`;
+		if (!reservee) return reponse(200, { envoye: 0, motif: 'déjà poussée ou inconnue' });
 
-	// Réservation atomique : seule une notification pas encore poussée passe (pas de double envoi).
-	const { data: reservee, error: e1 } = await sb
-		.from('notifications')
-		.update({ push_envoye_le: new Date().toISOString() })
-		.eq('id', notificationId)
-		.is('push_envoye_le', null)
-		.select('id, evenement_id, destinataire')
-		.maybeSingle();
-	if (e1) return reponse(500, { erreur: e1.message });
-	if (!reservee) return reponse(200, { envoye: 0, motif: 'déjà poussée ou inconnue' });
+		const [ev] = await sql<Evenement[]>`
+			select j.id, j.type, j.date, j.volet, j.mois, j.cible_type, j.cible_id, j.cible_libelle, j.resume, j.organisation, j.auteur, p.nom as auteur_nom
+			from public.journal j left join public.profils p on p.id = j.auteur
+			where j.id = ${reservee.evenement_id}`;
+		if (!ev) return reponse(500, { erreur: 'événement introuvable' });
+		if (Date.now() - new Date(ev.date).getTime() > 10 * 60 * 1000) return reponse(200, { envoye: 0, motif: 'notification trop ancienne' });
 
-	const { data: ev, error: e2 } = await sb.from('journal').select('*').eq('id', reservee.evenement_id).maybeSingle<Evenement>();
-	if (e2 || !ev) return reponse(500, { erreur: e2?.message ?? 'événement introuvable' });
-	if (Date.now() - new Date(ev.date).getTime() > 10 * 60 * 1000) return reponse(200, { envoye: 0, motif: 'notification trop ancienne' });
+		const abonnements = await sql<{ id: string; endpoint: string; p256dh: string; auth: string }[]>`
+			select id, endpoint, p256dh, auth from public.abonnements_push where utilisateur = ${reservee.destinataire}`;
+		if (!abonnements.length) return reponse(200, { envoye: 0, motif: 'aucun appareil abonné' });
 
-	const { data: auteur } = await sb.from('profils').select('nom').eq('id', ev.auteur).maybeSingle();
-	const { data: abonnements } = await sb.from('abonnements_push').select('id, endpoint, p256dh, auth').eq('utilisateur', reservee.destinataire);
-	if (!abonnements?.length) return reponse(200, { envoye: 0, motif: 'aucun appareil abonné' });
+		const charge = JSON.stringify({
+			titre: `${TITRES[ev.type] ?? 'Nouveauté'}${ev.volet ? ` · ${ev.volet}` : ''}`,
+			corps: `${ev.auteur_nom ?? 'Quelqu’un'} (${ev.organisation}) ${ev.resume} ${ev.cible_libelle}`,
+			lien: lien(ev),
+			tag: ev.id,
+			evenement_id: ev.id
+		});
 
-	const charge = JSON.stringify({
-		titre: `${TITRES[ev.type] ?? 'Nouveauté'}${ev.volet ? ` · ${ev.volet}` : ''}`,
-		corps: `${auteur?.nom ?? 'Quelqu’un'} (${ev.organisation}) ${ev.resume} ${ev.cible_libelle}`,
-		lien: lien(ev),
-		tag: ev.id,
-		evenement_id: ev.id
-	});
-
-	let envoye = 0;
-	for (const a of abonnements) {
-		try {
-			await webpush.sendNotification({ endpoint: a.endpoint, keys: { p256dh: a.p256dh, auth: a.auth } }, charge, { TTL: 24 * 3600, urgency: 'high' });
-			envoye += 1;
-			await sb.from('abonnements_push').update({ dernier_envoi: new Date().toISOString() }).eq('id', a.id);
-		} catch (err) {
-			const code = (err as { statusCode?: number }).statusCode;
-			// Abonnement expiré ou révoqué par le navigateur : on le retire.
-			if (code === 404 || code === 410) await sb.from('abonnements_push').delete().eq('id', a.id);
+		let envoye = 0;
+		for (const a of abonnements) {
+			try {
+				await webpush.sendNotification({ endpoint: a.endpoint, keys: { p256dh: a.p256dh, auth: a.auth } }, charge, { TTL: 24 * 3600, urgency: 'high' });
+				envoye += 1;
+				await sql`update public.abonnements_push set dernier_envoi = now() where id = ${a.id}`;
+			} catch (err) {
+				const code = (err as { statusCode?: number }).statusCode;
+				// Abonnement expiré ou révoqué par le navigateur : on le retire.
+				if (code === 404 || code === 410) await sql`delete from public.abonnements_push where id = ${a.id}`;
+			}
 		}
+		return reponse(200, { envoye });
+	} catch (e) {
+		return reponse(500, { erreur: e instanceof Error ? e.message : String(e) });
+	} finally {
+		await sql.end({ timeout: 2 });
 	}
-	return reponse(200, { envoye });
 });
