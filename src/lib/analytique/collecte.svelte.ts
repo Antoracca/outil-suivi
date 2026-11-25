@@ -101,15 +101,16 @@ class Collecte {
 	}
 
 	/** Enregistre le choix : sur le serveur en mode réel, sur l'appareil en démonstration. */
-	async decider(consent: boolean) {
-		this.demandeOuverte = false;
+	async decider(consent: boolean, fermer = true) {
+		if (fermer) this.demandeOuverte = false;
+		const avant = this.choix;
 		this.choix = consent;
 		if (this.#source === 'reel') {
 			const { error } = await serveur().rpc('enregistrer_consentement', { p_analytique: consent });
 			if (error) throw new Error(error.message);
 		} else if (this.#utilisateur) ecrire(`apsud-suivi:consentement:${this.#utilisateur}`, consent ? 'oui' : 'non');
-		if (consent) this.#lancer();
-		else this.#arreter(false);
+		if (consent && avant !== true) this.#lancer();
+		else if (!consent) this.#arreter(false);
 	}
 
 	/** Début d'une navigation (pour mesurer le temps d'affichage de l'écran suivant). */

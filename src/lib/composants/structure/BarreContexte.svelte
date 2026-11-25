@@ -114,7 +114,7 @@
 							</a>
 						{/if}
 						<button class="c-contexte__menu-lien" type="button" onclick={() => { collecte.revoir(); menuOuvert = false; }}>
-							<Icone nom="activite" taille="sm" /> Mesure d’utilisation : {collecte.choix === true ? 'acceptée' : collecte.choix === false ? 'refusée' : 'à choisir'}
+							<Icone nom="activite" taille="sm" /> Mesure d’utilisation : {collecte.choix === true ? 'activée' : collecte.choix === false ? 'désactivée' : 'à choisir'}
 						</button>
 						<button class="c-contexte__menu-lien" type="button" onclick={() => { depot.deconnecter(); menuOuvert = false; goto('/connexion'); }}>
 							<Icone nom="deconnexion" taille="sm" /> Se déconnecter

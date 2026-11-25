@@ -104,7 +104,7 @@
 		{#if depot.source === 'demo'}
 			<li><button type="button" onclick={() => aller('/connexion')}><Icone nom="equipe" /> <span>Changer de compte de démonstration</span></button></li>
 		{/if}
-		<li><button type="button" onclick={() => { menu?.close(); collecte.revoir(); }}><Icone nom="activite" /> <span>Mesure d’utilisation</span></button></li>
+		<li><button type="button" onclick={() => { menu?.close(); collecte.revoir(); }}><Icone nom="activite" /> <span>Mesure d’utilisation : {collecte.choix === true ? 'activée' : collecte.choix === false ? 'désactivée' : 'à choisir'}</span></button></li>
 		<li><button type="button" onclick={() => { menu?.close(); depot.deconnecter(); goto('/connexion'); }}><Icone nom="deconnexion" /> <span>Se déconnecter</span></button></li>
 	</ul>
 </dialog>
