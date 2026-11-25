@@ -1,0 +1,12 @@
+{
+	"name": "Suivi consortium APSUD",
+	"short_name": "Suivi APSUD",
+	"description": "Plateforme de suivi du consortium APSUD (Fonds humanitaire RCA).",
+	"lang": "fr",
+	"start_url": "/",
+	"scope": "/",
+	"display": "standalone",
+	"background_color": "#FFFFFF",
+	"theme_color": "#0B2A1A",
+	"icons": [{ "src": "/logo-apsud.jpg", "sizes": "85x102", "type": "image/jpeg", "purpose": "any" }]
+}

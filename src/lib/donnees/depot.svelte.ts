@@ -452,8 +452,9 @@ class Depot {
 		return this.etat.utilisateurs.find((u) => u.id === id)?.nom ?? 'Utilisateur inconnu';
 	}
 
+	/** Pastille de la cloche : notifications non lues + annonces non lues. */
 	notificationsNonLues(): number {
-		return this.etat.notifications.filter((n) => n.destinataire === this.utilisateurId && !n.lue).length;
+		return this.etat.notifications.filter((n) => n.destinataire === this.utilisateurId && !n.lue).length + this.annoncesNonLues().length;
 	}
 
 	/** Une cible a-t-elle été modifiée par quelqu'un d'autre il y a moins de 10 s ? */
@@ -1044,6 +1045,7 @@ class Depot {
 		this.#sauver();
 		if (this.source === 'demo') this.#canal?.postMessage({ type: 'lu' } satisfies MessageCanal);
 		if (this.source === 'reel') this.#envoyer({ id: uid('lu'), fn: 'marquer_lu', args: { p_evenement_id: null }, libelle: 'Notifications marquées comme lues' });
+		for (const a of this.annoncesNonLues()) this.marquerAnnonceLue(a.id);
 	}
 
 	/** Annonces que le compte connecté n'a pas encore marquées comme lues (plus ancienne d'abord). */

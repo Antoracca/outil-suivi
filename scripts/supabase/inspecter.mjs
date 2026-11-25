@@ -57,6 +57,16 @@ try {
 		union all select 'taches', count(*)::int from public.taches
 		union all select 'notifications', count(*)::int from public.notifications
 		union all select 'invitations', count(*)::int from public.invitations`);
+	// Alertes push : extension, abonnements, envois et réponses de la fonction Edge.
+	await q('Push : extension pg_net installée', `select (to_regnamespace('net') is not null) as pg_net`);
+	await q('Push : appareils abonnés', `select p.organisation, p.role, count(*)::int as appareils, max(s.dernier_envoi)::text as dernier_envoi from public.abonnements_push s join public.profils p on p.id = s.utilisateur group by 1, 2`);
+	await q('Push : notifications poussées', `select count(*) filter (where push_envoye_le is not null)::int as poussees, count(*)::int as total from public.notifications`);
+	await q('Annonces', `select id, push_envoye_le is not null as poussee, cree_le::text from public.annonces order by cree_le`);
+	try {
+		await q('Push : dernières réponses de la fonction Edge (pg_net)', `select id, status_code, left(coalesce(content::text, error_msg, ''), 160) as reponse, created::text from net._http_response order by created desc limit 10`);
+	} catch (e) {
+		console.log(`\n## Push : réponses pg_net illisibles (${e.message})`);
+	}
 } catch (e) {
 	console.error(`\nErreur de lecture : ${e.message}`);
 } finally {

@@ -5,6 +5,11 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="theme-color" content="#0B2A1A" />
 		<meta name="robots" content="noindex, nofollow" />
+		<!-- Application ajoutable à l'écran d'accueil : nécessaire aux alertes push sur iPhone et iPad (iOS 16.4+). -->
+		<link rel="manifest" href="/manifest.webmanifest" />
+		<link rel="apple-touch-icon" href="/logo-apsud.jpg" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-title" content="Suivi APSUD" />
 		<title>Suivi consortium APSUD</title>
 		%sveltekit.head%
 	</head>

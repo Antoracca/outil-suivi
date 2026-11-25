@@ -2,7 +2,9 @@
  * Fonction Edge « envoyer-push » (Supabase, Deno) : envoie l'alerte d'une notification
  * à tous les appareils abonnés de son destinataire (Web Push, clés VAPID).
  *
- * Appelée par le déclencheur `notifications_push` (migration 0015) avec { notification_id }.
+ * Appelée par les déclencheurs `notifications_push` (migration 0015) avec { notification_id }
+ * (au destinataire de la notification) et `annonces_push` (migration 0017) avec { annonce_id }
+ * (à tous les comptes actifs abonnés : ex. une nouvelle ONG rejoint le consortium).
  * Déployée SANS vérification de jeton (--no-verify-jwt) : la protection vient de la base :
  * seule une notification récente (10 min) et pas encore poussée est envoyée, puis marquée.
  *
@@ -57,17 +59,42 @@ function lien(e: Evenement): string {
 	return `/volets/${e.volet}`;
 }
 
+type Abonnement = { id: string; endpoint: string; p256dh: string; auth: string };
+type Sql = ReturnType<typeof postgres>;
+
+/** Envoie la charge à chaque appareil ; retire les abonnements expirés. */
+async function envoyerA(sql: Sql, abonnements: Abonnement[], charge: string): Promise<number> {
+	let envoye = 0;
+	for (const a of abonnements) {
+		try {
+			await webpush.sendNotification({ endpoint: a.endpoint, keys: { p256dh: a.p256dh, auth: a.auth } }, charge, { TTL: 24 * 3600, urgency: 'high' });
+			envoye += 1;
+			await sql`update public.abonnements_push set dernier_envoi = now() where id = ${a.id}`;
+		} catch (err) {
+			const code = (err as { statusCode?: number }).statusCode;
+			// Abonnement expiré ou révoqué par le navigateur : on le retire.
+			if (code === 404 || code === 410) await sql`delete from public.abonnements_push where id = ${a.id}`;
+		}
+	}
+	return envoye;
+}
+
+const DIX_MINUTES = 10 * 60 * 1000;
+
 const reponse = (statut: number, corps: unknown) => new Response(JSON.stringify(corps), { status: statut, headers: { 'Content-Type': 'application/json' } });
 
 Deno.serve(async (req) => {
 	if (req.method !== 'POST') return reponse(405, { erreur: 'POST seulement' });
-	let notificationId: string | undefined;
+	let notificationId: unknown;
+	let annonceId: unknown;
 	try {
-		notificationId = (await req.json())?.notification_id;
+		const corps = await req.json();
+		notificationId = corps?.notification_id;
+		annonceId = corps?.annonce_id;
 	} catch {
 		return reponse(400, { erreur: 'Corps JSON attendu' });
 	}
-	if (!notificationId || typeof notificationId !== 'string') return reponse(400, { erreur: 'notification_id manquant' });
+	if (typeof notificationId !== 'string' && typeof annonceId !== 'string') return reponse(400, { erreur: 'notification_id ou annonce_id manquant' });
 
 	const publique = Deno.env.get('VAPID_CLE_PUBLIQUE');
 	const privee = Deno.env.get('VAPID_CLE_PRIVEE');
@@ -79,10 +106,25 @@ Deno.serve(async (req) => {
 	if (!url) return reponse(503, { erreur: 'Connexion à la base indisponible' });
 	const sql = postgres(url, { prepare: false, max: 1, idle_timeout: 5 });
 	try {
+		if (typeof annonceId === 'string') {
+			// Annonce : réservée une fois, envoyée à tous les comptes actifs abonnés.
+			const [a] = await sql<{ id: string; titre: string; texte: string; cree_le: Date }[]>`
+				update public.annonces set push_envoye_le = now()
+				where id = ${annonceId} and push_envoye_le is null and archive_le is null
+				returning id, titre, texte, cree_le`;
+			if (!a) return reponse(200, { envoye: 0, motif: 'déjà poussée ou inconnue' });
+			if (Date.now() - new Date(a.cree_le).getTime() > DIX_MINUTES) return reponse(200, { envoye: 0, motif: 'annonce trop ancienne' });
+			const abonnements = await sql<Abonnement[]>`
+				select s.id, s.endpoint, s.p256dh, s.auth from public.abonnements_push s
+				join public.profils p on p.id = s.utilisateur where p.actif`;
+			const charge = JSON.stringify({ titre: a.titre, corps: a.texte, lien: '/', tag: `annonce-${a.id}` });
+			return reponse(200, { envoye: await envoyerA(sql, abonnements, charge) });
+		}
+
 		// Réservation atomique : seule une notification pas encore poussée passe (pas de double envoi).
 		const [reservee] = await sql<{ id: string; evenement_id: string; destinataire: string }[]>`
 			update public.notifications set push_envoye_le = now()
-			where id = ${notificationId} and push_envoye_le is null
+			where id = ${notificationId as string} and push_envoye_le is null
 			returning id, evenement_id, destinataire`;
 		if (!reservee) return reponse(200, { envoye: 0, motif: 'déjà poussée ou inconnue' });
 
@@ -91,9 +133,9 @@ Deno.serve(async (req) => {
 			from public.journal j left join public.profils p on p.id = j.auteur
 			where j.id = ${reservee.evenement_id}`;
 		if (!ev) return reponse(500, { erreur: 'événement introuvable' });
-		if (Date.now() - new Date(ev.date).getTime() > 10 * 60 * 1000) return reponse(200, { envoye: 0, motif: 'notification trop ancienne' });
+		if (Date.now() - new Date(ev.date).getTime() > DIX_MINUTES) return reponse(200, { envoye: 0, motif: 'notification trop ancienne' });
 
-		const abonnements = await sql<{ id: string; endpoint: string; p256dh: string; auth: string }[]>`
+		const abonnements = await sql<Abonnement[]>`
 			select id, endpoint, p256dh, auth from public.abonnements_push where utilisateur = ${reservee.destinataire}`;
 		if (!abonnements.length) return reponse(200, { envoye: 0, motif: 'aucun appareil abonné' });
 
@@ -105,19 +147,7 @@ Deno.serve(async (req) => {
 			evenement_id: ev.id
 		});
 
-		let envoye = 0;
-		for (const a of abonnements) {
-			try {
-				await webpush.sendNotification({ endpoint: a.endpoint, keys: { p256dh: a.p256dh, auth: a.auth } }, charge, { TTL: 24 * 3600, urgency: 'high' });
-				envoye += 1;
-				await sql`update public.abonnements_push set dernier_envoi = now() where id = ${a.id}`;
-			} catch (err) {
-				const code = (err as { statusCode?: number }).statusCode;
-				// Abonnement expiré ou révoqué par le navigateur : on le retire.
-				if (code === 404 || code === 410) await sql`delete from public.abonnements_push where id = ${a.id}`;
-			}
-		}
-		return reponse(200, { envoye });
+		return reponse(200, { envoye: await envoyerA(sql, abonnements, charge) });
 	} catch (e) {
 		return reponse(500, { erreur: e instanceof Error ? e.message : String(e) });
 	} finally {
