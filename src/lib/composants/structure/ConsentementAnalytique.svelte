@@ -1,14 +1,20 @@
 <script lang="ts">
 	import { collecte } from '#lib/analytique/collecte.svelte.ts';
+	import Bouton from '#lib/composants/ui/Bouton.svelte';
 	import Icone from '#lib/icones/Icone.svelte';
+	import LogoApsud from './LogoApsud.svelte';
+	import '#lib/composants/ui/Dialogue.css';
 	import './ConsentementAnalytique.css';
 
 	/**
-	 * Demande de consentement à la mesure d'utilisation : à l'arrivée, 3 fois au plus tant
-	 * qu'aucun choix n'est fait ; de nouveau depuis le menu du compte pour changer d'avis.
+	 * Demande de consentement à la mesure d'utilisation. DEUX choix seulement, « Je consens »
+	 * ou « Je ne consens pas » (consigne du développeur, 2026-11-25) : ni croix, ni Échap, ni
+	 * clic à côté pour fermer. Elle revient à chaque arrivée tant qu'aucun choix n'est fait.
+	 * Présentation : le `dialog` de DESIGN.md (480 px, rayon 16, en-tête, corps, pied à filet).
 	 */
 	let el: HTMLDialogElement | undefined = $state();
 	let erreur = $state<string | null>(null);
+	let envoi = $state(false);
 
 	$effect(() => {
 		if (!el) return;
@@ -18,58 +24,63 @@
 
 	async function choisir(consent: boolean) {
 		erreur = null;
+		envoi = true;
 		try {
 			await collecte.decider(consent);
 		} catch (e) {
-			erreur = `Choix non enregistré : ${e instanceof Error ? e.message : String(e)}`;
+			erreur = `Choix non enregistré, réessayez : ${e instanceof Error ? e.message : String(e)}`;
+			collecte.demandeOuverte = true;
+		} finally {
+			envoi = false;
 		}
 	}
 </script>
 
-<dialog bind:this={el} class="c-consentement" aria-labelledby="consentement-titre" aria-describedby="consentement-texte" onclose={() => collecte.fermerSansChoisir()}>
+<dialog
+	bind:this={el}
+	class="c-dialogue c-consentement"
+	aria-labelledby="consentement-titre"
+	aria-describedby="consentement-texte"
+	oncancel={(e) => e.preventDefault()}
+	onclose={() => {
+		// Fermée autrement que par un choix (Échap répété, navigateur) : elle revient aussitôt.
+		if (collecte.demandeOuverte) el?.showModal();
+	}}
+>
 	<header class="c-consentement__tete">
-		<span class="c-consentement__picto" aria-hidden="true"><Icone nom="activite" /></span>
-		<div>
-			<p class="c-consentement__surtitre">Améliorer l’outil ensemble</p>
-			<h2 class="c-consentement__titre" id="consentement-titre">Mesure d’utilisation de la plateforme</h2>
-		</div>
-		<button type="button" class="c-consentement__fermer" onclick={() => collecte.fermerSansChoisir()} aria-label="Décider plus tard"><Icone nom="fermer" /></button>
+		<p class="c-consentement__marque"><LogoApsud /> <span>Suivi consortium APSUD</span></p>
+		<h2 class="c-dialogue__titre" id="consentement-titre">Mesure d’utilisation</h2>
+		<p class="c-consentement__chapeau">Votre accord est demandé avant toute mesure. Tant que vous n’avez pas répondu, rien n’est mesuré.</p>
 	</header>
-	<div class="c-consentement__corps" id="consentement-texte">
+
+	<div class="c-dialogue__corps" id="consentement-texte">
 		<p>
-			APSUD souhaite comprendre comment la plateforme est utilisée, pour l’améliorer de jour en jour. Avec votre accord, l’outil enregistre votre façon de l’utiliser ; ces informations
-			serviront aussi à une analyse automatique (intelligence artificielle) des usages, afin d’optimiser l’outil.
+			APSUD veut comprendre comment la plateforme est utilisée, pour l’améliorer de jour en jour. Avec votre accord, l’outil enregistre votre façon de l’utiliser ; ces informations
+			serviront aussi à une analyse automatique des usages, par intelligence artificielle, afin d’optimiser l’outil.
 		</p>
-		<div class="c-consentement__colonnes">
+		<dl class="c-consentement__tableau">
 			<div>
-				<p class="c-consentement__liste-titre"><Icone nom="valider" taille="sm" /> Ce qui est mesuré</p>
-				<ul>
-					<li>les pages ouvertes et le temps passé ;</li>
-					<li>les boutons et liens utilisés ;</li>
-					<li>le type d’appareil, la taille d’écran et la qualité de connexion ;</li>
-					<li>les erreurs rencontrées.</li>
-				</ul>
+				<dt><Icone nom="valider" taille="sm" /> Mesuré, avec votre accord</dt>
+				<dd>Pages ouvertes et temps passé, boutons et liens utilisés, type d’appareil, taille d’écran, qualité de connexion, erreurs rencontrées.</dd>
 			</div>
 			<div>
-				<p class="c-consentement__liste-titre"><Icone nom="cadenas" taille="sm" /> Ce qui ne l’est jamais</p>
-				<ul>
-					<li>le contenu de vos saisies (valeurs, textes, fichiers) ;</li>
-					<li>votre mot de passe ;</li>
-					<li>quoi que ce soit si vous ne consentez pas.</li>
-				</ul>
+				<dt><Icone nom="cadenas" taille="sm" /> Jamais mesuré</dt>
+				<dd>Le contenu de vos saisies (valeurs, textes, fichiers) et votre mot de passe.</dd>
 			</div>
-		</div>
-		<p class="c-consentement__note">
-			Je comprends que ce choix est libre, qu’il ne change rien à l’accès à la plateforme, et que je peux le modifier à tout moment (menu du compte › Mesure d’utilisation). Seule la
-			super-administration d’APSUD consulte ces informations.
-		</p>
+			<div>
+				<dt><Icone nom="oeil" taille="sm" /> Qui consulte</dt>
+				<dd>La super-administration d’APSUD, seulement.</dd>
+			</div>
+		</dl>
+		<p class="c-consentement__note">Je comprends que ce choix est libre, qu’il ne change rien à mon accès, et que je pourrai le modifier à tout moment depuis le menu du compte, « Mesure d’utilisation ».</p>
 		{#if collecte.choix !== null}
-			<p class="c-consentement__etat">Votre choix actuel : <strong>{collecte.choix ? 'vous consentez' : 'vous ne consentez pas'}</strong>.</p>
+			<p class="c-consentement__note">Votre choix actuel : <strong>{collecte.choix ? 'vous consentez' : 'vous ne consentez pas'}</strong>.</p>
 		{/if}
-		{#if erreur}<p class="c-consentement__erreur" role="alert">{erreur}</p>{/if}
+		{#if erreur}<p class="c-consentement__erreur" role="alert"><Icone nom="alerte" taille="sm" /> {erreur}</p>{/if}
 	</div>
-	<footer class="c-consentement__pied">
-		<button type="button" class="c-consentement__bouton" onclick={() => choisir(false)}>Je ne consens pas</button>
-		<button type="button" class="c-consentement__bouton c-consentement__bouton--principal" onclick={() => choisir(true)}><Icone nom="valider" taille="sm" /> Je consens</button>
+
+	<footer class="c-dialogue__pied c-consentement__pied">
+		<Bouton variante="secondaire" disabled={envoi} onclick={() => choisir(false)}>Je ne consens pas</Bouton>
+		<Bouton variante="primaire" icone="valider" disabled={envoi} onclick={() => choisir(true)}>Je consens</Bouton>
 	</footer>
 </dialog>

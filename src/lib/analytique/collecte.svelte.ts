@@ -9,7 +9,8 @@
  * Règles :
  *   - rien n'est enregistré sans « Je consens » (et la base refuse aussi tout envoi sans accord,
  *     migration 0016) ; le choix se change à tout moment (menu du compte › Mesure d'utilisation) ;
- *   - la demande s'affiche à l'arrivée, 3 fois au plus tant qu'aucun choix n'est fait ;
+ *   - la demande s'affiche à chaque arrivée tant qu'aucun choix n'est fait, avec DEUX choix
+ *     seulement (« Je consens » / « Je ne consens pas ») : elle ne se ferme pas autrement ;
  *   - jamais le contenu des saisies : ni valeurs, ni textes tapés, ni noms de fichiers ;
  *   - mode réel : envoi groupé à la base (enregistrer_analytique) ; démonstration : gardé
  *     dans ce navigateur seulement (300 derniers événements), pour voir ce qui serait mesuré.
@@ -28,8 +29,6 @@ export interface Mesure {
 
 /** Version du texte de consentement (à augmenter si ce qui est mesuré change beaucoup). */
 export const VERSION_CONSENTEMENT = 1;
-/** Nombre d'affichages de la demande, au plus, tant qu'aucun choix n'est fait. */
-export const AFFICHAGES_MAX = 3;
 const CLE_DEMO = 'apsud-suivi:analytique-demo';
 const INTERVALLE = 20_000;
 
@@ -77,14 +76,8 @@ class Collecte {
 		this.#source = source;
 		this.pret = false;
 		this.choix = await this.#lireChoix();
-		if (this.choix === null) {
-			const cle = `apsud-suivi:consentement-affichages:${utilisateur}`;
-			const vus = Number(lire(cle) ?? '0');
-			if (vus < AFFICHAGES_MAX) {
-				ecrire(cle, String(vus + 1));
-				this.demandeOuverte = true;
-			}
-		}
+		// Pas encore de choix : la demande s'affiche, et ne se ferme que par un choix.
+		if (this.choix === null) this.demandeOuverte = true;
 		this.pret = true;
 		if (this.actif) this.#lancer();
 	}
@@ -104,11 +97,6 @@ class Collecte {
 		} else if (this.#utilisateur) ecrire(`apsud-suivi:consentement:${this.#utilisateur}`, consent ? 'oui' : 'non');
 		if (consent) this.#lancer();
 		else this.#arreter(false);
-	}
-
-	/** Fermer sans choisir : rien n'est mesuré ; la demande reviendra (3 fois au plus). */
-	fermerSansChoisir() {
-		this.demandeOuverte = false;
 	}
 
 	/** Page ouverte (appelée à chaque navigation). */

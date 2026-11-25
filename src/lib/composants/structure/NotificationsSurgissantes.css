@@ -26,15 +26,6 @@
 		pointer-events: auto;
 		animation: c-surgissante-entree var(--dur-panel) var(--ease-out) both;
 	}
-	.c-surgissante__pictogramme {
-		display: grid;
-		place-items: center;
-		inline-size: 2rem;
-		block-size: 2rem;
-		border-radius: var(--rounded-goutte);
-		background: var(--color-primary);
-		color: var(--color-on-primary);
-	}
 	.c-surgissante__texte {
 		display: grid;
 		gap: var(--space-xxs);

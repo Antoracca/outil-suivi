@@ -101,11 +101,8 @@
 	.p-volet__nouveautes-picto {
 		display: grid;
 		place-items: center;
-		inline-size: 1.75rem;
-		block-size: 1.75rem;
-		border-radius: var(--rounded-goutte);
-		background: var(--color-primary);
-		color: var(--color-on-primary);
+		padding-block-start: var(--space-xxs);
+		color: var(--color-link);
 	}
 	.p-volet__nouveautes-texte {
 		display: grid;
