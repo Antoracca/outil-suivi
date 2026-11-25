@@ -28,6 +28,8 @@ const appareil = () => {
 class Alertes {
 	etat = $state<EtatAlertes>('indisponible');
 	erreur = $state<string | null>(null);
+	/** L'état a été relu au moins une fois depuis la connexion (avant : on ne sait pas encore). */
+	verifie = $state(false);
 
 	/** Le push serveur est-il possible ici ? (navigateur compatible, serveur réel, clé configurée) */
 	get pushPossible(): boolean {
@@ -36,6 +38,14 @@ class Alertes {
 
 	/** Relit l'état ; en mode réel, rattache l'abonnement existant au compte connecté. */
 	async actualiser(reel: boolean) {
+		try {
+			await this.#relire(reel);
+		} finally {
+			this.verifie = true;
+		}
+	}
+
+	async #relire(reel: boolean) {
 		if (!browser || typeof Notification === 'undefined') return void (this.etat = 'indisponible');
 		if (Notification.permission === 'denied') return void (this.etat = 'bloquees');
 		if (Notification.permission !== 'granted') return void (this.etat = 'a_activer');

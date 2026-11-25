@@ -6,6 +6,7 @@
 	import { untrack } from 'svelte';
 	import { collecte } from '#lib/analytique/collecte.svelte.ts';
 	import ConsentementAnalytique from './ConsentementAnalytique.svelte';
+	import DemandeNotifications from './DemandeNotifications.svelte';
 	import BarreLaterale from './BarreLaterale.svelte';
 	import BarreContexte from './BarreContexte.svelte';
 	import TiroirNotifications from './TiroirNotifications.svelte';
@@ -73,5 +74,6 @@
 <NotificationsSurgissantes />
 <ConsentementAnalytique />
 <NotificationsArrivee />
+<DemandeNotifications />
 <!-- Annonces aux lecteurs d'écran : enregistrements, mises à jour en direct. -->
 <p class="u-visuellement-masque" role="status" aria-live="polite">{depot.annonce}</p>

@@ -1,0 +1,84 @@
+@layer components {
+	/* Demande d'activation des notifications : le `dialog` de DESIGN.md (c-dialogue). */
+	.c-demande-notif[open] {
+		animation: c-demande-notif-entree var(--dur-panel) var(--ease-out) both;
+	}
+	.c-demande-notif__tete {
+		display: grid;
+		gap: var(--space-xs);
+		padding: var(--space-lg) var(--space-lg) 0;
+	}
+	.c-demande-notif__marque {
+		display: flex;
+		align-items: center;
+		gap: var(--space-xs);
+		font-size: var(--fs-caption);
+		font-weight: var(--fw-medium);
+		color: var(--color-body);
+	}
+	/* Repère carré, vert clair posé sur le blanc (comme la fenêtre d'annonce). */
+	.c-demande-notif__repere {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-xxs);
+		justify-self: start;
+		padding: var(--space-xxs) var(--space-xs);
+		border: var(--hairline-w) solid var(--color-jauge-cumul);
+		border-radius: var(--rounded-xs);
+		background: var(--color-surface-row-active);
+		font-size: var(--fs-caption);
+		font-weight: var(--fw-semibold);
+		color: var(--color-link);
+	}
+	.c-demande-notif .c-dialogue__corps {
+		color: var(--color-body-strong);
+	}
+	.c-demande-notif__liste {
+		display: grid;
+		gap: var(--space-xs);
+	}
+	.c-demande-notif__liste li {
+		display: flex;
+		align-items: flex-start;
+		gap: var(--space-xs);
+	}
+	.c-demande-notif__liste li > :first-child {
+		flex: none;
+		color: var(--color-link);
+	}
+	.c-demande-notif__etapes {
+		display: grid;
+		gap: var(--space-xs);
+		padding-inline-start: var(--space-lg);
+		list-style: decimal;
+	}
+	.c-demande-notif__note {
+		font-size: var(--fs-caption);
+		color: var(--color-muted);
+	}
+	.c-demande-notif__erreur {
+		display: flex;
+		align-items: center;
+		gap: var(--space-xxs);
+		font-size: var(--fs-caption);
+		font-weight: var(--fw-medium);
+		color: var(--color-error);
+	}
+	@keyframes c-demande-notif-entree {
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
+	}
+	@media (max-width: 30rem) {
+		.c-demande-notif__pied {
+			flex-direction: column-reverse;
+		}
+		.c-demande-notif__pied > * {
+			inline-size: 100%;
+			justify-content: center;
+		}
+	}
+}
