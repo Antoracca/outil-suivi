@@ -5,6 +5,7 @@
 	import type { Activite, Mois } from '#lib/donnees/types.ts';
 	import JaugeJalon from '#lib/composants/ui/JaugeJalon.svelte';
 	import Icone from '#lib/icones/Icone.svelte';
+	import MoyensVerification from '#lib/composants/donnees/MoyensVerification.svelte';
 	import './BlocActivite.css';
 
 	/** Avancement d'une activité pour le mois : taux, résultats, observations, dépenses. */
@@ -20,6 +21,11 @@
 	const av = $derived(avancementCourant(depot.etat, act.id, mois));
 	const budget = $derived(budgetActivite(depot.etat, act.id));
 	const depensesMois = $derived(depot.etat.depenses.filter((d) => d.activite_id === act.id && d.mois === mois && !d.archive_le));
+	/** Moyens de vérification de l'activité : ceux de ses indicateurs (cadre logique), sinon les pièces usuelles. */
+	const moyens = $derived.by(() => {
+		const m = depot.etat.indicateurs.filter((i) => !i.archive_le && i.niveau === 'activite' && i.parent_id === act.id).flatMap((i) => i.moyens_verification);
+		return m.length ? m : ['Rapport d’activité', 'Fiche de présence'];
+	});
 	const domId = $derived(`act-${act.id.replace(/[^a-zA-Z0-9_-]/g, '-')}`);
 
 	let taux = $state('');
@@ -112,6 +118,8 @@
 			</form>
 		{/if}
 	</div>
+
+	<MoyensVerification volet={act.volet} {mois} {modifiable} rattachement={{ type: 'activite', id: act.id }} {moyens} idBase="{domId}-justif" titre="Justificatifs de l’activité" />
 
 	{#if erreur}<p class="c-bloc-act__erreur" role="alert"><Icone nom="alerte" taille="sm" /> {erreur}</p>{/if}
 	{#if enregistre && !erreur}<p class="c-bloc-act__ok" role="status"><Icone nom="valider" taille="sm" /> Avancement enregistré ({pourcent(lireNombre(taux))}).</p>{/if}

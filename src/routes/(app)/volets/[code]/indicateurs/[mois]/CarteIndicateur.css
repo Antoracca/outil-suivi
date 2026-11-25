@@ -198,85 +198,6 @@
 	.c-carte-ind__joindre:hover {
 		text-decoration: underline;
 	}
-	/* Moyens de vérification : une case par moyen, le téléversement apparaît quand elle est cochée. */
-	.c-carte-ind__moyens {
-		display: grid;
-		gap: var(--space-xs);
-		min-inline-size: 0;
-		margin: 0;
-		padding: var(--space-sm) 0 0;
-		border: 0;
-		border-block-start: var(--hairline-w) solid var(--color-hairline);
-	}
-	.c-carte-ind__moyens-titre {
-		padding: 0;
-		font-size: var(--fs-caption);
-		font-weight: var(--fw-semibold);
-		color: var(--color-ink);
-	}
-	.c-carte-ind__moyens-liste {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
-		gap: var(--space-xs);
-		padding: 0;
-		list-style: none;
-	}
-	.c-carte-ind__moyen {
-		display: grid;
-		align-content: start;
-		gap: var(--space-xxs);
-		padding: var(--space-xs) var(--space-sm);
-		border: var(--hairline-w) solid var(--color-hairline-strong);
-		border-radius: var(--rounded-md);
-		font-size: var(--fs-caption);
-		color: var(--color-body);
-	}
-	.c-carte-ind__moyen.is-coche {
-		border-color: var(--color-ink);
-		background: var(--color-wash-pousse-light);
-	}
-	.c-carte-ind__moyen-tete {
-		display: flex;
-		align-items: flex-start;
-		gap: var(--space-xs);
-	}
-	.c-carte-ind__moyen-tete label {
-		font-weight: var(--fw-medium);
-		color: var(--color-ink);
-		cursor: pointer;
-	}
-	.c-carte-ind__moyen-case {
-		flex: none;
-		inline-size: 1.125rem;
-		block-size: 1.125rem;
-		accent-color: var(--color-ink);
-		cursor: pointer;
-	}
-	.c-carte-ind__piece {
-		display: inline-flex;
-		flex-wrap: wrap;
-		align-items: center;
-		gap: var(--space-xxs);
-		overflow-wrap: anywhere;
-	}
-	.c-carte-ind__televerser {
-		display: inline-flex;
-		flex-wrap: wrap;
-		align-items: center;
-		justify-self: start;
-		gap: var(--space-xxs);
-		min-block-size: 2rem;
-		font-weight: var(--fw-medium);
-		color: var(--color-link);
-		cursor: pointer;
-	}
-	.c-carte-ind__televerser:hover {
-		text-decoration: underline;
-	}
-	.c-carte-ind__televerser:has(input:focus-visible) {
-		outline: var(--focus-w) solid var(--color-ink);
-		outline-offset: var(--focus-gap);
-	}
 	.c-carte-ind__versions {
 		display: grid;
 		gap: var(--space-xs);
@@ -379,9 +300,3 @@
 	}
 }
 
-@layer components {
-	.c-carte-ind__formats {
-		font-weight: var(--fw-regular);
-		color: var(--color-muted);
-	}
-}

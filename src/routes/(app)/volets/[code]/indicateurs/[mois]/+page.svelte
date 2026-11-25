@@ -52,14 +52,6 @@
 		return g;
 	});
 
-	/** Depuis une carte : pré-choisit l'indicateur et descend vers les justificatifs. */
-	let rattachement = $state('');
-	function preparerJustificatif(indicateurId: string) {
-		rattachement = indicateurId;
-		document.getElementById('section-justificatifs')?.scrollIntoView({ block: 'start' });
-		tick().then(() => document.getElementById('fichier-justificatif-indicateurs')?.focus({ preventScroll: true }));
-	}
-
 	// Ouverture depuis un lien « #indicateur » : défiler jusqu'à la carte et y placer le focus.
 	$effect(() => {
 		const ancre = decodeURIComponent(page.url.hash.slice(1));
@@ -97,13 +89,13 @@
 			<div class="p-indicateurs__groupe">
 				<p class="p-indicateurs__groupe-tete"><span>{g.niveau}</span> {g.titre}</p>
 				{#each g.indicateurs as { ind, numero } (ind.id)}
-					<CarteIndicateur indicateur={ind} {mois} {modifiable} {numero} onjustificatif={() => preparerJustificatif(ind.id)} />
+					<CarteIndicateur indicateur={ind} {mois} {modifiable} {numero} />
 				{/each}
 			</div>
 		{/each}
 	</Panneau>
 
 	<div id="section-justificatifs" class="p-indicateurs__section">
-		<PanneauJustificatifs volet={code} {mois} {modifiable} portee="indicateurs" bind:rattachement />
+		<PanneauJustificatifs volet={code} {mois} {modifiable} portee="indicateurs" />
 	</div>
 </section>

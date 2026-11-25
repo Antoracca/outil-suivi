@@ -1,14 +1,14 @@
 <script lang="ts">
 	import { depot } from '#lib/donnees/depot.svelte.ts';
 	import { cumul, historique, valeurCourante } from '#lib/donnees/calculs.ts';
-	import { dateHeure, lireNombre, nombre, pourcent, taille } from '#lib/format.ts';
-	import { FORMATS_JUSTIFICATIF } from '#lib/donnees/regles.ts';
+	import { dateHeure, lireNombre, nombre, pourcent } from '#lib/format.ts';
 	import type { Desagregation, Indicateur, Mois } from '#lib/donnees/types.ts';
 	import JaugeJalon from '#lib/composants/ui/JaugeJalon.svelte';
 	import Icone from '#lib/icones/Icone.svelte';
 	import Dialogue from '#lib/composants/ui/Dialogue.svelte';
 	import Bouton from '#lib/composants/ui/Bouton.svelte';
 	import Champ from '#lib/composants/ui/Champ.svelte';
+	import MoyensVerification from '#lib/composants/donnees/MoyensVerification.svelte';
 	import './CarteIndicateur.css';
 
 	/**
@@ -21,28 +21,8 @@
 		mois: Mois;
 		modifiable: boolean;
 		numero: string;
-		/** Ouvre l'ajout d'un justificatif rattaché à cet indicateur. */
-		onjustificatif?: () => void;
 	}
-	let { indicateur: ind, mois, modifiable, numero, onjustificatif }: Props = $props();
-	/** Pièces du mois rattachées à cet indicateur, par moyen de vérification. */
-	const pieces = $derived(depot.etat.justificatifs.filter((j) => j.volet === ind.volet && j.mois === mois && !j.archive_le && j.rattachement.type === 'indicateur' && j.rattachement.id === ind.id));
-	const piecesDe = (moyen: string) => pieces.filter((j) => j.moyen_verification === moyen);
-	/** Cases cochées sur cet écran (une case cochée ouvre le téléversement ; une pièce envoyée la garde cochée). */
-	let coches = $state<Record<string, boolean>>({});
-	const coche = (moyen: string) => coches[moyen] ?? piecesDe(moyen).length > 0;
-	let erreurPiece = $state<string | null>(null);
-	function televerser(moyen: string, champ: HTMLInputElement) {
-		const f = champ.files?.[0];
-		if (!f) return;
-		erreurPiece = null;
-		try {
-			depot.ajouterJustificatif(ind.volet, mois, { type: 'indicateur', id: ind.id }, { nom: f.name, type: f.type, taille: f.size }, moyen, f);
-		} catch (e) {
-			erreurPiece = e instanceof Error ? e.message : String(e);
-		}
-		champ.value = '';
-	}
+	let { indicateur: ind, mois, modifiable, numero }: Props = $props();
 	const pct = $derived(ind.type_valeur === 'pourcentage');
 	const val = (n: number | null | undefined) => (pct ? pourcent(n ?? null) : nombre(n ?? null));
 
@@ -233,42 +213,7 @@
 	{#if erreur}<p class="c-carte-ind__erreur" role="alert"><Icone nom="alerte" taille="sm" /> {erreur}</p>{/if}
 	{#each alertes as a (a)}<p class="c-carte-ind__alerte"><Icone nom="info" taille="sm" /> {a}</p>{/each}
 
-	<!-- Moyens de vérification : une case par moyen ; cochée, elle ouvre le téléversement de la pièce
-	     (retour d'APSUD du 2026-11-24, docs/retours/ANNOTATIONS-IMAGE-2026-11-24.md). -->
-	<fieldset class="c-carte-ind__moyens">
-		<legend class="c-carte-ind__moyens-titre">Moyens de vérification</legend>
-		{#if ind.moyens_verification.length}
-			<ul class="c-carte-ind__moyens-liste" role="list">
-				{#each ind.moyens_verification as moyen, k (k)}
-					{@const deja = piecesDe(moyen)}
-					{@const idCase = `${domId}-moyen-${k}`}
-					<li class="c-carte-ind__moyen" class:is-coche={coche(moyen)}>
-						<span class="c-carte-ind__moyen-tete">
-							<input id={idCase} type="checkbox" class="c-carte-ind__moyen-case" checked={coche(moyen)} disabled={!modifiable || deja.length > 0} onchange={(e) => (coches[moyen] = e.currentTarget.checked)} />
-							<label for={idCase}>{moyen}</label>
-						</span>
-						{#each deja as j (j.id)}
-							<span class="c-carte-ind__piece"><Icone nom="justificatif" taille="sm" /> {j.nom_fichier} <span class="u-attenue">· {taille(j.taille)}</span></span>
-						{/each}
-						{#if modifiable && coche(moyen)}
-							<label class="c-carte-ind__televerser">
-								<Icone nom="televerser" taille="sm" />
-								<span>{deja.length ? 'Ajouter un autre document' : 'Téléverser le document'}</span>
-								<span class="c-carte-ind__formats">PDF, Word, Excel… (pas de photo)</span>
-								<input type="file" class="u-visuellement-masque" accept={FORMATS_JUSTIFICATIF} onchange={(e) => televerser(moyen, e.currentTarget)} />
-							</label>
-						{/if}
-					</li>
-				{/each}
-			</ul>
-		{:else}
-			<p class="u-attenue">Aucun moyen de vérification dans le cadre logique.</p>
-		{/if}
-		{#if erreurPiece}<p class="c-carte-ind__erreur" role="alert"><Icone nom="alerte" taille="sm" /> {erreurPiece}</p>{/if}
-		{#if modifiable && onjustificatif}
-			<button type="button" class="c-carte-ind__joindre" onclick={onjustificatif}><Icone nom="plus" taille="sm" /> Autre pièce</button>
-		{/if}
-	</fieldset>
+	<MoyensVerification volet={ind.volet} {mois} {modifiable} rattachement={{ type: 'indicateur', id: ind.id }} moyens={ind.moyens_verification} idBase={domId} />
 </article>
 
 <Dialogue ouvert={dialogueOuvert} titre="Commentaire et historique" onfermer={() => (dialogueOuvert = false)}>

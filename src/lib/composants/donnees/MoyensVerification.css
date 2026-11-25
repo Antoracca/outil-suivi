@@ -1,0 +1,93 @@
+@layer components {
+	.c-moyens {
+		display: grid;
+		gap: var(--space-xs);
+		min-inline-size: 0;
+		margin: 0;
+		padding: var(--space-sm) 0 0;
+		border: 0;
+		border-block-start: var(--hairline-w) solid var(--color-hairline);
+	}
+	.c-moyens__titre {
+		padding: 0;
+		font-size: var(--fs-caption);
+		font-weight: var(--fw-semibold);
+		color: var(--color-ink);
+	}
+	.c-moyens__liste {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+		gap: var(--space-xs);
+		padding: 0;
+		list-style: none;
+	}
+	.c-moyens__moyen {
+		display: grid;
+		align-content: start;
+		gap: var(--space-xxs);
+		padding: var(--space-xs) var(--space-sm);
+		border: var(--hairline-w) solid var(--color-hairline-strong);
+		border-radius: var(--rounded-md);
+		font-size: var(--fs-caption);
+		color: var(--color-body);
+	}
+	.c-moyens__moyen.is-coche {
+		border-color: var(--color-ink);
+		background: var(--color-wash-pousse-light);
+	}
+	.c-moyens__tete {
+		display: flex;
+		align-items: flex-start;
+		gap: var(--space-xs);
+	}
+	.c-moyens__tete label {
+		font-weight: var(--fw-medium);
+		color: var(--color-ink);
+		cursor: pointer;
+	}
+	.c-moyens__case {
+		flex: none;
+		inline-size: 1.125rem;
+		block-size: 1.125rem;
+		accent-color: var(--color-ink);
+		cursor: pointer;
+	}
+	.c-moyens__piece {
+		display: inline-flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--space-xxs);
+		overflow-wrap: anywhere;
+	}
+	.c-moyens__detail,
+	.c-moyens__formats {
+		font-weight: var(--fw-regular);
+		color: var(--color-muted);
+	}
+	.c-moyens__televerser {
+		display: inline-flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-self: start;
+		gap: var(--space-xxs);
+		min-block-size: 2rem;
+		font-weight: var(--fw-medium);
+		color: var(--color-link);
+		cursor: pointer;
+	}
+	.c-moyens__televerser:hover {
+		text-decoration: underline;
+	}
+	.c-moyens__televerser:has(input:focus-visible) {
+		outline: var(--focus-w) solid var(--color-ink);
+		outline-offset: var(--focus-gap);
+	}
+	.c-moyens__erreur {
+		display: flex;
+		align-items: center;
+		gap: var(--space-xxs);
+		font-size: var(--fs-caption);
+		font-weight: var(--fw-medium);
+		color: var(--color-error);
+	}
+}

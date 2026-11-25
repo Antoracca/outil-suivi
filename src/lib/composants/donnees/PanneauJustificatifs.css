@@ -21,31 +21,6 @@
 		font-size: var(--fs-caption);
 		color: var(--color-muted);
 	}
-	.c-justifs__joindre {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
-		align-items: end;
-		gap: var(--space-sm);
-		margin-block-start: var(--space-base);
-	}
-	.c-justifs__joindre > .c-bouton {
-		justify-self: start;
-	}
-	.c-justifs__champ-fichier {
-		display: grid;
-		gap: var(--space-xxs);
-		font-size: var(--fs-body-sm);
-		font-weight: var(--fw-medium);
-	}
-	.c-justifs__champ-fichier input {
-		min-block-size: var(--input-h);
-		padding: var(--space-xs);
-		border: var(--hairline-w) dashed var(--color-border-control);
-		border-radius: var(--rounded-md);
-		background: var(--color-canvas-soft);
-		font-size: var(--fs-caption);
-		font-weight: var(--fw-regular);
-	}
 	.c-justifs__note {
 		margin-block-start: var(--space-xs);
 		font-size: var(--fs-caption);
@@ -53,9 +28,12 @@
 	}
 }
 
+
 @layer components {
-	.c-justifs__formats {
-		font-weight: var(--fw-regular);
-		color: var(--color-muted);
+	.c-justifs__compte {
+		margin-block: var(--space-base) var(--space-xs);
+		font-size: var(--fs-caption);
+		font-weight: var(--fw-semibold);
+		color: var(--color-ink);
 	}
 }
