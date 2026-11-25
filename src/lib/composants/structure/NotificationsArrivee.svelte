@@ -8,6 +8,8 @@
 	import { collecte } from '#lib/analytique/collecte.svelte.ts';
 	import type { Annonce } from '#lib/donnees/types.ts';
 	import Icone from '#lib/icones/Icone.svelte';
+	import Bouton from '#lib/composants/ui/Bouton.svelte';
+	import '#lib/composants/ui/Dialogue.css';
 	import './NotificationsArrivee.css';
 
 	/**
@@ -86,56 +88,57 @@
 	const ev = $derived(courante?.notif?.ev ?? null);
 	const auteur = $derived(ev ? depot.nomUtilisateur(ev.auteur) : '');
 	const contexteEv = $derived(ev ? [ev.volet, ev.mois ? `rapport de ${libelleMois(ev.mois)}` : null].filter(Boolean).join(' · ') : '');
+	/** Ce qu'affiche la fenêtre, pour une annonce comme pour une notification. */
+	const vue = $derived.by(() => {
+		if (!courante) return null;
+		const nomDe = (sigle: string | null) => (sigle ? (depot.etat.organisations.find((o) => o.sigle === sigle)?.nom ?? sigle) : 'Consortium APSUD');
+		if (courante.annonce) {
+			const a = courante.annonce;
+			return { organisation: a.organisation, nomOrganisation: nomDe(a.organisation), titre: a.titre, texte: a.texte, contexte: 'à tous les membres', date: a.cree_le, lien: null as string | null };
+		}
+		const e = courante.notif.ev;
+		return { organisation: e.organisation, nomOrganisation: nomDe(e.organisation), titre: titreEvenement(e), texte: '', contexte: contexteEv, date: e.date, lien: lienEvenement(e) };
+	});
 </script>
 
-<dialog bind:this={el} class="c-arrivee" aria-labelledby="arrivee-titre" aria-describedby="arrivee-texte" onclose={terminer}>
-	{#if courante}
+<dialog bind:this={el} class="c-dialogue c-arrivee" aria-labelledby="arrivee-titre" aria-describedby="arrivee-texte" onclose={terminer}>
+	{#if courante && vue}
 		<header class="c-arrivee__tete">
-			<p class="c-arrivee__rang">
-				<span class="c-arrivee__urgence"><Icone nom="notification" taille="sm" /> Nouveau</span>
-				<span>{courante.annonce ? 'Annonce' : 'Notification'} {rang + 1} sur {file.length}</span>
+			<p class="c-arrivee__repere">
+				<span class="c-arrivee__type">{courante.annonce ? 'Annonce' : 'Notification'}</span>
+				<span class="c-arrivee__compte">{rang + 1} sur {file.length}</span>
 			</p>
-			<button type="button" class="c-arrivee__fermer" onclick={terminer} aria-label="Plus tard : fermer sans marquer comme lu"><Icone nom="fermer" /></button>
+			<button type="button" class="c-dialogue__fermer" onclick={terminer} aria-label="Plus tard : fermer sans marquer comme lu"><Icone nom="fermer" /></button>
 		</header>
-		<div class="c-arrivee__progression" aria-hidden="true">
-			{#each file as x, i (x.id)}<span class:is-faite={i < rang} class:is-courante={i === rang}></span>{/each}
+		<div class="c-arrivee__jauge" role="progressbar" aria-label="Progression de la lecture" aria-valuemin={1} aria-valuemax={file.length} aria-valuenow={rang + 1}>
+			<span style:inline-size="{((rang + 1) / file.length) * 100}%"></span>
 		</div>
 
 		{#key courante.id}
 			<div class="c-arrivee__corps">
-				{#if courante.annonce}
-					{@const a = courante.annonce}
-					<span class="c-arrivee__logo">{#if a.organisation}<LogoOrganisation sigle={a.organisation} taille="lg" />{/if}</span>
-					<div class="c-arrivee__texte">
-						<h2 class="c-arrivee__titre" id="arrivee-titre">{a.titre}</h2>
-						{#if a.organisation}<p class="c-arrivee__contexte">{a.organisation} · consortium APSUD</p>{/if}
-						<p class="c-arrivee__message" id="arrivee-texte">{a.texte}</p>
-						<p class="c-arrivee__date"><time datetime={a.cree_le} title={dateHeure(a.cree_le)}>{relatif(a.cree_le, depot.maintenant())}</time></p>
-					</div>
-				{:else if ev}
-					<span class="c-arrivee__logo"><LogoOrganisation sigle={ev.organisation} taille="lg" /></span>
-					<div class="c-arrivee__texte">
-						<h2 class="c-arrivee__titre" id="arrivee-titre">{titreEvenement(ev)}</h2>
-						{#if contexteEv}<p class="c-arrivee__contexte">{contexteEv}</p>{/if}
-						<p class="c-arrivee__message" id="arrivee-texte">
-							<strong>{auteur}</strong> ({ev.organisation}) {ev.resume} <strong>{ev.cible.libelle}</strong>
+				<div class="c-arrivee__emetteur">
+					{#if vue.organisation}<LogoOrganisation sigle={vue.organisation} taille="md" />{/if}
+					<div>
+						<p class="c-arrivee__nom">{vue.nomOrganisation}</p>
+						<p class="c-arrivee__meta">
+							{#if vue.contexte}{`${vue.contexte} · `}{/if}<time datetime={vue.date} title={dateHeure(vue.date)}>{relatif(vue.date, depot.maintenant())}</time>
 						</p>
-						<p class="c-arrivee__date"><time datetime={ev.date} title={dateHeure(ev.date)}>{relatif(ev.date, depot.maintenant())}</time></p>
 					</div>
-				{/if}
+				</div>
+				<h2 class="c-arrivee__titre" id="arrivee-titre">{vue.titre}</h2>
+				<p class="c-arrivee__message" id="arrivee-texte">
+					{#if ev}<strong>{auteur}</strong> {ev.resume} <strong>{ev.cible.libelle}</strong>{:else}{vue.texte}{/if}
+				</p>
 			</div>
 		{/key}
 
-		<footer class="c-arrivee__pied">
-			<button type="button" class="c-arrivee__tout" onclick={toutLire}>Tout marquer comme lu ({file.length - rang})</button>
+		<footer class="c-dialogue__pied c-arrivee__pied">
+			{#if file.length - rang > 1}
+				<Bouton variante="texte" taille="sm" onclick={toutLire}>Tout marquer comme lu</Bouton>
+			{/if}
 			<div class="c-arrivee__actions">
-				{#if ev && lienEvenement(ev)}
-					<button type="button" class="c-arrivee__bouton" onclick={ouvrir}>Ouvrir</button>
-				{/if}
-				<button type="button" class="c-arrivee__bouton c-arrivee__bouton--principal" onclick={suivante}>
-					<Icone nom="valider" taille="sm" />
-					{derniere ? 'Lu, terminer' : 'Lu, suivante'}
-				</button>
+				{#if vue.lien}<Bouton variante="secondaire" onclick={ouvrir}>Ouvrir</Bouton>{/if}
+				<Bouton variante="primaire" icone="valider" onclick={suivante}>{derniere ? 'Lu, terminer' : 'Lu, suivante'}</Bouton>
 			</div>
 		</footer>
 	{/if}
