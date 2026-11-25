@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { collecte } from '#lib/analytique/collecte.svelte.ts';
+	import ReglageMesure from './ReglageMesure.svelte';
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 	import { depot } from '#lib/donnees/depot.svelte.ts';
@@ -104,7 +104,7 @@
 		{#if depot.source === 'demo'}
 			<li><button type="button" onclick={() => aller('/connexion')}><Icone nom="equipe" /> <span>Changer de compte de démonstration</span></button></li>
 		{/if}
-		<li><button type="button" onclick={() => { menu?.close(); collecte.revoir(); }}><Icone nom="activite" /> <span>Mesure d’utilisation : {collecte.choix === true ? 'activée' : collecte.choix === false ? 'désactivée' : 'à choisir'}</span></button></li>
+		<li><ReglageMesure /></li>
 		<li><button type="button" onclick={() => { menu?.close(); depot.deconnecter(); goto('/connexion'); }}><Icone nom="deconnexion" /> <span>Se déconnecter</span></button></li>
 	</ul>
 </dialog>

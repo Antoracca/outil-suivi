@@ -107,7 +107,10 @@ class Collecte {
 		this.choix = consent;
 		if (this.#source === 'reel') {
 			const { error } = await serveur().rpc('enregistrer_consentement', { p_analytique: consent });
-			if (error) throw new Error(error.message);
+			if (error) {
+				this.choix = avant;
+				throw new Error(error.message);
+			}
 		} else if (this.#utilisateur) ecrire(`apsud-suivi:consentement:${this.#utilisateur}`, consent ? 'oui' : 'non');
 		if (consent && avant !== true) this.#lancer();
 		else if (!consent) this.#arreter(false);
