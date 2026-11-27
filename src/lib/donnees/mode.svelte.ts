@@ -11,21 +11,23 @@ const CLE = 'apsud-suivi:mode-demo';
 
 /**
  * Le mode démonstration est-il proposé dans cette version construite ?
- * `VITE_MODE_DEMO=oui` l'active, `non` le coupe ; sans valeur : actif en développement
- * (`npm run dev`), coupé en production. La vraie plateforme n'a donc rien à régler ;
- * une adresse de démonstration (second projet Vercel) met `VITE_MODE_DEMO=oui`.
- * Coupé, le module des données de démonstration n'est jamais téléchargé.
+ * Proposé partout par défaut, production comprise (consigne du développeur, 2026-11-27) ;
+ * `VITE_MODE_DEMO=non` le coupe (le module des données de démonstration n'est alors jamais
+ * téléchargé). En production, l'arrivée se fait en mode réel tant que la personne n'a pas
+ * choisi la démonstration ; en développement, en démonstration.
  */
 const reglage = (import.meta.env.VITE_MODE_DEMO as string | undefined)?.trim().toLowerCase();
-export const DEMO_DISPONIBLE: boolean = reglage === 'oui' ? true : reglage === 'non' ? false : import.meta.env.DEV;
+export const DEMO_DISPONIBLE: boolean = reglage !== 'non';
 
 function lire(): boolean {
 	if (!DEMO_DISPONIBLE) return false;
-	if (!browser) return true;
+	const parDefaut = import.meta.env.DEV;
+	if (!browser) return parDefaut;
 	try {
-		return localStorage.getItem(CLE) !== 'non';
+		const choix = localStorage.getItem(CLE);
+		return choix === null ? parDefaut : choix === 'oui';
 	} catch {
-		return true;
+		return parDefaut;
 	}
 }
 

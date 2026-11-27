@@ -263,8 +263,13 @@
 		apercu(f ? URL.createObjectURL(f) : null);
 	}
 
+	/** « Ajouter une ONG » est mis en attente (consigne du développeur, 2026-11-27) : section grisée,
+	 * « Bientôt disponible ». Le code reste en place ; repasser à `false` pour la rouvrir. */
+	const AJOUT_ONG_A_VENIR = true;
+
 	async function ajouterOng(e: SubmitEvent) {
 		e.preventDefault();
+		if (AJOUT_ONG_A_VENIR) return;
 		ongErreurs = {};
 		ongErreurServeur = null;
 		ongMessage = null;
@@ -383,7 +388,12 @@
 				{#if ongMessage}
 					<Alerte variante="succes" onfermer={() => (ongMessage = null)}>{ongMessage}</Alerte>
 				{/if}
-				<form class="p-admin__ong" onsubmit={ajouterOng} novalidate>
+				{#if AJOUT_ONG_A_VENIR}
+					<p class="p-admin__a-venir"><Icone nom="info" taille="sm" /> Bientôt disponible</p>
+				{/if}
+				<form class="p-admin__ong" class:is-a-venir={AJOUT_ONG_A_VENIR} onsubmit={ajouterOng} novalidate>
+					<fieldset class="p-admin__ong-champs" disabled={AJOUT_ONG_A_VENIR}>
+					<legend class="u-visuellement-masque">Nouvelle ONG{AJOUT_ONG_A_VENIR ? ' (bientôt disponible)' : ''}</legend>
 					<div class="p-admin__ong-sigle">
 						<Champ id="ong-sigle" libelle="Sigle" requis bind:valeur={ongSigle} erreur={ongErreurs.sigle} placeholder="Ex. CARE" />
 						{#if etatSigle && !ongErreurs.sigle}
@@ -413,8 +423,9 @@
 						{#if ongErreurs.logo}<p class="c-champ__erreur">{ongErreurs.logo}</p>{/if}
 					</div>
 					<div class="p-admin__invitation-actions">
-						<Bouton variante="primaire" type="submit" icone="plus" disabled={ongEnvoi}>{ongEnvoi ? 'Création…' : 'Ajouter l’ONG'}</Bouton>
+						<Bouton variante="primaire" type="submit" icone="plus" disabled={ongEnvoi || AJOUT_ONG_A_VENIR}>{ongEnvoi ? 'Création…' : 'Ajouter l’ONG'}</Bouton>
 					</div>
+					</fieldset>
 				</form>
 				<p class="p-admin__note">
 					<Icone nom="info" taille="sm" />

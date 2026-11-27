@@ -253,6 +253,30 @@
 		gap: var(--space-base) var(--space-lg);
 		align-items: start;
 	}
+	/* Le fieldset ne crée pas de boîte : les champs restent dans la grille du formulaire. */
+	.p-admin__ong-champs {
+		display: contents;
+	}
+	/* « Ajouter une ONG » en attente : toute la section grisée, rien n'est cliquable. */
+	.p-admin__ong.is-a-venir {
+		filter: grayscale(1);
+		opacity: 0.55;
+		pointer-events: none;
+		user-select: none;
+	}
+	.p-admin__a-venir {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-xxs);
+		margin-block-end: var(--space-base);
+		padding: var(--space-xxs) var(--space-xs);
+		border: var(--hairline-w) solid var(--color-border-control);
+		border-radius: var(--rounded-xs);
+		background: var(--color-surface-strong);
+		font-size: var(--fs-caption);
+		font-weight: var(--fw-semibold);
+		color: var(--color-muted);
+	}
 	.p-admin__ong-sigle {
 		display: grid;
 		gap: var(--space-xxs);
