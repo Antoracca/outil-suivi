@@ -6,7 +6,6 @@
 	import Bouton from '#lib/composants/ui/Bouton.svelte';
 	import Alerte from '#lib/composants/ui/Alerte.svelte';
 	import Icone from '#lib/icones/Icone.svelte';
-	import LogoApsud from '#lib/composants/structure/LogoApsud.svelte';
 	import LogoOrganisation from '#lib/composants/ui/LogoOrganisation.svelte';
 	import { depot, type InvitationValide } from '#lib/donnees/depot.svelte.ts';
 	import { serveurConfigure } from '#lib/donnees/reel/client.ts';
@@ -191,8 +190,8 @@
 </script>
 
 <div class="p-reel">
+	<!-- Le logo APSUD n'est porté que par la colonne (ou le bandeau) de marque : un seul logo à l'écran. -->
 	<header class="p-reel__entete">
-		<LogoApsud taille="lg" />
 		<p class="p-reel__accroche">Espace des membres du consortium</p>
 	</header>
 
@@ -203,7 +202,7 @@
 	{:else if !depot.pret}
 		<p class="p-reel__texte" role="status">Ouverture de votre session…</p>
 	{:else}
-		<div class="p-reel__onglets" role="group" aria-label="Choisir entre connexion et inscription">
+		<div class="p-reel__onglets" class:is-inscription={onglet === 'inscription'} role="group" aria-label="Choisir entre connexion et inscription">
 			<button type="button" id="onglet-connexion" aria-pressed={onglet === 'connexion'} class:is-actif={onglet === 'connexion'} onclick={() => changer('connexion')}>
 				Connexion
 			</button>
@@ -263,8 +262,10 @@
 			{/if}
 
 			<section class="p-reel__rapide" aria-labelledby="titre-acces-rapide">
-				<h3 class="p-reel__rapide-titre" id="titre-acces-rapide">Connexion rapide</h3>
-				<p class="p-reel__aide">Touchez votre organisation.</p>
+				<div class="p-reel__rapide-entete">
+					<h3 class="p-reel__rapide-titre" id="titre-acces-rapide">Connexion rapide</h3>
+					<p class="p-reel__aide">Touchez votre organisation.</p>
+				</div>
 				<ul class="p-reel__organisations" role="list">
 					{#each organisations as o (o.sigle)}
 						<li>

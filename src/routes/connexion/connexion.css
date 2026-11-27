@@ -86,10 +86,18 @@
 		inline-size: 100%;
 		max-inline-size: 44rem;
 	}
+	/* Mode réel : la carte occupe l'espace restant de la colonne et s'y centre
+	   verticalement, en face de l'identité de la colonne de marque. */
 	.p-connexion__reel {
+		flex: 1;
 		display: flex;
+		align-items: center;
 		justify-content: center;
-		padding-block-start: var(--space-xl);
+	}
+	/* Bas de colonne resserré : interrupteur et carte tiennent dans un écran de 900 px,
+	   sans laisser apparaître le fond sous la colonne de marque collante. */
+	.p-connexion--reel .p-connexion__acces {
+		padding-block-end: var(--space-xl);
 	}
 	.p-connexion__avertissement {
 		display: flex;
@@ -220,14 +228,43 @@
 		.p-connexion__bascule {
 			justify-content: center;
 		}
-		/* Mode réel : pas de bandeau de marque ; la carte de connexion, avec le logo, monte
-		   tout en haut et laisse la place à la connexion rapide. Le titre reste lu par les
+		/* Mode réel : la carte de connexion ne porte plus de logo ; le bandeau de marque
+		   reste donc visible, réduit à une ligne (logo, titre, projet) pour que la carte
+		   et la connexion rapide montent haut. Phrase et référence restent lues par les
 		   lecteurs d'écran (masquage visuel, pas display: none). */
 		.p-connexion--reel .p-connexion__marque {
+			padding: var(--space-base);
+		}
+		.p-connexion--reel .p-connexion__identite {
+			grid-template-columns: auto minmax(0, 1fr);
+			align-items: center;
+			justify-items: start;
+			gap: var(--space-base);
+			inline-size: 100%;
+			max-inline-size: 28rem;
+			text-align: start;
+		}
+		.p-connexion--reel .p-connexion__identite .c-logo {
+			block-size: var(--space-xxl);
+		}
+		.p-connexion--reel .p-connexion__textes {
+			justify-items: start;
+			gap: var(--space-xxs);
+		}
+		.p-connexion--reel .p-connexion__titre {
+			font-size: var(--fs-display-md);
+			letter-spacing: var(--ls-display-md);
+		}
+		.p-connexion--reel .p-connexion__projet {
+			max-inline-size: none;
+			font-size: var(--fs-body-sm);
+			text-wrap: balance;
+		}
+		.p-connexion--reel .p-connexion__description,
+		.p-connexion--reel .p-connexion__code {
 			position: absolute;
 			inline-size: 1px;
 			block-size: 1px;
-			min-block-size: 0;
 			padding: 0;
 			overflow: hidden;
 			clip-path: inset(50%);
