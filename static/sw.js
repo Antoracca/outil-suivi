@@ -30,7 +30,14 @@ self.addEventListener('push', (e) => {
 
 self.addEventListener('notificationclick', (e) => {
 	e.notification.close();
-	const cible = new URL(e.notification.data?.lien || '/', self.location.origin).href;
+	// Seulement une adresse de la plateforme : jamais un site extérieur, même si l'alerte en contenait un.
+	let cible = new URL('/', self.location.origin).href;
+	try {
+		const u = new URL(e.notification.data?.lien || '/', self.location.origin);
+		if (u.origin === self.location.origin) cible = u.href;
+	} catch {
+		/* lien illisible : accueil */
+	}
 	e.waitUntil(
 		(async () => {
 			const fenetres = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });

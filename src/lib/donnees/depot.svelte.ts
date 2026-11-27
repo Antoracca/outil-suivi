@@ -23,6 +23,7 @@ import { VERSION_SCHEMA } from './version';
 import { ordonnerVolets } from './ordre';
 import { DEMO_DISPONIBLE, mode } from './mode.svelte';
 import { estErreurReseau, serveur, serveurConfigure, traduireErreurAuth } from './reel/client';
+import { alertes } from './push.svelte';
 import { COLLECTIONS, chargerEtatReel, etatVide, vers } from './reel/correspondance';
 import { ROLES_CONSORTIUM, codeSecteurPropose, texteRecherche, type RoleConsortium } from './referentiels/secteurs';
 import { cumul, rapport as trouverRapport, valeurCourante } from './calculs';
@@ -86,7 +87,20 @@ interface AppelDistant {
 	fn: string;
 	args: Record<string, unknown>;
 	libelle: string;
+	/** Compte qui a fait la saisie : l'appel n'est envoyé que sous ce compte (appareil partagé). */
+	proprietaire?: string;
 }
+
+/**
+ * Seules fonctions que la file d'attente peut appeler. Une file modifiée sur l'appareil
+ * (stockage local) ne peut donc rien appeler d'autre au nom du compte connecté.
+ */
+const FONCTIONS_FILE = new Set([
+	'enregistrer_valeur', 'enregistrer_avancement', 'planifier_mois', 'ajouter_depense', 'ajouter_activite',
+	'ajouter_tache', 'definir_semaine', 'ajouter_justificatif', 'enregistrer_fiche_5w', 'ajouter_ligne_5w',
+	'modifier_ligne_5w', 'ajouter_secteur', 'modifier_organisation', 'ajouter_volet', 'changer_statut_rapport',
+	'definir_verrou_cadre', 'archiver', 'restaurer', 'supprimer_definitivement', 'marquer_lu', 'marquer_annonce_lue'
+]);
 
 /** Ce qu'une invitation valide annonce avant la création du compte. */
 export interface InvitationValide {
@@ -211,6 +225,7 @@ class Depot {
 		}
 		this.etat = etat;
 		this.utilisateurId = id;
+		this.#majFileAttente(); // saisies en attente de ce compte seulement
 		this.#abonnerTempsReel();
 		void this.#viderFile();
 	}
@@ -283,10 +298,23 @@ class Depot {
 
 	#lireFile(): AppelDistant[] {
 		try {
-			return JSON.parse(localStorage.getItem(CLE_FILE_REEL) ?? '[]');
+			const brut: unknown = JSON.parse(localStorage.getItem(CLE_FILE_REEL) ?? '[]');
+			if (!Array.isArray(brut)) return [];
+			// Rien d'inconnu : une entrée modifiée à la main sur l'appareil est écartée.
+			return brut.filter(
+				(a): a is AppelDistant =>
+					!!a && typeof a === 'object' && typeof a.id === 'string' && typeof a.libelle === 'string' &&
+					typeof a.fn === 'string' && FONCTIONS_FILE.has(a.fn) && !!a.args && typeof a.args === 'object' &&
+					(a.proprietaire === undefined || typeof a.proprietaire === 'string')
+			);
 		} catch {
 			return [];
 		}
+	}
+
+	/** Appels du compte connecté seulement : ceux d'un autre compte attendent son retour. */
+	#fileDuCompte(): AppelDistant[] {
+		return this.#file.filter((a) => a.proprietaire === this.utilisateurId);
 	}
 
 	#majFileAttente() {
@@ -295,11 +323,11 @@ class Depot {
 		} catch {
 			/* stockage indisponible : la file vit le temps de la session */
 		}
-		this.fileAttente = this.#file.map((a) => ({ id: a.id, libelle: a.libelle }));
+		this.fileAttente = this.#fileDuCompte().map((a) => ({ id: a.id, libelle: a.libelle }));
 	}
 
 	#envoyer(appel: AppelDistant) {
-		this.#file.push(appel);
+		this.#file.push({ ...appel, proprietaire: this.utilisateurId ?? undefined });
 		this.#majFileAttente();
 		void this.#viderFile();
 	}
@@ -309,15 +337,16 @@ class Depot {
 		if (this.#envoiEnCours || !this.enLigne || !this.utilisateurId) return;
 		this.#envoiEnCours = true;
 		try {
-			while (this.#file.length && this.enLigne) {
-				const appel = this.#file[0];
+			let appel: AppelDistant | undefined;
+			while ((appel = this.#fileDuCompte()[0]) && this.enLigne) {
 				const { error } = await serveur().rpc(appel.fn, appel.args);
 				if (error && estErreurReseau(error)) {
 					this.enLigne = false; // on réessaiera au retour du réseau
 					this.annonce = 'Serveur injoignable : vos saisies sont gardées sur cet appareil.';
 					break;
 				}
-				this.#file.shift();
+				const envoye = appel;
+				this.#file = this.#file.filter((a) => a !== envoye);
 				this.#majFileAttente();
 				if (error) {
 					this.erreurServeur = `${appel.libelle} : refusé par le serveur. ${error.message}`;
@@ -432,7 +461,14 @@ class Depot {
 		if (this.source === 'reel') {
 			if (serveurConfigure) {
 				void this.#fermerReel();
-				void serveur().auth.signOut();
+				void (async () => {
+					// D'abord l'appareil (il faut encore la session), puis la session elle-même.
+					await alertes.retirerDuCompte();
+					// Hors ligne, la déconnexion côté serveur échoue : la session est alors effacée
+					// de l'appareil quoi qu'il arrive, pour que personne ne la retrouve.
+					const { error } = await serveur().auth.signOut().catch((e: unknown) => ({ error: e }));
+					if (error) await serveur().auth.signOut({ scope: 'local' }).catch(() => undefined);
+				})();
 			}
 			this.etat = etatVide();
 			return;

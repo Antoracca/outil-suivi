@@ -94,6 +94,24 @@ class Alertes {
 		this.etat = 'activees_local';
 	}
 
+	/**
+	 * À la déconnexion : le serveur oublie cet appareil pour ce compte (sur un appareil partagé,
+	 * la personne suivante ne reçoit pas les alertes de la précédente). L'autorisation du navigateur
+	 * reste : à la prochaine connexion, l'appareil est rattaché au nouveau compte.
+	 */
+	async retirerDuCompte() {
+		try {
+			if (!this.pushPossible) return;
+			const reg = await navigator.serviceWorker.getRegistration('/sw.js');
+			const abo = await reg?.pushManager.getSubscription();
+			if (abo) await serveur().rpc('retirer_abonnement_push', { p_endpoint: abo.endpoint });
+		} catch {
+			/* hors ligne : la fonction Edge retirera l'abonnement s'il expire */
+		} finally {
+			this.verifie = false;
+		}
+	}
+
 	async #enregistrer(abo: PushSubscription) {
 		const j = abo.toJSON();
 		const { error } = await serveur().rpc('enregistrer_abonnement_push', {

@@ -387,8 +387,10 @@ await test('Organisations : nom, rôle et logo modifiés par le super-admin seul
 	await db.query(`insert into storage.objects (bucket_id, name) values ('logos', 'NOUVELLE/logo.png')`);
 	await en(coord);
 	await refuse(db.query(`insert into storage.objects (bucket_id, name) values ('logos', 'ARS/logo.png')`), /row-level security/);
-	// Lecture ouverte (politique « to anon, authenticated ») : vérifiée ici avec un compte sans droit d'écriture.
-	egal(Number(await valeur(`select count(*) from storage.objects where bucket_id = 'logos'`)), 1, 'lecture des logos :');
+	// Migration 0019 : le contenu du bucket ne se liste plus (les images restent publiques par leur adresse).
+	egal(Number(await valeur(`select count(*) from storage.objects where bucket_id = 'logos'`)), 0, 'liste des logos fermée :');
+	await en(admin);
+	egal(Number(await valeur(`select count(*) from storage.objects where bucket_id = 'logos'`)), 1, 'le super-admin les voit :');
 });
 await test('Nouvelle ONG : son compte de saisie écrit dans son volet, pas ailleurs', async () => {
 	const nouvelle = await compte('saisie@nouvelle.test', 'Saisie Nouvelle', 'NOUVELLE', 'saisie');
@@ -445,31 +447,31 @@ await test('Planification M+1 : refusée hors de son volet, pour une activité d
 
 await test('Push : sans compte, abonnement refusé ; un compte abonne son appareil sans pouvoir lire les abonnements', async () => {
 	await en(null);
-	await refuse(db.query(`select public.enregistrer_abonnement_push('https://push.exemple/a', 'cle', 'auth')`), /permission denied/);
+	await refuse(db.query(`select public.enregistrer_abonnement_push('https://fcm.googleapis.com/fcm/send/a', 'BCleP256dhDeTestAAAAAAAAAAAAAAAAAAAAAAAA', 'AuthDeTest00')`), /permission denied/);
 	await en(idc);
-	await refuse(db.query(`select public.enregistrer_abonnement_push('http://push.exemple/a', 'cle', 'auth')`), /Adresse d’abonnement invalide/);
-	await db.query(`select public.enregistrer_abonnement_push('https://push.exemple/idc', 'cle', 'auth', 'Chrome sur Android')`);
+	await refuse(db.query(`select public.enregistrer_abonnement_push('http://push.exemple/a', 'BCleP256dhDeTestAAAAAAAAAAAAAAAAAAAAAAAA', 'AuthDeTest00')`), /Adresse d’abonnement invalide/);
+	await db.query(`select public.enregistrer_abonnement_push('https://fcm.googleapis.com/fcm/send/idc', 'BCleP256dhDeTestAAAAAAAAAAAAAAAAAAAAAAAA', 'AuthDeTest00', 'Chrome sur Android')`);
 	await refuse(db.query('select * from public.abonnements_push'), /permission denied/);
 	await refuse(db.query(`insert into public.abonnements_push (utilisateur, endpoint, p256dh, auth) values ($1, 'https://x', 'a', 'b')`, [idc]), /permission denied/);
 	await refuse(db.query('select * from public.parametres_serveur'), /permission denied/);
 	await enPostgres();
-	egal(await valeur(`select utilisateur::text from public.abonnements_push where endpoint = 'https://push.exemple/idc'`), idc, 'rattaché au compte :');
+	egal(await valeur(`select utilisateur::text from public.abonnements_push where endpoint = 'https://fcm.googleapis.com/fcm/send/idc'`), idc, 'rattaché au compte :');
 });
 await test('Push : le même appareil passe au compte qui s’y connecte ; chacun ne retire que le sien', async () => {
 	await en(coord);
-	await db.query(`select public.enregistrer_abonnement_push('https://push.exemple/idc', 'cle2', 'auth2')`);
+	await db.query(`select public.enregistrer_abonnement_push('https://fcm.googleapis.com/fcm/send/idc', 'BCleP256dhDeTestBBBBBBBBBBBBBBBBBBBBBBBB', 'AuthDeTest11')`);
 	await en(idc);
-	await db.query(`select public.retirer_abonnement_push('https://push.exemple/idc')`);
+	await db.query(`select public.retirer_abonnement_push('https://fcm.googleapis.com/fcm/send/idc')`);
 	await enPostgres();
-	egal(await valeur(`select utilisateur::text from public.abonnements_push where endpoint = 'https://push.exemple/idc'`), coord, 'toujours à la coordination :');
+	egal(await valeur(`select utilisateur::text from public.abonnements_push where endpoint = 'https://fcm.googleapis.com/fcm/send/idc'`), coord, 'toujours à la coordination :');
 	await en(coord);
-	await db.query(`select public.retirer_abonnement_push('https://push.exemple/idc')`);
+	await db.query(`select public.retirer_abonnement_push('https://fcm.googleapis.com/fcm/send/idc')`);
 	await enPostgres();
 	egal(Number(await valeur(`select count(*) from public.abonnements_push`)), 0, 'retiré :');
 });
 await test('Push : une notification pour un appareil abonné se crée normalement (sans pg_net, aucun appel)', async () => {
 	await en(idc);
-	await db.query(`select public.enregistrer_abonnement_push('https://push.exemple/idc2', 'cle', 'auth')`);
+	await db.query(`select public.enregistrer_abonnement_push('https://fcm.googleapis.com/fcm/send/idc2', 'BCleP256dhDeTestAAAAAAAAAAAAAAAAAAAAAAAA', 'AuthDeTest00')`);
 	const avant = Number(await valeur(`select count(*) from public.notifications where destinataire = $1`, [idc]));
 	await en(coord);
 	await db.query(`select public.planifier_mois($1, 'WASH-IDC', '2027-01', '{}')`, [ev()]);
@@ -544,6 +546,71 @@ await test('Comptes : seul le super-admin désactive, et jamais lui-même', asyn
 	await en(ars);
 	egal(Number(await valeur('select count(*) from public.volets')), 0, 'un compte désactivé ne lit plus rien :');
 	await refuse(db.query(`select public.marquer_lu(null)`), /compte actif/);
+});
+
+/* ---------- Durcissement (migration 0019, audit du 2026-11-27) ---------- */
+
+await test('0019 · Nombres : NaN et infini refusés (valeurs, dépenses)', async () => {
+	await enPostgres();
+	await db.query(`update public.rapports set statut = 'brouillon' where volet = 'WASH-IDC' and mois = '2026-12'`);
+	await en(idc);
+	await refuse(db.query(`select public.enregistrer_valeur($1, null, $2, '2026-12', null, null, null, null, 'NaN'::numeric, null)`, [ev(), IND_WASH]), /valeurs_nombres_finis|check|invalide/);
+	await refuse(db.query(`select public.ajouter_depense($1, null, $2, '2026-12', 'NaN'::numeric, 'Transport')`, [ev(), ACT_WASH]), /depenses_nombre_fini|check|montant/);
+	await refuse(db.query(`select public.ajouter_tache($1, null, $2, $3, null, null, null)`, [ev(), ACT_WASH, 'x'.repeat(600)]), /taches_longueurs|check|verrouill/);
+});
+await test('0019 · Archivage et calendrier : rapport validé et cadre verrouillé protégés', async () => {
+	await enPostgres();
+	await db.query(`update public.rapports set statut = 'valide' where volet = 'WASH-IDC' and mois = '2026-11'`);
+	await db.query(`update public.volets set cadre_verrouille = true where code = 'WASH-IDC'`);
+	await en(idc);
+	await refuse(db.query(`select public.archiver($1, 'depense', 'dep-1')`, [ev()]), /soumis, validé ou verrouillé/);
+	await refuse(db.query(`select public.archiver($1, 'indicateur', $2)`, [ev(), IND_WASH]), /verrouillé/);
+	await refuse(db.query(`select public.definir_semaine($1, 'tache-2', '2026-11', 1::smallint, 'realise', true)`, [ev()]), /soumis, validé ou verrouillé/);
+	await enPostgres();
+	await db.query(`update public.volets set cadre_verrouille = false where code = 'WASH-IDC'`);
+});
+await test('0019 · Mesure d’utilisation : date bornée, quota de 3 000 par jour', async () => {
+	await en(idc);
+	await db.query(`select public.enregistrer_consentement(true)`);
+	await db.query(`select public.enregistrer_analytique('s9', $1::jsonb)`, [JSON.stringify([{ type: 'page', page: '/x', date: '1970-01-01T00:00:00Z' }])]);
+	await enPostgres();
+	egal(Number(await valeur(`select count(*) from public.analytique_evenements where utilisateur = $1 and date < now() - interval '2 days'`, [idc])), 0, 'aucune mesure antidatée :');
+	await db.query(`insert into public.analytique_evenements (utilisateur, session, type, page) select $1, 'q', 'page', '/' from generate_series(1, 3000)`, [idc]);
+	await en(idc);
+	egal(Number(await valeur(`select public.enregistrer_analytique('s9', $1::jsonb)`, [JSON.stringify([{ type: 'page', page: '/y' }])])), 0, 'quota atteint, mesure ignorée :');
+});
+await test('0019 · Push : services connus seulement, 10 appareils au plus', async () => {
+	await en(idc);
+	await refuse(db.query(`select public.enregistrer_abonnement_push('https://attaquant.example/x', 'BCleP256dhDeTestAAAAAAAAAAAAAAAAAAAAAAAA', 'AuthDeTest00')`), /Adresse d’abonnement invalide/);
+	await refuse(db.query(`select public.enregistrer_abonnement_push('https://169.254.169.254/latest', 'BCleP256dhDeTestAAAAAAAAAAAAAAAAAAAAAAAA', 'AuthDeTest00')`), /Adresse d’abonnement invalide/);
+	for (let i = 0; i < 12; i++) {
+		await db.query(`select public.enregistrer_abonnement_push($1, 'BCleP256dhDeTestAAAAAAAAAAAAAAAAAAAAAAAA', 'AuthDeTest00')`, [`https://updates.push.services.mozilla.com/wpush/v2/n${i}`]);
+	}
+	await enPostgres();
+	egal(Number(await valeur(`select count(*) from public.abonnements_push where utilisateur = $1`, [idc])), 10, '10 appareils au plus :');
+});
+await test('0019 · Droits : fonctions internes fermées, aucune lecture anonyme, aucune écriture directe', async () => {
+	await en(null);
+	await refuse(db.query(`select * from public.organisations`), /permission denied/);
+	await refuse(db.query(`select public._deja_fait('x')`), /permission denied/);
+	await en(idc);
+	await refuse(db.query(`select public._deja_fait('x')`), /permission denied/);
+	await refuse(db.query(`select public._endpoint_push_valide('https://fcm.googleapis.com/x')`), /permission denied/);
+	await refuse(db.query(`insert into public.annonces (id, titre, texte) values ('pirate', 'x', 'y')`), /permission denied/);
+	await refuse(db.query(`delete from public.consentements`), /permission denied/);
+});
+// En dernier : remplit le fil d'activité du compte IDC.
+await test('0019 · Débit : au-delà de 200 actions par minute, refusé', async () => {
+	await enPostgres();
+	await db.query(
+		`insert into public.journal (id, type, auteur, organisation, cible_type, cible_id, cible_libelle, resume)
+		 select 'flot-' || g, 'tache_creee', $1, 'IDC', 'tache', 't', 't', 'a créé'
+		 from generate_series(1, 200 - (select count(*)::int from public.journal where auteur = $1 and date > now() - interval '1 minute')) g`,
+		[idc]
+	);
+	await db.query(`update public.rapports set statut = 'brouillon' where volet = 'WASH-IDC' and mois = '2026-12'`);
+	await en(idc);
+	await refuse(db.query(`select public.enregistrer_valeur($1, null, $2, '2026-12', null, null, null, null, 5, null)`, [ev(), IND_WASH]), /Trop d’actions/);
 });
 
 /* ---------- Bilan ---------- */

@@ -62,10 +62,18 @@ function lien(e: Evenement): string {
 type Abonnement = { id: string; endpoint: string; p256dh: string; auth: string };
 type Sql = ReturnType<typeof postgres>;
 
+/**
+ * Services de push connus (Chrome/Edge/Opera via FCM, Firefox, Windows, Apple). Toute autre
+ * adresse est ignorée : la fonction ne peut pas être utilisée pour appeler un serveur choisi
+ * par un tiers (même règle en base : migration 0019, _endpoint_push_valide).
+ */
+const SERVICE_PUSH = /^https:\/\/(fcm\.googleapis\.com|updates\.push\.services\.mozilla\.com|[a-z0-9-]+(\.[a-z0-9-]+)*\.notify\.windows\.com|web\.push\.apple\.com|[a-z0-9-]+(\.[a-z0-9-]+)*\.push\.apple\.com)\//;
+
 /** Envoie la charge à chaque appareil ; retire les abonnements expirés. */
 async function envoyerA(sql: Sql, abonnements: Abonnement[], charge: string): Promise<number> {
 	let envoye = 0;
 	for (const a of abonnements) {
+		if (!SERVICE_PUSH.test(a.endpoint) || a.endpoint.length > 1000) continue;
 		try {
 			await webpush.sendNotification({ endpoint: a.endpoint, keys: { p256dh: a.p256dh, auth: a.auth } }, charge, { TTL: 24 * 3600, urgency: 'high' });
 			envoye += 1;
@@ -95,15 +103,20 @@ Deno.serve(async (req) => {
 		return reponse(400, { erreur: 'Corps JSON attendu' });
 	}
 	if (typeof notificationId !== 'string' && typeof annonceId !== 'string') return reponse(400, { erreur: 'notification_id ou annonce_id manquant' });
+	// Identifiant mal formé : refusé avant toute connexion à la base (appels abusifs bon marché à rejeter).
+	const ID = /^[A-Za-z0-9:_-]{1,100}$/;
+	if ((typeof notificationId === 'string' && !ID.test(notificationId)) || (typeof annonceId === 'string' && !ID.test(annonceId))) {
+		return reponse(400, { erreur: 'Identifiant invalide' });
+	}
 
 	const publique = Deno.env.get('VAPID_CLE_PUBLIQUE');
 	const privee = Deno.env.get('VAPID_CLE_PRIVEE');
 	const sujet = Deno.env.get('VAPID_SUJET') ?? 'https://outil-suivi.vercel.app';
-	if (!publique || !privee) return reponse(503, { erreur: 'Clés VAPID non configurées' });
+	if (!publique || !privee) return reponse(503, { erreur: 'Service indisponible' });
 	webpush.setVapidDetails(sujet, publique, privee);
 
 	const url = Deno.env.get('SUPABASE_DB_URL');
-	if (!url) return reponse(503, { erreur: 'Connexion à la base indisponible' });
+	if (!url) return reponse(503, { erreur: 'Service indisponible' });
 	const sql = postgres(url, { prepare: false, max: 1, idle_timeout: 5 });
 	try {
 		if (typeof annonceId === 'string') {
@@ -149,7 +162,9 @@ Deno.serve(async (req) => {
 
 		return reponse(200, { envoye: await envoyerA(sql, abonnements, charge) });
 	} catch (e) {
-		return reponse(500, { erreur: e instanceof Error ? e.message : String(e) });
+		// Le détail reste dans les journaux de la fonction (console Supabase), jamais dans la réponse.
+		console.error('envoyer-push :', e instanceof Error ? e.message : String(e));
+		return reponse(500, { erreur: 'Erreur interne' });
 	} finally {
 		await sql.end({ timeout: 2 });
 	}

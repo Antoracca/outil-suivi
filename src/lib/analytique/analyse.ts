@@ -365,8 +365,11 @@ export function constats(s: Synthese): Constat[] {
 /** Export CSV (séparateur « ; », pour Excel en français) des mesures brutes, pour l'IA ou un tableur. */
 export function versCsv(brutes: MesureBrute[]): string {
 	const cellule = (v: unknown) => {
-		const t = v === null || v === undefined ? '' : typeof v === 'object' ? JSON.stringify(v) : String(v);
-		return /[;"\n]/.test(t) ? `"${t.replace(/"/g, '""')}"` : t;
+		let t = v === null || v === undefined ? '' : typeof v === 'object' ? JSON.stringify(v) : String(v);
+		// Les libellés viennent des appareils des comptes : un texte qui commence comme une formule
+		// (= + - @ …) est neutralisé par une apostrophe, sinon Excel l'exécuterait à l'ouverture.
+		if (/^[\s]*[=+\-@\t\r\n|%]/.test(t)) t = `'${t}`;
+		return /[;"\r\n]/.test(t) || t !== t.trim() ? `"${t.replace(/"/g, '""')}"` : t;
 	};
 	const tete = ['date', 'type', 'ecran', 'page', 'cible', 'organisation', 'role', 'utilisateur', 'session', 'donnees'];
 	const lignes = brutes.map((x) => [x.date, x.type, ecranDe(x.page), x.page, x.cible, x.organisation, x.role, x.utilisateur, x.session, x.donnees].map(cellule).join(';'));

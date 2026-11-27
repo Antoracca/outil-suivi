@@ -59,7 +59,8 @@ export function celluleCsv(c: Cellule): string {
 	if (c === null || c === undefined) return '';
 	if (typeof c === 'number') return nombreCsv(c);
 	let t = c;
-	if (/^[=+\-@\t\r]/.test(t)) t = `'${t}`;
+	// Formule cachée derrière des espaces ou des sauts (« ␣=…», « \n+…») : protégée aussi.
+	if (/^[\s]*[=+\-@\t\r\n|%]/.test(t)) t = `'${t}`;
 	if (/[;"\r\n]/.test(t) || t !== t.trim()) t = `"${t.replace(/"/g, '""')}"`;
 	return t;
 }
